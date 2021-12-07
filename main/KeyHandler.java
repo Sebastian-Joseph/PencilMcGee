@@ -1,4 +1,4 @@
-package PencilMcGee.src.main;
+package main;
 
 import java.awt.event.KeyListener;
 import java.awt.event.KeyEvent;
@@ -6,6 +6,11 @@ import java.awt.event.KeyEvent;
 public class KeyHandler implements KeyListener {
 
     public boolean upPressed, downPressed, leftPressed, rightPressed;
+
+    @Override
+    public void keyTyped(KeyEvent keyEvent) {
+
+    }
 
     @Override
     public void keyPressed(KeyEvent e) {

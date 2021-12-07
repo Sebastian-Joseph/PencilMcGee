@@ -1,7 +1,6 @@
 package main;
 
-import PencilMcGee.src.main.KeyHandler;
-
+import main.KeyHandler;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -20,13 +19,17 @@ public class GamePanel extends JPanel implements Runnable {
     final int screenWidth = tileSize * maxScreenCol;
     final int screenHeight = tileSize * maxScreenRow;
 
+    //FPS
+    int FPS = 60;
+
+
     KeyHandler keyH = new KeyHandler();
     Thread gameThread;
 
 
     int playerX = 100;
     int playerY = 100;
-    int playerSpeed = 4;
+    int playerSpeed = 1;
 
 
     public GamePanel() {
@@ -45,14 +48,32 @@ public class GamePanel extends JPanel implements Runnable {
     @Override
     public void run() {
 
+        double drawInterval = 1000000000/FPS;
+        double nextDrawTime = System.nanoTime() + drawInterval;
 
         while(gameThread != null) {
-
-            System.out.println("pee");
 
             update();
 
             repaint();
+
+
+            try {
+                double remainingTime = newDrawTime - System.nanoTime();
+                remainingTime = remainingTime/1000000;
+
+                if(remainingTime < 0) {
+                    remainingTime = 0;
+                }
+
+                Thread.sleep((long) remainingTime);
+
+                nextDrawTime += drawInterval;
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+        }
+
         }
     }
     public void update(){
