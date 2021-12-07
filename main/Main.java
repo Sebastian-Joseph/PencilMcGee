@@ -1,7 +1,5 @@
 package main;
 
-import main.GamePanel;
-
 import javax.swing.JFrame;
 
 public class Main {
@@ -12,11 +10,8 @@ public class Main {
         window.setResizable(false);
         window.setTitle("Pencil McGee");
 
-        
-
         GamePanel gamePanel = new GamePanel();
         window.add(gamePanel);
-                
 
         window.pack();
 
