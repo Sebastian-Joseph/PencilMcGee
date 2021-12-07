@@ -55,6 +55,9 @@ public class GamePanel extends JPanel implements Runnable {
                 }
 
                 Thread.sleep((long) remainingTime);
+
+                nextDrawTime += drawInterval;
+
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -63,19 +66,6 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void update() {
         p1.move(keyHandler);
-
-        // if (keyHandler.leftPressed) {
-        //     p1.xPos -= p1.xSpeed;
-        // }
-        // if (keyHandler.rightPressed) {
-        //     p1.xPos += p1.xSpeed;
-        // }
-        // if (keyHandler.upPressed) {
-        //     p1.yPos -= p1.xSpeed;
-        // }
-        // if (keyHandler.downPressed) {
-        //     p1.yPos += p1.xSpeed;
-        // }
     }
 
     public void paintComponent(Graphics g) {
