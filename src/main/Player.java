@@ -78,7 +78,7 @@ public class Player {
         }
     }
 
-    public void move(KeyHandler k) {
+    public void move(KeyHandler k, int xMax, Tilemap tm) {
         if (k.leftPressed) {
             dx = (dx > -1 * xSpeed) ? dx - xIncrement : -1 * xSpeed;
         }
@@ -102,7 +102,14 @@ public class Player {
             : (dy < ySpeed) ? dy + yIncrement : ySpeed;
         }
 
-        xPos += dx;
+        if (k.rightPressed && xPos >= xMax / 2) {
+            for (int i = 0; i < tm.getMap().length; i++) {
+                for (int j = 0; j < tm.getMap()[i].length; j++) {
+                    tm.getMap()[i][j].scroll(dx);
+                }
+            }
+        }
+        else xPos += dx;
         yPos += dy;
     }
 }

@@ -31,4 +31,7 @@ public class Tile {
 		return y;
 	}
 
+	public void scroll(double scrollAmount) {
+		x -= scrollAmount;
+	}
 }

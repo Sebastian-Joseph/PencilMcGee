@@ -94,7 +94,7 @@ public class GamePanel extends JPanel implements Runnable {
                 p1.collision(tiles.getMap()[i][j], keyHandler, screenWidth, screenHeight, tileSize);
             }
         }
-        p1.move(keyHandler);
+        p1.move(keyHandler, screenWidth, tiles);
     }
 
 
