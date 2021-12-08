@@ -45,11 +45,29 @@ public class GamePanel extends JPanel implements Runnable {
         testTile = ImageIO.read(getClass().getResourceAsStream("images/smol_spunch.jpg"));
     }
 
-    Tile t = new Tile(testTile, 1, 1000, screenHeight - 32);
+    Tile t1 = new Tile("images/smol_spunch.jpg", 1, 35 * 32, screenHeight - 32);
+    Tile t2 = new Tile("images/smol_spunch.jpg", 1, 36 * 32, screenHeight - 32);
+    Tile t3 = new Tile("images/smol_spunch.jpg", 1, 37 * 32, screenHeight - 32);
+    Tile t4 = new Tile("images/imverytired.png", 1, 40 * 32, screenHeight - 128);
+    Tile t5 = new Tile("images/imverytired.png", 1, 41 * 32, screenHeight - 128);
+    Tile t6 = new Tile("images/imverytired.png", 1, 42 * 32, screenHeight - 128);
+    Tile tiles[] = new Tile[6];
+    BufferedImage tileImages[] = new BufferedImage[6];
 
-    public void startGameThread() {
+    public void startGameThread() throws IOException {
         gameThread = new Thread(this);
         gameThread.start();
+
+        tiles[0] = t1;
+        tiles[1] = t2;
+        tiles[2] = t3;
+        tiles[3] = t4;
+        tiles[4] = t5;
+        tiles[5] = t6;
+
+        for (int i = 0; i < tiles.length; i++) {
+            tileImages[i] = tiles[i].getImage();
+        }
     }
 
     public void run() {
@@ -79,7 +97,9 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void update() {
-        p1.collision(t, screenWidth, screenHeight);
+        for (Tile t : tiles) {
+            p1.collision(t, screenWidth, screenHeight);
+        }
         p1.move(keyHandler);
     }
 
@@ -91,7 +111,9 @@ public class GamePanel extends JPanel implements Runnable {
         g2.setColor(Color.black);
 
         g2.drawImage(background, 0, 0, null);
-        g2.drawImage(testTile, t.getx(), t.gety(), null);
+        for (int i = 0; i < tiles.length; i++) {
+            g2.drawImage(tileImages[i], tiles[i].getx(), tiles[i].gety(), null);
+        }
         g2.drawImage(player, (int) p1.getXPos(), (int) p1.getYPos(), null);
 
         g2.dispose();
