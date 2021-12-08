@@ -1,39 +1,33 @@
 package main;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import javax.imageio.ImageIO;
 
 public class Tile {
 
-	private String imagePath;
+	private BufferedImage image;
 	private int type;
 	private int x;
 	private int y;
 
-	public Tile(String imagePath, int type, int x, int y) {
-		this.imagePath = imagePath;
+	public Tile(BufferedImage image, int type, int x, int y) {
+		this.image = image;
 		this.type = type;
 		this.x = x;
 		this.y = y;
 	}
 
-	public String getImagePath() {
-		return imagePath;
-	}
-
-	public BufferedImage getImage() throws IOException {
-		return ImageIO.read(getClass().getResourceAsStream(getImagePath()));
+	public BufferedImage getImage() {
+		return image;
 	}
 
 	public int getType() {
 		return type;
 	}
 	
-	public int getx(){
+	public int getX() {
 		return x;
 	}
 
-	public int gety(){
+	public int getY() {
 		return y;
 	}
 
