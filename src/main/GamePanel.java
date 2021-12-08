@@ -46,7 +46,7 @@ public class GamePanel extends JPanel implements Runnable {
         tiles.createMap("images/amogus.png");
 
         background = ImageIO.read(getClass().getResourceAsStream("images/pooper3.5.png"));
-        player = ImageIO.read(getClass().getResourceAsStream("images/mcgee.png"));
+        player = ImageIO.read(getClass().getResourceAsStream("images/pencil_mcgee.png"));
         testTile = ImageIO.read(getClass().getResourceAsStream("images/smol_spunch.jpg"));
     }
 
