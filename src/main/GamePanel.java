@@ -22,6 +22,7 @@ public class GamePanel extends JPanel implements Runnable {
     final int screenWidth = tileSize * maxScreenCol;
     final int screenHeight = tileSize * maxScreenRow;
     BufferedImage image;
+    private Tilemap tiles = new Tilemap(screenWidth, screenHeight);
 
     int FPS = 60;
 
@@ -34,6 +35,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setBackground(Color.decode("#f7f7f7"));
         image = ImageIO.read(getClass().getResourceAsStream("images/pooper.png"));
+        tiles.createMap("images/amogus.png");
         this.setDoubleBuffered(true);
         this.addKeyListener(keyHandler);
         this.setFocusable(true);
@@ -81,6 +83,7 @@ public class GamePanel extends JPanel implements Runnable {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D)g;
         g2.drawImage(image, 0, 0, null);
+        tiles.draw(g2);
         g2.setColor(Color.black);
         g2.fillRect((int) p1.getXPos(), (int) p1.getYPos(), tileSize, tileSize);
         //g.drawImage(image, 100, 100, null);
