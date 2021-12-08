@@ -5,6 +5,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.io.IOException;
+import java.util.ArrayList;
 
 
 public class Tilemap{
@@ -54,6 +55,16 @@ public class Tilemap{
 		
 
 
+    }
+
+    public ArrayList<Tile> getMap(){
+        ArrayList<Tile> tilearray = new ArrayList<Tile>(Rows * Columns);
+        for(int col = 0; col < Columns; col++){
+            for(int row = 0; row < Rows; row++){
+                tilearray.add(map[row][col]);
+            }
+        }
+        return tilearray;
     }
 
     public void draw(Graphics2D g, double playerx, double playery){

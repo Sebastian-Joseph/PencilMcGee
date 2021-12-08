@@ -8,6 +8,7 @@ import java.awt.Graphics2D;
 import java.awt.image.*;
 import java.io.IOException;
 import java.lang.Exception;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
@@ -77,7 +78,9 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void update() {
-        p1.collision(screenWidth, screenHeight);
+        for (Tile t : tiles.getMap()) {
+            p1.collision(t, keyHandler, screenWidth, screenHeight, tileSize);
+        }
         p1.move(keyHandler);
     }
 

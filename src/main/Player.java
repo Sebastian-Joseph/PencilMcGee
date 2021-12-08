@@ -44,7 +44,27 @@ public class Player {
         return height;
     }
     
-    public void collision(int xMax, int yMax) {
+    public void collision(Tile t, KeyHandler k, int xMax, int yMax, int offset) {
+        if(t.getType() == 1){
+            if (xPos + width >= t.getx() && xPos <= t.getx() + (offset / 2) && yPos + height > t.gety() + ySpeed && yPos < t.gety() + offset - ySpeed) {
+                xPos = t.getx() - width;
+                dx = 0;
+            }
+            else if (xPos + width >= t.getx() + (offset / 2) && xPos <= t.getx() + offset && yPos + height > t.gety() + ySpeed && yPos < t.gety() + offset - ySpeed) {
+                xPos = t.getx() + offset;
+                xPos = t.getx() + 32;
+                dx = 0;
+            }
+            else if (xPos + width > t.getx() && xPos < t.getx() + offset && yPos + height >= t.gety() && yPos <= t.gety() + (offset / 2)) {
+                yPos = t.gety() - height;
+                dy = 0;
+            }
+            else if (xPos + width > t.getx() && xPos < t.getx() + offset && yPos + height >= t.gety() + (offset / 2) && yPos <= t.gety() + offset) {
+                yPos = t.gety() + offset;
+                k.upPressed = false;
+                dy = 0;
+            }
+        }
         /*
         if (xPos >= xMax - width) {
             dx = 0;
