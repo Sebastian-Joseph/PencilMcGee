@@ -6,6 +6,12 @@ import javax.swing.JPanel;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
+import java.awt.image.*;
+import java.io.IOException;
+import java.lang.Exception;
+
+import javax.imageio.ImageIO;
+
 public class GamePanel extends JPanel implements Runnable {
     // Screen Settings
     final int originalTileSize = 8;
@@ -16,6 +22,8 @@ public class GamePanel extends JPanel implements Runnable {
     final int maxScreenRow = 27;
     final int screenWidth = tileSize * maxScreenCol;
     final int screenHeight = tileSize * maxScreenRow;
+    BufferedImage background;
+    BufferedImage player;
 
     int FPS = 60;
 
@@ -24,12 +32,15 @@ public class GamePanel extends JPanel implements Runnable {
 
     Player p1 = new Player(100, 100, tileSize / 2, tileSize * 2);
 
-    public GamePanel() {
+    public GamePanel() throws IOException {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setBackground(Color.decode("#f7f7f7"));
         this.setDoubleBuffered(true);
         this.addKeyListener(keyHandler);
         this.setFocusable(true);
+
+        background = ImageIO.read(getClass().getResourceAsStream("images/pooper3.5.png"));
+        player = ImageIO.read(getClass().getResourceAsStream("images/mcgee.png"));
     }
 
     public void startGameThread() {
@@ -74,7 +85,10 @@ public class GamePanel extends JPanel implements Runnable {
         Graphics2D g2 = (Graphics2D)g;
 
         g2.setColor(Color.black);
-        g2.fillRect((int) p1.getXPos(), (int) p1.getYPos(), p1.getWidth(), p1.getHeight());
+
+        g2.drawImage(background, 0, 0, null);
+        g2.drawImage(player, (int) p1.getXPos(), (int) p1.getYPos(), null);
+
         g2.dispose();
     }
 }
