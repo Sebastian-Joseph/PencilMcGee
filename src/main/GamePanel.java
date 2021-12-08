@@ -22,7 +22,7 @@ public class GamePanel extends JPanel implements Runnable {
     KeyHandler keyHandler = new KeyHandler();
     Thread gameThread;
 
-    Player p1 = new Player(100, 100);
+    Player p1 = new Player(100, 100, tileSize / 2, tileSize * 2);
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -42,7 +42,6 @@ public class GamePanel extends JPanel implements Runnable {
         double nextDrawTime = System.nanoTime() + drawInterval;
 
         while (gameThread != null) {
-
             update();
             repaint();
 
@@ -65,6 +64,7 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void update() {
+        p1.collision(screenWidth, screenHeight);
         p1.move(keyHandler);
     }
 
@@ -74,7 +74,7 @@ public class GamePanel extends JPanel implements Runnable {
         Graphics2D g2 = (Graphics2D)g;
 
         g2.setColor(Color.black);
-        g2.fillRect((int) p1.getXPos(), (int) p1.getYPos(), tileSize, tileSize);
+        g2.fillRect((int) p1.getXPos(), (int) p1.getYPos(), p1.getWidth(), p1.getHeight());
         g2.dispose();
     }
 }

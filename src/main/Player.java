@@ -11,18 +11,21 @@ public class Player {
     public double xIncrement;
     public double yIncrement;
     
-    public int height;
     public int width;
+    public int height;
 
-    public Player(int x, int y) {
+    public Player(int x, int y, int w, int h) {
         xPos = x;
         yPos = y;
-        xSpeed = 12;
-        ySpeed = 24;
-        xIncrement = 2.4;
-        yIncrement = 1.2;
+        xSpeed = 8;
+        ySpeed = 16;
+        xIncrement = 1.2;
+        yIncrement = 0.6;
         dx = 0;
         dy = 0;
+
+        width = w;
+        height = h;
     }
 
     public double getXPos() {
@@ -33,10 +36,34 @@ public class Player {
         return yPos;
     }
 
-    public void move(KeyHandler k) {
-        if (yPos >= 32 * 26) {
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void collision(int xMax, int yMax) {
+        if (xPos >= xMax - width) {
+            dx = 0;
+            xPos = xMax - width;
+        }
+        if (xPos <= 0) {
+            dx = 0;
+            xPos = 0;
+        }
+
+        if (yPos >= yMax - height) {
             dy = 0;
-            yPos = 32 * 26;
+            yPos = yMax - height;
+        }
+    }
+
+    public void move(KeyHandler k) {
+        if (yPos >= 32 * 25) {
+            dy = 0;
+            yPos = 32 * 25;
         }
 
         if (k.leftPressed) {
@@ -61,21 +88,6 @@ public class Player {
             ? yIncrement
             : (dy < ySpeed) ? dy + yIncrement : ySpeed;
         }
-
-        // if (k.leftPressed) {
-        //     xPos -= xSpeed;
-        // }
-        // if (k.rightPressed) {
-        //     xPos += xSpeed;
-        // }
-        // if (k.upPressed) {
-        //     yPos -= xSpeed;
-        // }
-        // if (k.downPressed) {
-        //     yPos += xSpeed;
-        // }
-
-        System.out.println(dx + " " + dy);
 
         xPos += dx;
         yPos += dy;
