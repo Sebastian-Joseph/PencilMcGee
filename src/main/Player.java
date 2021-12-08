@@ -44,17 +44,22 @@ public class Player {
         return height;
     }
 
-    public void collision(Tile t, int xMax, int yMax) {
-        if (xPos + width >= t.getx() && xPos <= t.getx() + 16 && yPos + height > t.gety() + ySpeed && yPos < t.gety() + 32 - ySpeed) {
+    public void collision(Tile t, KeyHandler k, int xMax, int yMax, int offset) {
+        if (xPos + width >= t.getx() && xPos <= t.getx() + (offset / 2) && yPos + height > t.gety() + ySpeed && yPos < t.gety() + offset - ySpeed) {
             xPos = t.getx() - width;
             dx = 0;
         }
-        else if (xPos + width >= t.getx() + 16 && xPos <= t.getx() + 32 && yPos + height > t.gety() + ySpeed && yPos < t.gety() + 32 - ySpeed) {
-            xPos = t.getx() + 32;
+        else if (xPos + width >= t.getx() + (offset / 2) && xPos <= t.getx() + offset && yPos + height > t.gety() + ySpeed && yPos < t.gety() + offset - ySpeed) {
+            xPos = t.getx() + offset;
             dx = 0;
         }
-        else if (xPos + width > t.getx() && xPos < t.getx() + 32 && yPos + height >= t.gety() && yPos <= t.gety() + 16) {
+        else if (xPos + width > t.getx() && xPos < t.getx() + offset && yPos + height >= t.gety() && yPos <= t.gety() + (offset / 2)) {
             yPos = t.gety() - height;
+            dy = 0;
+        }
+        else if (xPos + width > t.getx() && xPos < t.getx() + offset && yPos + height >= t.gety() + (offset / 2) && yPos <= t.gety() + offset) {
+            yPos = t.gety() + offset;
+            k.upPressed = false;
             dy = 0;
         }
 
@@ -74,11 +79,6 @@ public class Player {
     }
 
     public void move(KeyHandler k) {
-        if (yPos >= 32 * 25) {
-            dy = 0;
-            yPos = 32 * 25;
-        }
-
         if (k.leftPressed) {
             dx = (dx > -1 * xSpeed) ? dx - xIncrement : -1 * xSpeed;
         }
