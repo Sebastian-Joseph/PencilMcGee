@@ -49,6 +49,9 @@ public class Tilemap {
                 else {
                     map[row][col] = new Tile(scaledImage, 0, tileSize * col, tileSize * row);
                 }
+                if (c.getRed() == 255 && c.getGreen() == 255 && c.getBlue() == 255) {
+                    map[row][col].newImage("images/small_pooper.png");
+                }
             }
         }
     }
