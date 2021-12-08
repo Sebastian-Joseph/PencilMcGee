@@ -1,4 +1,4 @@
-package main;
+package src.main;
 
 public class Player {
     public double xPos;
@@ -34,9 +34,9 @@ public class Player {
     }
 
     public void move(KeyHandler k) {
-        if (yPos >= 32 * 26) {
+        if (yPos >= 24 * 26) {
             dy = 0;
-            yPos = 32 * 26;
+            yPos = 24 * 26;
         }
 
         if (k.leftPressed) {
@@ -75,7 +75,7 @@ public class Player {
         //     yPos += xSpeed;
         // }
 
-        System.out.println(dx + " " + dy);
+        //System.out.println(dx + " " + dy);
 
         xPos += dx;
         yPos += dy;
