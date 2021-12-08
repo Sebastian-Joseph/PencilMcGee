@@ -1,4 +1,4 @@
-package src.main;
+package main;
 
 public class Player {
     public double xPos;
@@ -14,7 +14,7 @@ public class Player {
     public int height;
     public int width;
 
-    public Player(int x, int y) {
+    public Player(int x, int y, int w, int h) {
         xPos = x;
         yPos = y;
         xSpeed = 12;
@@ -23,6 +23,9 @@ public class Player {
         yIncrement = 1.2;
         dx = 0;
         dy = 0;
+
+        width = w;
+        height = h;
     }
 
     public double getXPos() {
@@ -33,10 +36,37 @@ public class Player {
         return yPos;
     }
 
-    public void move(KeyHandler k) {
-        if (yPos >= 24 * 26) {
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+    
+    public void collision(int xMax, int yMax) {
+        /*
+        if (xPos >= xMax - width) {
+            dx = 0;
+            xPos = xMax - width;
+        }
+        if (xPos <= 0) {
+            dx = 0;
+            xPos = 0;
+        }
+
+        if (yPos >= yMax - height) {
             dy = 0;
-            yPos = 24 * 26;
+            yPos = yMax - height;
+        }
+        */
+    }
+    
+
+    public void move(KeyHandler k) {
+        if (yPos >= 24 * 25) {
+            dy = 0;
+            yPos = 24 * 25;
         }
 
         if (k.leftPressed) {
@@ -50,7 +80,7 @@ public class Player {
             ? dx - xIncrement
             : (dx < -1 * xIncrement) ? dx + xIncrement : 0;
         }
-    
+        
         if (k.upPressed) {
             dy = (dy == 0)
             ? -1 * ySpeed + yIncrement
@@ -61,21 +91,7 @@ public class Player {
             ? yIncrement
             : (dy < ySpeed) ? dy + yIncrement : ySpeed;
         }
-
-        // if (k.leftPressed) {
-        //     xPos -= xSpeed;
-        // }
-        // if (k.rightPressed) {
-        //     xPos += xSpeed;
-        // }
-        // if (k.upPressed) {
-        //     yPos -= xSpeed;
-        // }
-        // if (k.downPressed) {
-        //     yPos += xSpeed;
-        // }
-
-        //System.out.println(dx + " " + dy);
+        
 
         xPos += dx;
         yPos += dy;

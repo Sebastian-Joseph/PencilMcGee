@@ -1,4 +1,4 @@
-package src.main;
+package main;
 import java.awt.image.*;
 import javax.imageio.ImageIO;
 import java.awt.geom.AffineTransform;
@@ -15,10 +15,11 @@ public class Tilemap{
     private Tile[][] map;
     private int Rows;
     private int Columns;
+    
 
     public Tilemap(int width, int height){        
-        numVisibleRows = height/(tileSize + 2);
-        numVisibleColumns = width/(tileSize + 2);
+        numVisibleRows = height/(tileSize);
+        numVisibleColumns = width/(tileSize);
     }
 
     public void createMap(String filename) throws IOException{
@@ -55,11 +56,15 @@ public class Tilemap{
 
     }
 
-    public void draw(Graphics2D g){
-        System.out.println(map[0][0].getImage());
-        for(int col = 0; col < numVisibleColumns; col++){
-            for(int row = 0; row < numVisibleRows; row++){
-                g.drawImage(map[row][col].getImage(), col * 24, row * 24, null);
+    public void draw(Graphics2D g, double playerx, double playery){
+        int colOffset = (int) playerx/(tileSize * 2);
+        int rowOffset = (int) playery/(tileSize * 2);
+        for(int col = 0 + colOffset; col < numVisibleColumns + colOffset; col++){
+            for(int row = 0 + rowOffset; row < numVisibleRows + rowOffset; row++){
+                if(row >= 37){
+                    break;
+                }                                                              
+                g.drawImage(map[row][col].getImage(), (col - colOffset) * 24, (row - rowOffset) * 24, null);
             }
         }
     }

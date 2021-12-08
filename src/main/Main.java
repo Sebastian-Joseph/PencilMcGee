@@ -1,4 +1,4 @@
-package src.main;
+package main;
 
 import javax.swing.JFrame;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package src.main;
+package main;
 import java.awt.image.BufferedImage;
 
 public class Tile {
