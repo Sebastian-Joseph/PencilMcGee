@@ -24,6 +24,7 @@ public class GamePanel extends JPanel implements Runnable {
     final int screenHeight = tileSize * maxScreenRow;
     BufferedImage background;
     BufferedImage player;
+    BufferedImage testTile;
 
     int FPS = 60;
 
@@ -41,7 +42,10 @@ public class GamePanel extends JPanel implements Runnable {
 
         background = ImageIO.read(getClass().getResourceAsStream("images/pooper3.5.png"));
         player = ImageIO.read(getClass().getResourceAsStream("images/mcgee.png"));
+        testTile = ImageIO.read(getClass().getResourceAsStream("images/smol_spunch.jpg"));
     }
+
+    Tile t = new Tile(testTile, 1, 1000, screenHeight - 32);
 
     public void startGameThread() {
         gameThread = new Thread(this);
@@ -75,7 +79,7 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void update() {
-        p1.collision(screenWidth, screenHeight);
+        p1.collision(t, screenWidth, screenHeight);
         p1.move(keyHandler);
     }
 
@@ -87,6 +91,7 @@ public class GamePanel extends JPanel implements Runnable {
         g2.setColor(Color.black);
 
         g2.drawImage(background, 0, 0, null);
+        g2.drawImage(testTile, t.getx(), t.gety(), null);
         g2.drawImage(player, (int) p1.getXPos(), (int) p1.getYPos(), null);
 
         g2.dispose();

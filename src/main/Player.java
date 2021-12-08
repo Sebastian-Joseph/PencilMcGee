@@ -44,7 +44,20 @@ public class Player {
         return height;
     }
 
-    public void collision(int xMax, int yMax) {
+    public void collision(Tile t, int xMax, int yMax) {
+        if (xPos + width >= t.getx() && xPos <= t.getx() + 16 && yPos + height > t.gety() + ySpeed && yPos < t.gety() + 32 - ySpeed) {
+            xPos = t.getx() - width;
+            dx = 0;
+        }
+        else if (xPos + width >= t.getx() + 16 && xPos <= t.getx() + 32 && yPos + height > t.gety() + ySpeed && yPos < t.gety() + 32 - ySpeed) {
+            xPos = t.getx() + 32;
+            dx = 0;
+        }
+        else if (xPos + width > t.getx() && xPos < t.getx() + 32 && yPos + height >= t.gety() && yPos <= t.gety() + 16) {
+            yPos = t.gety() - height;
+            dy = 0;
+        }
+
         if (xPos >= xMax - width) {
             dx = 0;
             xPos = xMax - width;
