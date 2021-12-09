@@ -3,6 +3,8 @@ package main;
 import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
@@ -11,6 +13,13 @@ import java.io.IOException;
 import java.lang.Exception;
 
 import javax.imageio.ImageIO;
+
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.MouseInfo;
+
+import java.awt.event.MouseEvent; 
+import java.awt.event.MouseListener; 
 
 public class GamePanel extends JPanel implements Runnable {
     // Screen Settings
@@ -27,6 +36,7 @@ public class GamePanel extends JPanel implements Runnable {
     BufferedImage testTile;
 
     private Tilemap tiles = new Tilemap(screenWidth, screenHeight, tileSize);
+    private boolean mouseDown = false;
 
     int FPS = 60;
 
@@ -48,6 +58,19 @@ public class GamePanel extends JPanel implements Runnable {
         background = ImageIO.read(getClass().getResourceAsStream("images/pooper3.5.png"));
         player = ImageIO.read(getClass().getResourceAsStream("images/pencil_mcgee.png"));
         testTile = ImageIO.read(getClass().getResourceAsStream("images/smol_spunch.jpg"));
+
+        addMouseListener(new MouseListener() { 
+            public void mouseClicked(MouseEvent e) {} 
+            public void mousePressed(MouseEvent e) {
+                mouseDown = true;
+            } 
+            public void mouseReleased(MouseEvent e) {
+                mouseDown = false;
+            } 
+            public void mouseEntered(MouseEvent e) {} 
+            public void mouseExited(MouseEvent e) {} 
+        } 
+        );
     }
 
 
@@ -104,6 +127,19 @@ public class GamePanel extends JPanel implements Runnable {
         Graphics2D g2 = (Graphics2D)g;
 
         g2.setColor(Color.black);
+
+        if (mouseDown == true) {
+            Point point = MouseInfo.getPointerInfo().getLocation();
+            SwingUtilities.convertPointFromScreen(point, this);
+            for (int i = 0; i < tiles.getMap().length; i++) {
+                for (int j = 0; j < tiles.getMap()[i].length; j++) {
+                    Rectangle tileBounds = new Rectangle(tiles.getMap()[i][j].getX(), tiles.getMap()[i][j].getY(), tileSize, tileSize);
+                    if (tileBounds.contains(point)) {
+                        tiles.getMap()[i][j].change();
+                    }
+                }
+            }
+        }
 
         // g2.drawImage(background, 0, 0, null);
         for (int i = 0; i < tiles.getMap().length; i++) {
