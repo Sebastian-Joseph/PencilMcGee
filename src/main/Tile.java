@@ -11,6 +11,8 @@ public class Tile {
 	private int type;
 	private int x;
 	private int y;
+	private int initialx;
+	private int initialy;
 
 	private BufferedImage black;
 	private BufferedImage white;
@@ -20,6 +22,8 @@ public class Tile {
 		this.type = type;
 		this.x = x;
 		this.y = y;
+		initialx = x;
+		initialy = y;
 
 		white = ImageIO.read(getClass().getResourceAsStream("images/small_pooper.png"));
 		black = ImageIO.read(getClass().getResourceAsStream("images/other-pooper.png"));
@@ -43,6 +47,11 @@ public class Tile {
 
 	public void scroll(double scrollAmount) {
 		x -= scrollAmount;
+	}
+
+	public void reset(){
+		x = initialx;
+		y = initialy;
 	}
 
 	public void newImage(String path) throws IOException{

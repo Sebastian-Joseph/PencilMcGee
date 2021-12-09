@@ -78,6 +78,11 @@ public class Player {
         }
     }
 
+    public void reset(){
+        xPos = 100;
+        yPos = 100;
+    }
+
     public void move(KeyHandler k, int xMax, Tilemap tm) {
         if (k.leftPressed) {
             dx = (dx > -1 * xSpeed) ? dx - xIncrement : -1 * xSpeed;

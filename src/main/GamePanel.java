@@ -19,12 +19,14 @@ import java.awt.Rectangle;
 import java.awt.MouseInfo;
 
 import java.awt.event.MouseEvent; 
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseListener; 
+import java.awt.event.KeyListener;
 
 public class GamePanel extends JPanel implements Runnable {
     // Screen Settings
     final int originalTileSize = 8;
-    final int scale = 4;
+    final int scale = 3;
 
     final int tileSize = originalTileSize * scale;
     final int maxScreenCol = 48;
@@ -37,6 +39,8 @@ public class GamePanel extends JPanel implements Runnable {
 
     private Tilemap tiles = new Tilemap(screenWidth, screenHeight, tileSize);
     private boolean mouseDown = false;
+    private boolean enterDown = false;
+
 
     int FPS = 60;
 
@@ -69,6 +73,17 @@ public class GamePanel extends JPanel implements Runnable {
             } 
             public void mouseEntered(MouseEvent e) {} 
             public void mouseExited(MouseEvent e) {} 
+        } 
+        );
+
+        addKeyListener(new KeyListener() { 
+            public void keyTyped(KeyEvent ke) {} 
+            public void keyPressed(KeyEvent ke) {
+                if(ke.getKeyCode() == KeyEvent.VK_ENTER){
+                    enterDown = !enterDown;
+                }
+            } 
+            public void keyReleased(KeyEvent ke) {} 
         } 
         );
     }
@@ -128,6 +143,8 @@ public class GamePanel extends JPanel implements Runnable {
 
         g2.setColor(Color.black);
 
+
+
         if (mouseDown == true) {
             Point point = MouseInfo.getPointerInfo().getLocation();
             SwingUtilities.convertPointFromScreen(point, this);
@@ -147,7 +164,26 @@ public class GamePanel extends JPanel implements Runnable {
                 g2.drawImage(tiles.getMap()[i][j].getImage(), tiles.getMap()[i][j].getX(), tiles.getMap()[i][j].getY(), null);
             }
         }
-        g2.drawImage(player, (int) p1.getXPos(), (int) p1.getYPos(), null);
+        g2.drawImage(player, (int) p1.getXPos(), (int) p1.getYPos(), scale * 4, scale * 16, null);
+
+        if(enterDown == true){
+            g2.drawImage(testTile, 500, 250, tileSize*2, tileSize*2, null);
+            if(mouseDown == true){
+                Point point = MouseInfo.getPointerInfo().getLocation();
+                SwingUtilities.convertPointFromScreen(point, this);
+                Rectangle resetBounds = new Rectangle(500, 250, tileSize*2, tileSize*2);
+                if(resetBounds.contains(point)){
+                    enterDown = false;
+                    System.out.println("pressed");
+                    p1.reset();
+                    for (int i = 0; i < tiles.getMap().length; i++) {
+                        for (int j = 0; j < tiles.getMap()[i].length; j++) {
+                            tiles.getMap()[i][j].reset();
+                        }
+                    }
+                }
+            }
+        }
 
         g2.dispose();
     }
