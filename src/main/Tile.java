@@ -2,6 +2,7 @@ package main;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+import javax.xml.namespace.QName;
 
 import java.util.concurrent.TimeUnit;
 
@@ -14,7 +15,10 @@ public class Tile {
 	private int initialx;
 	private int initialy;
 
-	private BufferedImage black;
+	private BufferedImage stage1;
+	private BufferedImage stage2;
+	private BufferedImage stage3;
+
 	private BufferedImage white;
 
 	public Tile(BufferedImage image, int type, int x, int y) throws IOException {
@@ -26,7 +30,9 @@ public class Tile {
 		initialy = y;
 
 		white = ImageIO.read(getClass().getResourceAsStream("images/small_pooper.png"));
-		black = ImageIO.read(getClass().getResourceAsStream("images/other-pooper.png"));
+		stage1 = ImageIO.read(getClass().getResourceAsStream("images/graphite1.png"));
+		stage2 = ImageIO.read(getClass().getResourceAsStream("images/graphite2.png"));
+		stage3 = ImageIO.read(getClass().getResourceAsStream("images/graphite3.png"));
 	}
 
 	public BufferedImage getImage() {
@@ -61,10 +67,25 @@ public class Tile {
 	public void change() {
 		if (type == 0) {
 			new Thread(() -> {
-				image = black;
+				image = stage1;
 				type = 1;
+
 				try {
-					TimeUnit.SECONDS.sleep(10);
+					TimeUnit.SECONDS.sleep(4);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				image = stage2;
+
+				try {
+					TimeUnit.SECONDS.sleep(4);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				image = stage3;
+
+				try {
+					TimeUnit.SECONDS.sleep(2);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}

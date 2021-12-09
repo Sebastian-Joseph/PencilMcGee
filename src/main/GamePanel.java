@@ -157,11 +157,13 @@ public class GamePanel extends JPanel implements Runnable {
                     if (tileBounds.contains(point)) {
                         Point playerCurrentPosition1 = new Point((int) p1.getXPos(), (int) p1.getYPos());
                         Point playerCurrentPosition2 = new Point((int) p1.getXPos() + p1.getWidth(), (int) p1.getYPos() + p1.getHeight() - 1);
+                        Point playerCurrentPosition3 = new Point((int) p1.getXPos() + (p1.getWidth() / 2), (int) p1.getYPos() + (p1.getHeight() / 2));
 
                         if (
-                            (!tileBounds.contains(playerCurrentPosition1) && !tileBounds.contains(playerCurrentPosition2))
-                            || (tileBounds.contains(playerCurrentPosition1) && !tiles.checkTileToLeft(i, j) && !tiles.checkTileToLeft(i + 1, j))
-                            || (tileBounds.contains(playerCurrentPosition2) && !tiles.checkTileToLeft(i, j) && !tiles.checkTileToLeft(i - 1, j))
+                            (!tileBounds.contains(playerCurrentPosition1) && !tileBounds.contains(playerCurrentPosition2) && !tileBounds.contains(playerCurrentPosition3))
+                            || (tileBounds.contains(playerCurrentPosition3) && !tiles.checkTileToLeft(i, j) && !tiles.checkTileToLeft(i + 1, j) && !tiles.checkTileToLeft(i + 2, j) && !tiles.checkTileToLeft(i - 1, j) && !tiles.checkTileToLeft(i - 2, j))
+                            || (tileBounds.contains(playerCurrentPosition1) && !tiles.checkTileToLeft(i, j) && !tiles.checkTileToLeft(i + 1, j) && !tiles.checkTileToLeft(i + 2, j))
+                            || (tileBounds.contains(playerCurrentPosition2) && !tiles.checkTileToLeft(i, j) && !tiles.checkTileToLeft(i - 1, j) && !tiles.checkTileToLeft(i - 2, j))
                             ) {
                             tiles.getMap()[i][j].change();
                         }
