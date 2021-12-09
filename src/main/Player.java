@@ -45,12 +45,12 @@ public class Player {
     }
 
     public void collision(Tile t, KeyHandler k, int xMax, int yMax, int offset) {
-        if (t.getType() == 1 && xPos + width >= t.getX() - (2 * xIncrement) && xPos <= t.getX() + (offset / 2) && yPos + height > t.getY() + ySpeed && yPos < t.getY() + offset - ySpeed) {
-            xPos = t.getX() - width - (2 * xIncrement);
+        if (t.getType() == 1 && xPos + width >= t.getX() - xSpeed && xPos <= t.getX() + (offset / 2) && yPos + height > t.getY() + ySpeed && yPos < t.getY() + offset - ySpeed) {
+            xPos = t.getX() - width - xSpeed;
             dx = 0;
         }
-        else if (t.getType() == 1 && xPos + width >= t.getX() + (offset / 2) && xPos <= t.getX() + offset + (2 * xIncrement) && yPos + height > t.getY() + ySpeed && yPos < t.getY() + offset - ySpeed) {
-            xPos = t.getX() + offset + (2 * xIncrement);
+        else if (t.getType() == 1 && xPos + width >= t.getX() + (offset / 2) && xPos <= t.getX() + offset + xSpeed && yPos + height > t.getY() + ySpeed && yPos < t.getY() + offset - ySpeed) {
+            xPos = t.getX() + offset + xSpeed;
             dx = 0;
         }
         else if (t.getType() == 1 && xPos + width > t.getX() && xPos < t.getX() + offset && yPos + height >= t.getY() && yPos <= t.getY() + (offset / 2)) {

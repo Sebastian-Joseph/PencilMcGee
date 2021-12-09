@@ -56,6 +56,15 @@ public class Tilemap {
         }
     }
 
+    public boolean checkTileToLeft(int row, int col) {
+        try {
+            return (map[row][col - 1].getType() == 1);
+        }
+        catch (ArrayIndexOutOfBoundsException e) {
+            return false;
+        }
+    }
+
     // public void draw(Graphics2D g){
     //     System.out.println(map[0][0].getImage());
     //     for(int col = 0; col < numColumns; col++) {

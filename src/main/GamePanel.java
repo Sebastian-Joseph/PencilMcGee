@@ -117,6 +117,7 @@ public class GamePanel extends JPanel implements Runnable {
                 p1.collision(tiles.getMap()[i][j], keyHandler, screenWidth, screenHeight, tileSize);
             }
         }
+
         p1.move(keyHandler, screenWidth, tiles);
     }
 
@@ -131,17 +132,29 @@ public class GamePanel extends JPanel implements Runnable {
         if (mouseDown == true) {
             Point point = MouseInfo.getPointerInfo().getLocation();
             SwingUtilities.convertPointFromScreen(point, this);
+
             for (int i = 0; i < tiles.getMap().length; i++) {
                 for (int j = 0; j < tiles.getMap()[i].length; j++) {
                     Rectangle tileBounds = new Rectangle(tiles.getMap()[i][j].getX(), tiles.getMap()[i][j].getY(), tileSize, tileSize);
+
                     if (tileBounds.contains(point)) {
-                        tiles.getMap()[i][j].change();
+                        Point playerCurrentPosition1 = new Point((int) p1.getXPos(), (int) p1.getYPos());
+                        Point playerCurrentPosition2 = new Point((int) p1.getXPos() + p1.getWidth(), (int) p1.getYPos() + p1.getHeight() - 1);
+
+                        if (
+                            (!tileBounds.contains(playerCurrentPosition1) && !tileBounds.contains(playerCurrentPosition2))
+                            || (tileBounds.contains(playerCurrentPosition1) && !tiles.checkTileToLeft(i, j) && !tiles.checkTileToLeft(i + 1, j))
+                            || (tileBounds.contains(playerCurrentPosition2) && !tiles.checkTileToLeft(i, j) && !tiles.checkTileToLeft(i - 1, j))
+                            ) {
+                            tiles.getMap()[i][j].change();
+                        }
                     }
                 }
             }
         }
 
         // g2.drawImage(background, 0, 0, null);
+
         for (int i = 0; i < tiles.getMap().length; i++) {
             for (int j = 0; j < tiles.getMap()[i].length; j++) {
                 g2.drawImage(tiles.getMap()[i][j].getImage(), tiles.getMap()[i][j].getX(), tiles.getMap()[i][j].getY(), null);
