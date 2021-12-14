@@ -19,7 +19,7 @@ import java.awt.Rectangle;
 import java.awt.MouseInfo;
 
 import java.awt.event.MouseEvent; 
-import java.awt.event.MouseListener; 
+import java.awt.event.MouseListener;
 
 public class GamePanel extends JPanel implements Runnable {
     // Screen Settings
@@ -31,9 +31,9 @@ public class GamePanel extends JPanel implements Runnable {
     final int maxScreenRow = 27;
     final int screenWidth = tileSize * maxScreenCol;
     final int screenHeight = tileSize * maxScreenRow;
+    
     BufferedImage background;
     BufferedImage player;
-    BufferedImage testTile;
 
     private Tilemap tiles = new Tilemap(screenWidth, screenHeight, tileSize);
     private boolean mouseDown = false;
@@ -53,11 +53,10 @@ public class GamePanel extends JPanel implements Runnable {
         this.addKeyListener(keyHandler);
         this.setFocusable(true);
 
-        tiles.createMap("images/amogus.png");
+        tiles.createMap("images/amogus-2.png");
 
         background = ImageIO.read(getClass().getResourceAsStream("images/pooper3.5.png"));
         player = ImageIO.read(getClass().getResourceAsStream("images/pencil_mcgee.png"));
-        testTile = ImageIO.read(getClass().getResourceAsStream("images/smol_spunch.jpg"));
 
         addMouseListener(new MouseListener() { 
             public void mouseClicked(MouseEvent e) {} 
