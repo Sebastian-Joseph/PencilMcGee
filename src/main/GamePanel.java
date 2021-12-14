@@ -31,7 +31,7 @@ public class GamePanel extends JPanel implements Runnable {
     final int maxScreenRow = 27;
     final int screenWidth = tileSize * maxScreenCol;
     final int screenHeight = tileSize * maxScreenRow;
-    
+
     BufferedImage background;
     BufferedImage player;
 
@@ -43,7 +43,7 @@ public class GamePanel extends JPanel implements Runnable {
     KeyHandler keyHandler = new KeyHandler();
     Thread gameThread;
 
-    Player p1 = new Player(100, 100, tileSize / 2, tileSize * 2);
+    Player p1 = new Player(tileSize / 2, tileSize * 2);
 
 
     public GamePanel() throws IOException {
@@ -118,6 +118,17 @@ public class GamePanel extends JPanel implements Runnable {
         }
 
         p1.move(keyHandler, screenWidth, tiles);
+
+        if (p1.getLeadCount() <= 0) {
+            p1.reset();
+            for (int i = 0; i < tiles.getMap().length; i++) {
+                for (int j = 0; j < tiles.getMap()[i].length; j++) {
+                    System.out.println(Tile.totalScroll);
+                    tiles.getMap()[i][j].scroll(-1 * Tile.totalScroll, false);
+                }
+            }
+            Tile.totalScroll = 0;
+        }
     }
 
 
@@ -147,7 +158,9 @@ public class GamePanel extends JPanel implements Runnable {
                             || (tileBounds.contains(playerCurrentPosition1) && !tiles.checkTileToLeft(i, j) && !tiles.checkTileToLeft(i + 1, j) && !tiles.checkTileToLeft(i + 2, j))
                             || (tileBounds.contains(playerCurrentPosition2) && !tiles.checkTileToLeft(i, j) && !tiles.checkTileToLeft(i - 1, j) && !tiles.checkTileToLeft(i - 2, j))
                             ) {
-                            tiles.getMap()[i][j].change();
+                            if (tiles.getMap()[i][j].change()) {
+                                p1.reduceLeadCount(1);
+                            }
                         }
                     }
                 }
@@ -162,6 +175,7 @@ public class GamePanel extends JPanel implements Runnable {
             }
         }
         g2.drawImage(player, (int) p1.getXPos(), (int) p1.getYPos(), null);
+        g2.drawString(String.valueOf(p1.getLeadCount()), 50, 50);
 
         g2.dispose();
     }

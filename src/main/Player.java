@@ -1,22 +1,27 @@
 package main;
 
 public class Player {
-    public double xPos;
-    public double yPos;
-    public double xSpeed;
-    public double ySpeed;
-    public double dx;
-    public double dy;
+    private double xPos;
+    private double yPos;
+    private int xInit = 100;
+    private int yInit = 100;
 
-    public double xIncrement;
-    public double yIncrement;
+    private double xSpeed;
+    private double ySpeed;
+    private double dx;
+    private double dy;
+
+    private double xIncrement;
+    private double yIncrement;
     
-    public int width;
-    public int height;
+    private int width;
+    private int height;
 
-    public Player(int x, int y, int w, int h) {
-        xPos = x;
-        yPos = y;
+    private int leadCount;
+
+    public Player(int w, int h) {
+        xPos = xInit;
+        yPos = yInit;
         xSpeed = 6;
         ySpeed = 16;
         xIncrement = 0.9;
@@ -26,6 +31,8 @@ public class Player {
 
         width = w;
         height = h;
+
+        leadCount = 100;
     }
 
     public double getXPos() {
@@ -42,6 +49,14 @@ public class Player {
 
     public int getHeight() {
         return height;
+    }
+
+    public int getLeadCount() {
+        return leadCount;
+    }
+
+    public void reduceLeadCount(int r) {
+        leadCount -= r;
     }
 
     public void collision(Tile t, KeyHandler k, int xMax, int yMax, int offset) {
@@ -105,7 +120,8 @@ public class Player {
         if (k.rightPressed && xPos >= xMax / 2) {
             for (int i = 0; i < tm.getMap().length; i++) {
                 for (int j = 0; j < tm.getMap()[i].length; j++) {
-                    tm.getMap()[i][j].scroll(xSpeed);
+                    if (i == 0 && j == 0) tm.getMap()[i][j].scroll(xSpeed, true);
+                    else tm.getMap()[i][j].scroll(xSpeed, false);
                 }
             }
         }
@@ -114,4 +130,10 @@ public class Player {
         else xPos += dx;
         yPos += dy;
     }
+
+    public void reset() {
+		xPos = xInit;
+		yPos = yInit;
+        leadCount = 100;
+	}
 }
