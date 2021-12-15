@@ -42,8 +42,14 @@ public class GamePanel extends JPanel implements Runnable {
     private boolean enterDown = false;
 
 
-    int FPS = 60;
+    private int gameState;
+    private final int menuState = 0;
+    private final int playState = 1;
+    private final int pauseState = 2;
 
+    int FPS = 60;
+    Music music = new Music();
+    Menu menu = new Menu();
     KeyHandler keyHandler = new KeyHandler();
     Thread gameThread;
 
@@ -76,6 +82,7 @@ public class GamePanel extends JPanel implements Runnable {
         } 
         );
 
+
         addKeyListener(new KeyListener() { 
             public void keyTyped(KeyEvent ke) {} 
             public void keyPressed(KeyEvent ke) {
@@ -86,6 +93,19 @@ public class GamePanel extends JPanel implements Runnable {
             public void keyReleased(KeyEvent ke) {} 
         } 
         );
+
+        
+    }
+
+    public void playMusic(int i) {
+        music.setFile(i);
+        music.play();
+        music.loop();
+    }
+
+    public void setupGame()  {
+        gameState = menuState;
+        playMusic(3);
     }
 
 
@@ -102,7 +122,7 @@ public class GamePanel extends JPanel implements Runnable {
     public void run() {
         double drawInterval = 1000000000 / FPS;
         double nextDrawTime = System.nanoTime() + drawInterval;
-
+        setupGame();
         while (gameThread != null) {
             update();
             repaint();

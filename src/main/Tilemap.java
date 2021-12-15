@@ -71,6 +71,6 @@ public class Tilemap {
     //         for(int row = 0; row < numRows; row++) {
     //             g.drawImage(map[row][col].getImage(), col * tileSize, row * tileSize, null);
     //         }
-    //     }
+    //     }ed
     // }
 }
