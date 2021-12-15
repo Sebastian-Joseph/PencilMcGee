@@ -3,6 +3,10 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.xml.namespace.QName;
+import java.awt.geom.AffineTransform;
+import java.awt.image.*;
+
+
 
 import java.util.concurrent.TimeUnit;
 
@@ -14,6 +18,7 @@ public class Tile {
 	private int y;
 	private int initialx;
 	private int initialy;
+	private int size;
 
 	private BufferedImage stage1;
 	private BufferedImage stage2;
@@ -21,13 +26,17 @@ public class Tile {
 
 	private BufferedImage white;
 
-	public Tile(BufferedImage image, int type, int x, int y) throws IOException {
+	private BufferedImage scaledImage;
+
+	public Tile(BufferedImage image, int type, int x, int y, int s) throws IOException {
 		this.image = image;
 		this.type = type;
 		this.x = x;
 		this.y = y;
 		initialx = x;
 		initialy = y;
+		size = s;
+		scaledImage = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
 
 	}
 
@@ -70,11 +79,14 @@ public class Tile {
 		catch (IOException e1) {
 
 		}
+
+		final AffineTransform at = AffineTransform.getScaleInstance((double) size/32, (double) size/32);
+        final AffineTransformOp ato = new AffineTransformOp(at, AffineTransformOp.TYPE_BICUBIC);
 		
 
 		if (type == 0) {
 			new Thread(() -> {
-				image = stage1;
+				image = ato.filter(stage1, scaledImage);
 				type = 1;
 
 				try {
@@ -82,14 +94,14 @@ public class Tile {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				image = stage2;
+				image = ato.filter(stage2, scaledImage);
 
 				try {
 					TimeUnit.SECONDS.sleep(4);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				image = stage3;
+				image = ato.filter(stage3, scaledImage);
 
 				try {
 					TimeUnit.SECONDS.sleep(2);

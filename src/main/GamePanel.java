@@ -124,6 +124,7 @@ public class GamePanel extends JPanel implements Runnable {
         double nextDrawTime = System.nanoTime() + drawInterval;
         setupGame();
         while (gameThread != null) {
+            
             update();
             repaint();
 
@@ -153,7 +154,9 @@ public class GamePanel extends JPanel implements Runnable {
             }
         }
 
-        p1.move(keyHandler, screenWidth, tiles);
+        if(!enterDown){
+            p1.move(keyHandler, screenWidth, tiles);
+        }
     }
 
 

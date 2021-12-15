@@ -50,10 +50,10 @@ public class Tilemap {
 
                 Color c = new Color(subimage.getRGB(0, 0));
                 if (c.getRed() == 0) {
-                    map[row][col] = new Tile(scaledImage, 1, tileSize * col, tileSize * row);
+                    map[row][col] = new Tile(scaledImage, 1, tileSize * col, tileSize * row, tileSize);
                 }
                 else {
-                    map[row][col] = new Tile(scaledImage, 0, tileSize * col, tileSize * row);
+                    map[row][col] = new Tile(scaledImage, 0, tileSize * col, tileSize * row, tileSize);
                 }
                 if (c.getRed() == 255 && c.getGreen() == 255 && c.getBlue() == 255) {
                     map[row][col].newImage(smallpooper);
