@@ -120,8 +120,7 @@ public class Player {
         if (k.rightPressed && xPos >= xMax / 2) {
             for (int i = 0; i < tm.getMap().length; i++) {
                 for (int j = 0; j < tm.getMap()[i].length; j++) {
-                    if (i == 0 && j == 0) tm.getMap()[i][j].scroll(xSpeed, true);
-                    else tm.getMap()[i][j].scroll(xSpeed, false);
+                    tm.getMap()[i][j].scroll(xSpeed);
                 }
             }
         }

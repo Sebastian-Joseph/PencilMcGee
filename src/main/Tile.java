@@ -19,13 +19,17 @@ public class Tile {
 
 	private BufferedImage white;
 
-	public static int totalScroll;
+	private int xInit;
+	private int yInit;
 
 	public Tile(BufferedImage image, int type, int x, int y) throws IOException {
 		this.image = image;
 		this.type = type;
 		this.x = x;
 		this.y = y;
+
+		xInit = x;
+		yInit = y;
 
 		white = ImageIO.read(getClass().getResourceAsStream("images/small_pooper.png"));
 		stage1 = ImageIO.read(getClass().getResourceAsStream("images/graphite1.png"));
@@ -49,12 +53,16 @@ public class Tile {
 		return y;
 	}
 
-	public void scroll(double scrollAmount, boolean changeTotalScroll) {
+	public void scroll(double scrollAmount) {
 		x -= scrollAmount;
-		if (changeTotalScroll) totalScroll += scrollAmount;
 	}
 
-	public void newImage(String path) throws IOException{
+	public void reset() {
+		x = xInit;
+		y = yInit;
+	}
+
+	public void newImage(String path) throws IOException {
 		image = ImageIO.read(getClass().getResourceAsStream(path));
 	}
 

@@ -123,11 +123,9 @@ public class GamePanel extends JPanel implements Runnable {
             p1.reset();
             for (int i = 0; i < tiles.getMap().length; i++) {
                 for (int j = 0; j < tiles.getMap()[i].length; j++) {
-                    System.out.println(Tile.totalScroll);
-                    tiles.getMap()[i][j].scroll(-1 * Tile.totalScroll, false);
+                    tiles.getMap()[i][j].reset();
                 }
             }
-            Tile.totalScroll = 0;
         }
     }
 
