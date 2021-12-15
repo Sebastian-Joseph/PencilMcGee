@@ -21,6 +21,12 @@ public class Player {
         ySpeed = 16;
         xIncrement = 0.9;
         yIncrement = 0.6;
+        int size = w * 2;
+        int scale = size / 8;
+        xIncrement = xIncrement * scale / 4;
+        yIncrement = yIncrement * scale / 4;
+        xSpeed = xSpeed * scale / 4;
+        ySpeed = ySpeed * scale / 4;
         dx = 0;
         dy = 0;
 

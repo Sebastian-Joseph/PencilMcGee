@@ -70,15 +70,7 @@ public class Tile {
 	}
 
 	public void change() {
-		try {
-			white = ImageIO.read(getClass().getResourceAsStream("images/small_pooper.png"));
-			stage1 = ImageIO.read(getClass().getResourceAsStream("images/graphite1.png"));
-			stage2 = ImageIO.read(getClass().getResourceAsStream("images/graphite2.png"));
-			stage3 = ImageIO.read(getClass().getResourceAsStream("images/graphite3.png"));
-		} 
-		catch (IOException e1) {
-
-		}
+		
 
 		final AffineTransform at = AffineTransform.getScaleInstance((double) size/32, (double) size/32);
         final AffineTransformOp ato = new AffineTransformOp(at, AffineTransformOp.TYPE_BICUBIC);
@@ -86,6 +78,15 @@ public class Tile {
 
 		if (type == 0) {
 			new Thread(() -> {
+				try {
+					white = ImageIO.read(getClass().getResourceAsStream("images/small_pooper.png"));
+					stage1 = ImageIO.read(getClass().getResourceAsStream("images/graphite1.png"));
+					stage2 = ImageIO.read(getClass().getResourceAsStream("images/graphite2.png"));
+					stage3 = ImageIO.read(getClass().getResourceAsStream("images/graphite3.png"));
+				} 
+				catch (IOException e1) {
+		
+				}
 				image = ato.filter(stage1, scaledImage);
 				type = 1;
 
