@@ -63,7 +63,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.addKeyListener(keyHandler);
         this.setFocusable(true);
 
-        tiles.createMap("images/amogus.png");
+        tiles.createMap("images/amogus_game.png");
 
         background = ImageIO.read(getClass().getResourceAsStream("images/pooper3.5.png"));
         player = ImageIO.read(getClass().getResourceAsStream("images/pencil_mcgee.png"));
@@ -164,62 +164,85 @@ public class GamePanel extends JPanel implements Runnable {
 
         g2.setColor(Color.black);
 
+        if (gameState == menuState) {
+            try {
+                menu.render(g);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if(mouseDown == true) {
+                Point point = MouseInfo.getPointerInfo().getLocation();
+                SwingUtilities.convertPointFromScreen(point, this);
+                if (menu.playButton.contains(point)) {
+                    gameState = playState;
+                    music.stop();
+                    playMusic(0);
+                }
+            }
+            if(mouseDown == true) {
+                Point point = MouseInfo.getPointerInfo().getLocation();
+                SwingUtilities.convertPointFromScreen(point, this);
+                if (menu.quitButton.contains(point)) {
+                    System.exit(0);
+                }
+            }
+        }
 
+        else {
+            if (mouseDown == true) {
+                Point point = MouseInfo.getPointerInfo().getLocation();
+                SwingUtilities.convertPointFromScreen(point, this);
 
-        if (mouseDown == true) {
-            Point point = MouseInfo.getPointerInfo().getLocation();
-            SwingUtilities.convertPointFromScreen(point, this);
+                for (int i = 0; i < tiles.getMap().length; i++) {
+                    for (int j = 0; j < tiles.getMap()[i].length; j++) {
+                        Rectangle tileBounds = new Rectangle(tiles.getMap()[i][j].getX(), tiles.getMap()[i][j].getY(), tileSize, tileSize);
+
+                        if (tileBounds.contains(point)) {
+                            Point playerCurrentPosition1 = new Point((int) p1.getXPos(), (int) p1.getYPos());
+                            Point playerCurrentPosition2 = new Point((int) p1.getXPos() + p1.getWidth(), (int) p1.getYPos() + p1.getHeight() - 1);
+                            Point playerCurrentPosition3 = new Point((int) p1.getXPos() + (p1.getWidth() / 2), (int) p1.getYPos() + (p1.getHeight() / 2));
+
+                            if (
+                                    (!tileBounds.contains(playerCurrentPosition1) && !tileBounds.contains(playerCurrentPosition2) && !tileBounds.contains(playerCurrentPosition3))
+                                            || (tileBounds.contains(playerCurrentPosition3) && !tiles.checkTileToLeft(i, j) && !tiles.checkTileToLeft(i + 1, j) && !tiles.checkTileToLeft(i + 2, j) && !tiles.checkTileToLeft(i - 1, j) && !tiles.checkTileToLeft(i - 2, j))
+                                            || (tileBounds.contains(playerCurrentPosition1) && !tiles.checkTileToLeft(i, j) && !tiles.checkTileToLeft(i + 1, j) && !tiles.checkTileToLeft(i + 2, j))
+                                            || (tileBounds.contains(playerCurrentPosition2) && !tiles.checkTileToLeft(i, j) && !tiles.checkTileToLeft(i - 1, j) && !tiles.checkTileToLeft(i - 2, j))
+                            ) {
+                                tiles.getMap()[i][j].change();
+                            }
+                        }
+                    }
+                }
+            }
 
             for (int i = 0; i < tiles.getMap().length; i++) {
                 for (int j = 0; j < tiles.getMap()[i].length; j++) {
-                    Rectangle tileBounds = new Rectangle(tiles.getMap()[i][j].getX(), tiles.getMap()[i][j].getY(), tileSize, tileSize);
+                    g2.drawImage(tiles.getMap()[i][j].getImage(), tiles.getMap()[i][j].getX(), tiles.getMap()[i][j].getY(), null);
+                }
+            }
 
-                    if (tileBounds.contains(point)) {
-                        Point playerCurrentPosition1 = new Point((int) p1.getXPos(), (int) p1.getYPos());
-                        Point playerCurrentPosition2 = new Point((int) p1.getXPos() + p1.getWidth(), (int) p1.getYPos() + p1.getHeight() - 1);
-                        Point playerCurrentPosition3 = new Point((int) p1.getXPos() + (p1.getWidth() / 2), (int) p1.getYPos() + (p1.getHeight() / 2));
+            g2.drawImage(player, (int) p1.getXPos(), (int) p1.getYPos(), scale * 4, scale * 16, null);
 
-                        if (
-                            (!tileBounds.contains(playerCurrentPosition1) && !tileBounds.contains(playerCurrentPosition2) && !tileBounds.contains(playerCurrentPosition3))
-                            || (tileBounds.contains(playerCurrentPosition3) && !tiles.checkTileToLeft(i, j) && !tiles.checkTileToLeft(i + 1, j) && !tiles.checkTileToLeft(i + 2, j) && !tiles.checkTileToLeft(i - 1, j) && !tiles.checkTileToLeft(i - 2, j))
-                            || (tileBounds.contains(playerCurrentPosition1) && !tiles.checkTileToLeft(i, j) && !tiles.checkTileToLeft(i + 1, j) && !tiles.checkTileToLeft(i + 2, j))
-                            || (tileBounds.contains(playerCurrentPosition2) && !tiles.checkTileToLeft(i, j) && !tiles.checkTileToLeft(i - 1, j) && !tiles.checkTileToLeft(i - 2, j))
-                            ) {
-                            tiles.getMap()[i][j].change();
+            if(enterDown == true){
+                g2.drawImage(testTile, 500, 250, tileSize*2, tileSize*2, null);
+                if(mouseDown == true){
+                    Point point = MouseInfo.getPointerInfo().getLocation();
+                    SwingUtilities.convertPointFromScreen(point, this);
+                    Rectangle resetBounds = new Rectangle(500, 250, tileSize*2, tileSize*2);
+                    if(resetBounds.contains(point)){
+                        enterDown = false;
+                        System.out.println("pressed");
+                        p1.reset();
+                        for (int i = 0; i < tiles.getMap().length; i++) {
+                            for (int j = 0; j < tiles.getMap()[i].length; j++) {
+                                tiles.getMap()[i][j].reset();
+                            }
                         }
                     }
                 }
             }
+
+            g2.dispose();
         }
-
-        // g2.drawImage(background, 0, 0, null);
-
-        for (int i = 0; i < tiles.getMap().length; i++) {
-            for (int j = 0; j < tiles.getMap()[i].length; j++) {
-                g2.drawImage(tiles.getMap()[i][j].getImage(), tiles.getMap()[i][j].getX(), tiles.getMap()[i][j].getY(), null);
-            }
-        }
-        g2.drawImage(player, (int) p1.getXPos(), (int) p1.getYPos(), scale * 4, scale * 16, null);
-
-        if(enterDown == true){
-            g2.drawImage(testTile, 500, 250, tileSize*2, tileSize*2, null);
-            if(mouseDown == true){
-                Point point = MouseInfo.getPointerInfo().getLocation();
-                SwingUtilities.convertPointFromScreen(point, this);
-                Rectangle resetBounds = new Rectangle(500, 250, tileSize*2, tileSize*2);
-                if(resetBounds.contains(point)){
-                    enterDown = false;
-                    System.out.println("pressed");
-                    p1.reset();
-                    for (int i = 0; i < tiles.getMap().length; i++) {
-                        for (int j = 0; j < tiles.getMap()[i].length; j++) {
-                            tiles.getMap()[i][j].reset();
-                        }
-                    }
-                }
-            }
-        }
-
-        g2.dispose();
     }
 }

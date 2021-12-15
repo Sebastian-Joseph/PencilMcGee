@@ -29,10 +29,6 @@ public class Tile {
 		initialx = x;
 		initialy = y;
 
-		white = ImageIO.read(getClass().getResourceAsStream("images/small_pooper.png"));
-		stage1 = ImageIO.read(getClass().getResourceAsStream("images/graphite1.png"));
-		stage2 = ImageIO.read(getClass().getResourceAsStream("images/graphite2.png"));
-		stage3 = ImageIO.read(getClass().getResourceAsStream("images/graphite3.png"));
 	}
 
 	public BufferedImage getImage() {
@@ -60,11 +56,22 @@ public class Tile {
 		y = initialy;
 	}
 
-	public void newImage(String path) throws IOException{
-		image = ImageIO.read(getClass().getResourceAsStream(path));
+	public void newImage(BufferedImage newimage) throws IOException{
+		image = newimage;
 	}
 
 	public void change() {
+		try {
+			white = ImageIO.read(getClass().getResourceAsStream("images/small_pooper.png"));
+			stage1 = ImageIO.read(getClass().getResourceAsStream("images/graphite1.png"));
+			stage2 = ImageIO.read(getClass().getResourceAsStream("images/graphite2.png"));
+			stage3 = ImageIO.read(getClass().getResourceAsStream("images/graphite3.png"));
+		} 
+		catch (IOException e1) {
+
+		}
+		
+
 		if (type == 0) {
 			new Thread(() -> {
 				image = stage1;
