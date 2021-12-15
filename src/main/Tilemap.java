@@ -52,6 +52,9 @@ public class Tilemap {
                 if (c.getRed() == 0) {
                     map[row][col] = new Tile(scaledImage, 1, tileSize * col, tileSize * row, tileSize);
                 }
+                else if (c.getRed() == 237 && c.getGreen() == 28 && c.getBlue() == 36) {
+                    map[row][col] = new Tile(scaledImage, 2, tileSize * col, tileSize * row, tileSize);
+                }
                 else {
                     map[row][col] = new Tile(scaledImage, 0, tileSize * col, tileSize * row, tileSize);
                 }
