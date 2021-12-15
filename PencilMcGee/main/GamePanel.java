@@ -17,6 +17,7 @@ import javax.imageio.ImageIO;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.MouseInfo;
+import java.awt.*;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -37,6 +38,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     private Tilemap tiles = new Tilemap(screenWidth, screenHeight, tileSize);
     private boolean mouseDown = false;
+    private boolean enterDown = false;
 
     private int gameState;
     private final int menuState = 0;
@@ -48,13 +50,10 @@ public class GamePanel extends JPanel implements Runnable {
     Menu menu = new Menu();
     KeyHandler keyHandler = new KeyHandler();
     Thread gameThread;
-    Player p1 = new Player(tileSize / 2, tileSize * 2, tileSize / 2, tileSize * 2);
+    Player p1 = new Player(tileSize / 2, tileSize * 2);
 
+    public Rectangle continueButton = new Rectangle(GamePanel.HEIGHT, GamePanel.HEIGHT, 90, 50);
 
-   /* private enum STATE {
-        MENU,
-        GAME
-    } */
 
 
 
@@ -65,7 +64,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.addKeyListener(keyHandler);
         this.setFocusable(true);
 
-        tiles.createMap("images/amogus2.png");
+        tiles.createMap("images/amogus_game_but_mcgee_died.png");
 
         background = ImageIO.read(getClass().getResourceAsStream("images/pooper3.5.png"));
         player = ImageIO.read(getClass().getResourceAsStream("images/pencil_mcgee.png"));
@@ -109,6 +108,7 @@ public class GamePanel extends JPanel implements Runnable {
         double nextDrawTime = System.nanoTime() + drawInterval;
         setupGame();
         while (gameThread != null) {
+
             update();
             repaint();
 
@@ -138,9 +138,19 @@ public class GamePanel extends JPanel implements Runnable {
             }
         }
 
-        p1.move(keyHandler, screenWidth, tiles);
-
-
+        if(!enterDown) {
+            p1.move(keyHandler, screenWidth, tiles);
+        }
+        if (p1.getLeadCount() <= 0) {
+            p1.reset();
+            for (int i = 0; i < tiles.getMap().length; i++) {
+                for (int j = 0; j < tiles.getMap()[i].length; j++) {
+                    System.out.println(Tile.totalScroll);
+                    tiles.getMap()[i][j].scroll(-1 * Tile.totalScroll, false);
+                }
+            }
+            Tile.totalScroll = 0;
+        }
     }
 
     public void paintComponent(Graphics g) {
@@ -195,6 +205,9 @@ public class GamePanel extends JPanel implements Runnable {
                                             || (tileBounds.contains(playerCurrentPosition2) && !tiles.checkTileToLeft(i, j) && !tiles.checkTileToLeft(i - 1, j) && !tiles.checkTileToLeft(i - 2, j))
                             ) {
                                 tiles.getMap()[i][j].change();
+                                if (tiles.getMap()[i][j].change()) {
+                                    p1.reduceLeadCount(1);
+                                }
                             }
                         }
                     }
@@ -207,17 +220,35 @@ public class GamePanel extends JPanel implements Runnable {
                 }
             }
 
-            g2.drawImage(player, (int) p1.getXPos(), (int) p1.getYPos(), null);
+            g2.drawImage(player, (int) p1.getXPos(), (int) p1.getYPos(), scale * 4, scale * 16, null);
 
+            if(enterDown == true){
+                g2.drawImage(testTile, 500, 250, tileSize*2, tileSize*2, null);
+                if(mouseDown == true){
+                    Point point = MouseInfo.getPointerInfo().getLocation();
+                    SwingUtilities.convertPointFromScreen(point, this);
+                    Rectangle resetBounds = new Rectangle(500, 250, tileSize*2, tileSize*2);
+                    if(resetBounds.contains(point)){
+                        enterDown = false;
+                        System.out.println("pressed");
+                        p1.reset();
+                        for (int i = 0; i < tiles.getMap().length; i++) {
+                            for (int j = 0; j < tiles.getMap()[i].length; j++) {
+                                tiles.getMap()[i][j].reset();
+                            }
+                        }
+                    }
+                }
+            }
+            g2.drawImage(player, (int) p1.getXPos(), (int) p1.getYPos(), null);
+            g2.drawString(String.valueOf(p1.getLeadCount()), 50, 50);
             g2.dispose();
 
-
+            if(gameState == playState) {
+                if(keyHandler.enterPressed = true) {
+                    gameState = pauseState;
+                }
+            }
         }
-        }
-
-        // g2.drawImage(background, 0, 0, null);
-
-
-
-
+    }
 }

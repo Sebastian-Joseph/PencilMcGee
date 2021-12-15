@@ -12,6 +12,8 @@ public class Menu {
     public Rectangle quitButton = new Rectangle(GamePanel.WIDTH + 700, 350, 100, 50);
 
 
+
+
     public void render(Graphics g) throws IOException {
 
         Graphics2D g2d = (Graphics2D) g;
@@ -19,6 +21,7 @@ public class Menu {
         background = ImageIO.read(getClass().getResourceAsStream("images/pooper3.5.png"));
         g.drawImage(background, 0, 0, null);
         Font font = new Font("arial", Font.BOLD, 50);
+
         g.setFont(font);
         g.setColor(Color.black);
         g.drawString("Pencil McGee", GamePanel.WIDTH + 600, 100);
@@ -30,6 +33,8 @@ public class Menu {
         g2d.draw(playButton);
         g.drawString("Exit", quitButton.x + 19, quitButton.y + 30);
         g2d.draw(quitButton);
+
+
     }
 
 
