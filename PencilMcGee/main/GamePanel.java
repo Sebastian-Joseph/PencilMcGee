@@ -52,9 +52,8 @@ public class GamePanel extends JPanel implements Runnable {
     Thread gameThread;
     Player p1 = new Player(tileSize / 2, tileSize * 2);
 
-    public Rectangle continueButton = new Rectangle(GamePanel.HEIGHT, GamePanel.HEIGHT, 90, 50);
-
-
+    public Rectangle pauseButton = new Rectangle(GamePanel.HEIGHT, GamePanel.HEIGHT, 90, 50);
+    public EventHandler eHandler = new EventHandler();
 
 
     public GamePanel() throws IOException {
@@ -64,7 +63,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.addKeyListener(keyHandler);
         this.setFocusable(true);
 
-        tiles.createMap("images/amogus_game_but_mcgee_died.png");
+        tiles.createMap("images/amogus.png");
 
         background = ImageIO.read(getClass().getResourceAsStream("images/pooper3.5.png"));
         player = ImageIO.read(getClass().getResourceAsStream("images/pencil_mcgee.png"));
@@ -145,11 +144,10 @@ public class GamePanel extends JPanel implements Runnable {
             p1.reset();
             for (int i = 0; i < tiles.getMap().length; i++) {
                 for (int j = 0; j < tiles.getMap()[i].length; j++) {
-                    System.out.println(Tile.totalScroll);
-                    tiles.getMap()[i][j].scroll(-1 * Tile.totalScroll, false);
+                   tiles.getMap()[i][j].reset();
                 }
             }
-            Tile.totalScroll = 0;
+
         }
     }
 
@@ -173,7 +171,14 @@ public class GamePanel extends JPanel implements Runnable {
                     gameState = playState;
                     music.stop();
                     playMusic(0);
+
                 }
+            }
+            if (gameState == playState) {
+                Font fent = new Font("arial", Font.BOLD, 20);
+                g.setFont(fent);
+                g.drawString("Pause", pauseButton.x - 20, pauseButton.y - 20);
+                g2.draw(pauseButton);
             }
             if(mouseDown == true) {
                 Point point = MouseInfo.getPointerInfo().getLocation();
@@ -244,11 +249,11 @@ public class GamePanel extends JPanel implements Runnable {
             g2.drawString(String.valueOf(p1.getLeadCount()), 50, 50);
             g2.dispose();
 
-            if(gameState == playState) {
+          /*   if(gameState == playState) {
                 if(keyHandler.enterPressed = true) {
                     gameState = pauseState;
                 }
+                } */
             }
         }
     }
-}

@@ -95,6 +95,13 @@ public class Player {
         }
     }
 
+    public void playMusic(int i) {
+        music.setFile(i);
+        music.play();
+
+
+    }
+
     public void move(KeyHandler k, int xMax, Tilemap tm) {
         if (k.leftPressed) {
             dx = (dx > -1 * xSpeed) ? dx - xIncrement : -1 * xSpeed;
@@ -112,6 +119,7 @@ public class Player {
             dy = (dy == 0)
                     ? -1 * ySpeed + yIncrement
                     : (dy < ySpeed) ? dy + yIncrement : ySpeed;
+                    //playMusic(3);
         }
         else {
             dy = (dy == 0)
@@ -122,10 +130,7 @@ public class Player {
         if (k.rightPressed && xPos >= xMax / 2) {
             for (int i = 0; i < tm.getMap().length; i++) {
                 for (int j = 0; j < tm.getMap()[i].length; j++) {
-                    if (i == 0 && j == 0) {
-                        tm.getMap()[i][j].scroll(xSpeed, true);
-                    }
-                    else tm.getMap()[i][j].scroll(xSpeed, false);
+                   tm.getMap()[i][j].scroll(xSpeed);
                 }
             }
         }
