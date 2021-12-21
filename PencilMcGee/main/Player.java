@@ -18,6 +18,7 @@ public class Player {
     private int height;
 
     private int leadCount;
+    private int pointCount;
 
     Music music = new Music();
 
@@ -35,6 +36,7 @@ public class Player {
         height = h;
 
         leadCount = 100;
+        pointCount = 0;
     }
 
     public double getXPos() {
@@ -57,6 +59,13 @@ public class Player {
         return leadCount;
     }
 
+    public int getPointCount() {
+        return pointCount;
+    }
+
+    public void addPointCount(int h) {
+        pointCount += h;
+    }
     public void reduceLeadCount(int r) {
         leadCount -= r;
     }
@@ -79,6 +88,7 @@ public class Player {
             k.upPressed = false;
             dy = 0;
         }
+        else if (t.getType() == 2)
 
         if (xPos >= xMax - width) {
             dx = 0;
@@ -144,5 +154,6 @@ public class Player {
         xPos = xInit;
         yPos = yInit;
         leadCount = 100;
+        pointCount = 0;
     }
 }

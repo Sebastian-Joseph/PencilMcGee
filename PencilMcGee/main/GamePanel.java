@@ -53,7 +53,6 @@ public class GamePanel extends JPanel implements Runnable {
     Player p1 = new Player(tileSize / 2, tileSize * 2);
 
     public Rectangle pauseButton = new Rectangle(GamePanel.HEIGHT, GamePanel.HEIGHT, 90, 50);
-    public EventHandler eHandler = new EventHandler();
 
 
     public GamePanel() throws IOException {
@@ -213,6 +212,9 @@ public class GamePanel extends JPanel implements Runnable {
                                 if (tiles.getMap()[i][j].change()) {
                                     p1.reduceLeadCount(1);
                                 }
+                               if (p1.) {
+                                    p1.addPointCount(1);
+                                }
                             }
                         }
                     }
@@ -247,13 +249,10 @@ public class GamePanel extends JPanel implements Runnable {
             }
             g2.drawImage(player, (int) p1.getXPos(), (int) p1.getYPos(), null);
             g2.drawString(String.valueOf(p1.getLeadCount()), 50, 50);
+            g2.drawString(String.valueOf(p1.getPointCount()), 1500, 50);
             g2.dispose();
 
-          /*   if(gameState == playState) {
-                if(keyHandler.enterPressed = true) {
-                    gameState = pauseState;
-                }
-                } */
+
             }
         }
     }
