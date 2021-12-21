@@ -60,7 +60,7 @@ public class Tile {
 		x -= scrollAmount;
 	}
 
-	public void reset(){
+	public void reset() {
 		x = initialx;
 		y = initialy;
 	}

@@ -49,10 +49,10 @@ public class Tilemap {
                 scaledImage = ato.filter(subimage, scaledImage);
 
                 Color c = new Color(subimage.getRGB(0, 0));
-                if (c.getRed() == 0) {
+                if (c.getRed() == 0 && c.getGreen() == 0 && c.getBlue() == 0 ) {
                     map[row][col] = new Tile(scaledImage, 1, tileSize * col, tileSize * row, tileSize);
                 }
-                else if (c.getRed() == 237 && c.getGreen() == 28 && c.getBlue() == 36) {
+                else if (c.getRed() == 247 && c.getGreen() == 247 && c.getBlue() == 247) {
                     map[row][col] = new Tile(scaledImage, 2, tileSize * col, tileSize * row, tileSize);
                 }
                 else {
@@ -75,13 +75,4 @@ public class Tilemap {
             return false;
         }
     }
-
-    // public void draw(Graphics2D g){
-    //     System.out.println(map[0][0].getImage());
-    //     for(int col = 0; col < numColumns; col++) {
-    //         for(int row = 0; row < numRows; row++) {
-    //             g.drawImage(map[row][col].getImage(), col * tileSize, row * tileSize, null);
-    //         }
-    //     }ed
-    // }
 }

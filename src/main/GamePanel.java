@@ -26,7 +26,7 @@ import java.awt.event.KeyListener;
 public class GamePanel extends JPanel implements Runnable {
     // Screen Settings
     final int originalTileSize = 8;
-    final int scale = 3;
+    final int scale = 4;
 
     final int tileSize = originalTileSize * scale;
     final int maxScreenCol = 48;
@@ -39,7 +39,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     private Tilemap tiles = new Tilemap(screenWidth, screenHeight, tileSize);
     private boolean mouseDown = false;
-    private boolean enterDown = false;
+    // private boolean enterDown = false;
 
 
     private int gameState;
@@ -48,7 +48,7 @@ public class GamePanel extends JPanel implements Runnable {
     private final int pauseState = 2;
 
     int FPS = 60;
-    Music music = new Music();
+    GameMusic music = new GameMusic();
     Menu menu = new Menu();
     KeyHandler keyHandler = new KeyHandler();
     Thread gameThread;
@@ -63,7 +63,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.addKeyListener(keyHandler);
         this.setFocusable(true);
 
-        tiles.createMap("images/amogus_game.png");
+        tiles.createMap("images/actual_level.png");
 
         background = ImageIO.read(getClass().getResourceAsStream("images/pooper3.5.png"));
         player = ImageIO.read(getClass().getResourceAsStream("images/pencil_mcgee.png"));
@@ -83,16 +83,16 @@ public class GamePanel extends JPanel implements Runnable {
         );
 
 
-        addKeyListener(new KeyListener() { 
-            public void keyTyped(KeyEvent ke) {} 
-            public void keyPressed(KeyEvent ke) {
-                if(ke.getKeyCode() == KeyEvent.VK_ENTER){
-                    enterDown = !enterDown;
-                }
-            } 
-            public void keyReleased(KeyEvent ke) {} 
-        } 
-        );
+        // addKeyListener(new KeyListener() { 
+        //     public void keyTyped(KeyEvent ke) {} 
+        //     public void keyPressed(KeyEvent ke) {
+        //         if (ke.getKeyCode() == KeyEvent.VK_ENTER){
+        //             enterDown = !enterDown;
+        //         }
+        //     } 
+        //     public void keyReleased(KeyEvent ke) {} 
+        // } 
+        // );
 
         
     }
@@ -103,7 +103,7 @@ public class GamePanel extends JPanel implements Runnable {
         music.loop();
     }
 
-    public void setupGame()  {
+    public void setupGame() {
         gameState = menuState;
         playMusic(3);
     }
@@ -154,7 +154,7 @@ public class GamePanel extends JPanel implements Runnable {
             }
         }
 
-        if(!enterDown){
+        if(!keyHandler.enterDown){
             p1.move(keyHandler, screenWidth, tiles);
         }
     }
@@ -173,7 +173,7 @@ public class GamePanel extends JPanel implements Runnable {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            if(mouseDown == true) {
+            if (mouseDown == true) {
                 Point point = MouseInfo.getPointerInfo().getLocation();
                 SwingUtilities.convertPointFromScreen(point, this);
                 if (menu.playButton.contains(point)) {
@@ -182,7 +182,7 @@ public class GamePanel extends JPanel implements Runnable {
                     playMusic(0);
                 }
             }
-            if(mouseDown == true) {
+            if (mouseDown == true) {
                 Point point = MouseInfo.getPointerInfo().getLocation();
                 SwingUtilities.convertPointFromScreen(point, this);
                 if (menu.quitButton.contains(point)) {
@@ -226,15 +226,14 @@ public class GamePanel extends JPanel implements Runnable {
 
             g2.drawImage(player, (int) p1.getXPos(), (int) p1.getYPos(), scale * 4, scale * 16, null);
 
-            if(enterDown == true){
+            if (keyHandler.enterDown == true) {
                 g2.drawImage(testTile, 500, 250, tileSize*2, tileSize*2, null);
-                if(mouseDown == true){
+                if (mouseDown == true) {
                     Point point = MouseInfo.getPointerInfo().getLocation();
                     SwingUtilities.convertPointFromScreen(point, this);
                     Rectangle resetBounds = new Rectangle(500, 250, tileSize*2, tileSize*2);
-                    if(resetBounds.contains(point)){
-                        enterDown = false;
-                        System.out.println("pressed");
+                    if (resetBounds.contains(point)) {
+                        keyHandler.enterDown = false;
                         p1.reset();
                         for (int i = 0; i < tiles.getMap().length; i++) {
                             for (int j = 0; j < tiles.getMap()[i].length; j++) {
