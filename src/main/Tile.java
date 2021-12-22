@@ -65,11 +65,11 @@ public class Tile {
 		y = initialy;
 	}
 
-	public void newImage(BufferedImage newimage) throws IOException{
+	public void newImage(BufferedImage newimage) throws IOException {
 		image = newimage;
 	}
 
-	public void change() {
+	public boolean change() {
 		
 
 		final AffineTransform at = AffineTransform.getScaleInstance((double) size/32, (double) size/32);
@@ -84,9 +84,7 @@ public class Tile {
 					stage2 = ImageIO.read(getClass().getResourceAsStream("images/graphite2.png"));
 					stage3 = ImageIO.read(getClass().getResourceAsStream("images/graphite3.png"));
 				} 
-				catch (IOException e1) {
-		
-				}
+				catch (IOException e1) {}
 				image = ato.filter(stage1, scaledImage);
 				type = 1;
 
@@ -112,8 +110,12 @@ public class Tile {
 				image = white;
 				type = 0;
 
-
+				
 			}).start();
+
+			return true;
 		}
+		
+		return false;
 	}
 }

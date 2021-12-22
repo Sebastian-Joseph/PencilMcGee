@@ -14,6 +14,7 @@ import java.lang.Exception;
 
 import javax.imageio.ImageIO;
 
+import java.awt.Font;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.MouseInfo;
@@ -154,7 +155,16 @@ public class GamePanel extends JPanel implements Runnable {
             }
         }
 
-        if(!keyHandler.enterDown){
+        if (p1.getLeadCount() <= 0) {
+            p1.reset();
+            for (int i = 0; i < tiles.getMap().length; i++) {
+                for (int j = 0; j < tiles.getMap()[i].length; j++) {
+                    tiles.getMap()[i][j].reset();
+                }
+            }
+        }
+
+        if (!keyHandler.enterDown) {
             p1.move(keyHandler, screenWidth, tiles);
         }
     }
@@ -211,7 +221,9 @@ public class GamePanel extends JPanel implements Runnable {
                                             || (tileBounds.contains(playerCurrentPosition1) && !tiles.checkTileToLeft(i, j) && !tiles.checkTileToLeft(i + 1, j) && !tiles.checkTileToLeft(i + 2, j))
                                             || (tileBounds.contains(playerCurrentPosition2) && !tiles.checkTileToLeft(i, j) && !tiles.checkTileToLeft(i - 1, j) && !tiles.checkTileToLeft(i - 2, j))
                             ) {
-                                tiles.getMap()[i][j].change();
+                                if (tiles.getMap()[i][j].change()) {
+                                    p1.reduceLeadCount(1);
+                                }
                             }
                         }
                     }
@@ -226,12 +238,22 @@ public class GamePanel extends JPanel implements Runnable {
 
             g2.drawImage(player, (int) p1.getXPos(), (int) p1.getYPos(), scale * 4, scale * 16, null);
 
+            Font font = new Font("Ink Free", Font.BOLD, tileSize);
+            g.setFont(font);
+            g2.setColor(Color.white);
+            g2.drawString(String.valueOf(p1.getLeadCount()), tileSize * 2, tileSize * 2);
+
+            g2.setColor(Color.black);
+            Font font2 = new Font("Ink Free", Font.PLAIN, tileSize);
+            g.setFont(font2);
+            g2.drawString(String.valueOf(p1.getLeadCount()), tileSize * 2, tileSize * 2);
+
             if (keyHandler.enterDown == true) {
-                g2.drawImage(testTile, 500, 250, tileSize*2, tileSize*2, null);
+                g2.drawImage(testTile, screenWidth / 2 - tileSize, screenHeight / 2 - tileSize, tileSize * 2, tileSize * 2, null);
                 if (mouseDown == true) {
                     Point point = MouseInfo.getPointerInfo().getLocation();
                     SwingUtilities.convertPointFromScreen(point, this);
-                    Rectangle resetBounds = new Rectangle(500, 250, tileSize*2, tileSize*2);
+                    Rectangle resetBounds = new Rectangle(screenWidth / 2 - tileSize, screenHeight / 2 - tileSize, tileSize * 2, tileSize * 2);
                     if (resetBounds.contains(point)) {
                         keyHandler.enterDown = false;
                         p1.reset();

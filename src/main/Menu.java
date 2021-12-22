@@ -18,13 +18,13 @@ public class Menu {
         BufferedImage background;
         background = ImageIO.read(getClass().getResourceAsStream("images/pooper3.5.png"));
         g.drawImage(background, 0, 0, null);
-        Font font = new Font("arial", Font.BOLD, 50);
+        Font font = new Font("Ink Free", Font.BOLD, 50);
         g.setFont(font);
         g.setColor(Color.black);
         g.drawString("Pencil McGee", GamePanel.WIDTH + 600, 100);
 
 
-        Font font1 = new Font("arial", Font.BOLD, 30);
+        Font font1 = new Font("Ink Free", Font.BOLD, 30);
         g.setFont(font1);
         g.drawString("Play", playButton.x + 19, playButton.y + 30);
         g2d.draw(playButton);

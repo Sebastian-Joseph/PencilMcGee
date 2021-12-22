@@ -14,6 +14,8 @@ public class Player {
     public int width;
     public int height;
 
+    private int leadCount;
+
     public Player(int x, int y, int w, int h) {
         xPos = x;
         yPos = y;
@@ -32,6 +34,8 @@ public class Player {
 
         width = w;
         height = h;
+
+        leadCount = 200;
     }
 
     public double getXPos() {
@@ -48,6 +52,10 @@ public class Player {
 
     public int getHeight() {
         return height;
+    }
+
+    public int getLeadCount() {
+        return leadCount;
     }
 
     public void collision(Tile t, KeyHandler k, int xMax, int yMax, int offset) {
@@ -84,9 +92,14 @@ public class Player {
         }
     }
 
-    public void reset(){
+    public void reset() {
         xPos = 100;
         yPos = 100;
+        leadCount = 200;
+    }
+
+    public void reduceLeadCount(int r) {
+        leadCount -= r;
     }
 
     public void move(KeyHandler k, int xMax, Tilemap tm) {
