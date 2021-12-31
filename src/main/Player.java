@@ -35,7 +35,7 @@ public class Player {
         width = w;
         height = h;
 
-        leadCount = 200;
+        leadCount = 300;
     }
 
     public double getXPos() {
@@ -95,7 +95,7 @@ public class Player {
     public void reset() {
         xPos = 100;
         yPos = 100;
-        leadCount = 200;
+        leadCount = 300;
     }
 
     public void reduceLeadCount(int r) {

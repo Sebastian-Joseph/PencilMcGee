@@ -54,7 +54,7 @@ public class GamePanel extends JPanel implements Runnable {
     KeyHandler keyHandler = new KeyHandler();
     Thread gameThread;
 
-    Player p1 = new Player(100, 100, tileSize / 2, tileSize * 2);
+    Player p1 = new Player(tileSize * 2, screenHeight - tileSize * 8, tileSize / 2, tileSize * 2);
 
 
     public GamePanel() throws IOException {
