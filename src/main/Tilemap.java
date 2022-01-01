@@ -82,7 +82,7 @@ public class Tilemap {
 
     public boolean checkTileToLeft(int row, int col) {
         try {
-            return (map[row][col - 1].getType() == 1);
+            return (map[row][col - 1].getType() % 2 == 1);
         }
         catch (ArrayIndexOutOfBoundsException e) {
             return false;

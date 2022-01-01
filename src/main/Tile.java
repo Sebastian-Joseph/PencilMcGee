@@ -86,7 +86,7 @@ public class Tile {
 				} 
 				catch (IOException e1) {}
 				image = ato.filter(stage1, scaledImage);
-				type = 1;
+				type = 3;
 
 				try {
 					TimeUnit.SECONDS.sleep(4);
