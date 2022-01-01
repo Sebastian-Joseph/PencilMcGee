@@ -21,7 +21,7 @@ public class Player {
         yPos = y;
         xSpeed = 6;
         ySpeed = 16;
-        xIncrement = 0.9;
+        xIncrement = 0.8;
         yIncrement = 0.6;
         int size = w * 2;
         int scale = size / 8;
@@ -61,11 +61,11 @@ public class Player {
     public void collision(Tile t, KeyHandler k, int xMax, int yMax, int offset) {
         if (t.getType() == 1 && xPos + width >= t.getX() - xSpeed && xPos <= t.getX() + (offset / 2) && yPos + height > t.getY() + ySpeed && yPos < t.getY() + offset - ySpeed) {
             xPos = t.getX() - width - xSpeed;
-            dx = 0;
+            dx = -1 * xIncrement;
         }
         else if (t.getType() == 1 && xPos + width >= t.getX() + (offset / 2) && xPos <= t.getX() + offset + xSpeed && yPos + height > t.getY() + ySpeed && yPos < t.getY() + offset - ySpeed) {
             xPos = t.getX() + offset + xSpeed;
-            dx = 0;
+            dx = xIncrement;
         }
         else if (t.getType() == 1 && xPos + width > t.getX() && xPos < t.getX() + offset && yPos + height >= t.getY() && yPos <= t.getY() + (offset / 2)) {
             yPos = t.getY() - height;
@@ -126,10 +126,10 @@ public class Player {
             : (dy < ySpeed) ? dy + yIncrement : ySpeed;
         }
 
-        if (k.rightPressed && xPos >= xMax / 2) {
+        if (xPos >= xMax / 2 && dx >= 0) {
             for (int i = 0; i < tm.getMap().length; i++) {
                 for (int j = 0; j < tm.getMap()[i].length; j++) {
-                    tm.getMap()[i][j].scroll(xSpeed);
+                    tm.getMap()[i][j].scroll((int) dx);
                 }
             }
         }
