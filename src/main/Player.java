@@ -126,14 +126,14 @@ public class Player {
             : (dy < ySpeed) ? dy + yIncrement : ySpeed;
         }
 
-        if (xPos >= xMax / 2 && dx >= 0) {
+        if (xPos >= xMax / 2) {
             for (int i = 0; i < tm.getMap().length; i++) {
                 for (int j = 0; j < tm.getMap()[i].length; j++) {
                     tm.getMap()[i][j].scroll((int) dx);
                 }
             }
         }
-        if (xPos >= xMax / 2 && !k.leftPressed && dx >= 0) xPos = xMax / 2;
+        if (xPos >= xMax / 2 && dx >= 0) xPos = xMax / 2;
 
         else xPos += dx;
         yPos += dy;
