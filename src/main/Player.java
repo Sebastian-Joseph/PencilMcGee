@@ -58,43 +58,59 @@ public class Player {
         return leadCount;
     }
 
-    public void collision(Tile t, KeyHandler k, int xMax, int yMax, int offset) {
-        if (t.getType() == 1 && xPos + width >= t.getX() - xSpeed && xPos <= t.getX() + (offset / 2) && yPos + height > t.getY() + ySpeed && yPos < t.getY() + offset - ySpeed) {
-            xPos = t.getX() - width - xSpeed;
-            dx = -1 * xIncrement;
+    public void collision(Tile t, KeyHandler k, int xMax, int yMax, int offset, boolean topRow) {
+        if (topRow) {
+            if (t.getType() == 1 && xPos + width >= t.getX() - xSpeed && xPos <= t.getX() + (offset / 2) && yPos < t.getY() + offset - ySpeed) {
+                xPos = t.getX() - width - xSpeed;
+                dx = -1 * xIncrement;
+            }
+            else if (t.getType() == 1 && xPos + width >= t.getX() + (offset / 2) && xPos <= t.getX() + offset + xSpeed && yPos < t.getY() + offset - ySpeed) {
+                xPos = t.getX() + offset + xSpeed;
+                dx = xIncrement;
+            }
+            else if (t.getType() == 1 && xPos + width > t.getX() && xPos < t.getX() + offset && yPos + height >= t.getY() + (offset / 2) && yPos <= t.getY() + offset) {
+                yPos = t.getY() + offset;
+                k.upPressed = false;
+                dy = 0;
+            }
         }
-        else if (t.getType() == 1 && xPos + width >= t.getX() + (offset / 2) && xPos <= t.getX() + offset + xSpeed && yPos + height > t.getY() + ySpeed && yPos < t.getY() + offset - ySpeed) {
-            xPos = t.getX() + offset + xSpeed;
-            dx = xIncrement;
-        }
-        else if (t.getType() == 1 && xPos + width > t.getX() && xPos < t.getX() + offset && yPos + height >= t.getY() && yPos <= t.getY() + (offset / 2)) {
-            yPos = t.getY() - height;
-            dy = 0;
-        }
-        else if (t.getType() == 1 && xPos + width > t.getX() && xPos < t.getX() + offset && yPos + height >= t.getY() + (offset / 2) && yPos <= t.getY() + offset) {
-            yPos = t.getY() + offset;
-            k.upPressed = false;
-            dy = 0;
+        else {
+            if (t.getType() == 1 && xPos + width >= t.getX() - xSpeed && xPos <= t.getX() + (offset / 2) && yPos + height > t.getY() + ySpeed && yPos < t.getY() + offset - ySpeed) {
+                xPos = t.getX() - width - xSpeed;
+                dx = -1 * xIncrement;
+            }
+            else if (t.getType() == 1 && xPos + width >= t.getX() + (offset / 2) && xPos <= t.getX() + offset + xSpeed && yPos + height > t.getY() + ySpeed && yPos < t.getY() + offset - ySpeed) {
+                xPos = t.getX() + offset + xSpeed;
+                dx = xIncrement;
+            }
+            else if (t.getType() == 1 && xPos + width > t.getX() && xPos < t.getX() + offset && yPos + height >= t.getY() && yPos <= t.getY() + (offset / 2)) {
+                yPos = t.getY() - height;
+                dy = 0;
+            }
+            else if (t.getType() == 1 && xPos + width > t.getX() && xPos < t.getX() + offset && yPos + height >= t.getY() + (offset / 2) && yPos <= t.getY() + offset) {
+                yPos = t.getY() + offset;
+                k.upPressed = false;
+                dy = 0;
+            }
         }
 
-        if (xPos >= xMax - width) {
-            dx = 0;
-            xPos = xMax - width;
-        }
+        // if (xPos >= xMax - width) {
+        //     dx = 0;
+        //     xPos = xMax - width;
+        // }
         if (xPos <= 0) {
             dx = 0;
             xPos = 0;
         }
 
-        if (yPos >= yMax - height) {
-            dy = 0;
-            yPos = yMax - height;
+        if (yPos >= yMax) {
+            leadCount = 0;
         }
     }
 
-    public void reset() {
-        xPos = 100;
-        yPos = 100;
+    public void reset(double xInit, double yInit) {
+        xPos = xInit;
+        yPos = yInit;
         leadCount = 300;
     }
 

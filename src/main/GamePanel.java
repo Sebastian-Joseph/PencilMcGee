@@ -158,23 +158,25 @@ public class GamePanel extends JPanel implements Runnable {
 
 
     public void update() {
-        for (int i = 0; i < tiles.getMap().length; i++) {
-            for (int j = 0; j < tiles.getMap()[i].length; j++) {
-                p1.collision(tiles.getMap()[i][j], keyHandler, screenWidth, screenHeight, tileSize);
-            }
-        }
-
-        if (p1.getLeadCount() <= 0) {
-            p1.reset();
+        if (gameState == playState) {
             for (int i = 0; i < tiles.getMap().length; i++) {
                 for (int j = 0; j < tiles.getMap()[i].length; j++) {
-                    tiles.getMap()[i][j].reset();
+                    p1.collision(tiles.getMap()[i][j], keyHandler, screenWidth, screenHeight, tileSize, i == 0);
                 }
             }
-        }
 
-        if (!keyHandler.enterDown && gameState == playState) {
-            p1.move(keyHandler, screenWidth, tiles);
+            if (p1.getLeadCount() <= 0) {
+                p1.reset(tileSize * 2, screenHeight - tileSize * 8);
+                for (int i = 0; i < tiles.getMap().length; i++) {
+                    for (int j = 0; j < tiles.getMap()[i].length; j++) {
+                        tiles.getMap()[i][j].reset();
+                    }
+                }
+            }
+
+            if (!keyHandler.enterDown) {
+                p1.move(keyHandler, screenWidth, tiles);
+            }
         }
     }
 
@@ -245,11 +247,11 @@ public class GamePanel extends JPanel implements Runnable {
                 }
             }
 
-            if (keyHandler.rightPressed) {
-                g2.drawImage(playerRight, (int) p1.getXPos(), (int) p1.getYPos(), scale * 4, scale * 16, null);
-            }
-            else if (keyHandler.leftPressed) {
+            if (keyHandler.leftPressed) {
                 g2.drawImage(playerLeft, (int) p1.getXPos(), (int) p1.getYPos(), scale * 4, scale * 16, null);
+            }
+            else if (keyHandler.rightPressed) {
+                g2.drawImage(playerRight, (int) p1.getXPos(), (int) p1.getYPos(), scale * 4, scale * 16, null);
             }
             else {
                 g2.drawImage(player, (int) p1.getXPos(), (int) p1.getYPos(), scale * 4, scale * 16, null);
@@ -273,7 +275,7 @@ public class GamePanel extends JPanel implements Runnable {
                     Rectangle resetBounds = new Rectangle(screenWidth / 2 - tileSize, screenHeight / 2 - tileSize, tileSize * 2, tileSize * 2);
                     if (resetBounds.contains(point)) {
                         keyHandler.enterDown = false;
-                        p1.reset();
+                        p1.reset(tileSize * 2, screenHeight - tileSize * 8);
                         for (int i = 0; i < tiles.getMap().length; i++) {
                             for (int j = 0; j < tiles.getMap()[i].length; j++) {
                                 tiles.getMap()[i][j].reset();
