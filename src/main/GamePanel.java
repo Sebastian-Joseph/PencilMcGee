@@ -35,7 +35,12 @@ public class GamePanel extends JPanel implements Runnable {
     final int screenWidth = tileSize * maxScreenCol;
     final int screenHeight = tileSize * maxScreenRow;
     BufferedImage background;
+
     BufferedImage player;
+    BufferedImage playerRight;
+    BufferedImage playerLeft;
+
+
     BufferedImage testTile;
 
     private Tilemap tiles = new Tilemap(screenWidth, screenHeight, tileSize);
@@ -67,7 +72,11 @@ public class GamePanel extends JPanel implements Runnable {
         tiles.createMap("images/actual_level.png");
 
         background = ImageIO.read(getClass().getResourceAsStream("images/pooper3.5.png"));
+
         player = ImageIO.read(getClass().getResourceAsStream("images/pencil_mcgee.png"));
+        playerRight = ImageIO.read(getClass().getResourceAsStream("images/pencil_mcgee_right.png"));
+        playerLeft = ImageIO.read(getClass().getResourceAsStream("images/pencil_mcgee_left.png"));
+
         testTile = ImageIO.read(getClass().getResourceAsStream("images/smol_spunch.jpg"));
 
         addMouseListener(new MouseListener() { 
@@ -164,7 +173,7 @@ public class GamePanel extends JPanel implements Runnable {
             }
         }
 
-        if (!keyHandler.enterDown) {
+        if (!keyHandler.enterDown && gameState == playState) {
             p1.move(keyHandler, screenWidth, tiles);
         }
     }
@@ -236,7 +245,15 @@ public class GamePanel extends JPanel implements Runnable {
                 }
             }
 
-            g2.drawImage(player, (int) p1.getXPos(), (int) p1.getYPos(), scale * 4, scale * 16, null);
+            if (keyHandler.rightPressed) {
+                g2.drawImage(playerRight, (int) p1.getXPos(), (int) p1.getYPos(), scale * 4, scale * 16, null);
+            }
+            else if (keyHandler.leftPressed) {
+                g2.drawImage(playerLeft, (int) p1.getXPos(), (int) p1.getYPos(), scale * 4, scale * 16, null);
+            }
+            else {
+                g2.drawImage(player, (int) p1.getXPos(), (int) p1.getYPos(), scale * 4, scale * 16, null);
+            }
 
             Font font = new Font("Ink Free", Font.BOLD, tileSize);
             g.setFont(font);
