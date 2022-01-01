@@ -34,6 +34,9 @@ public class Tilemap {
         BufferedImage tileimage = ImageIO.read(getClass().getResourceAsStream(filename));
         BufferedImage smallpooper = ImageIO.read(getClass().getResourceAsStream("images/small_pooper.png"));
         BufferedImage spikes = ImageIO.read(getClass().getResourceAsStream("images/spikes.png"));
+        BufferedImage spikesEdge = ImageIO.read(getClass().getResourceAsStream("images/spikes_edge.png"));
+        BufferedImage coin = ImageIO.read(getClass().getResourceAsStream("images/coin.png"));
+
         Columns = tileimage.getWidth();
         Rows = tileimage.getHeight();
         map = new Tile[Rows][Columns];
@@ -50,7 +53,7 @@ public class Tilemap {
                 scaledImage = ato.filter(subimage, scaledImage);
 
                 Color c = new Color(subimage.getRGB(0, 0));
-                if ((c.getRed() == 0 && c.getGreen() == 0 && c.getBlue() == 0) || (c.getRed() == 200 && c.getGreen() == 0 && c.getBlue() == 0)) {
+                if ((c.getRed() == 0 && c.getGreen() == 0 && c.getBlue() == 0) || (c.getRed() == 200 && c.getGreen() == 0 && c.getBlue() == 0) || (c.getRed() == 150 && c.getGreen() == 0 && c.getBlue() == 0)) {
                     map[row][col] = new Tile(scaledImage, 1, tileSize * col, tileSize * row, tileSize);
                 }
                 else if (c.getRed() == 247 && c.getGreen() == 247 && c.getBlue() == 247) {
@@ -64,6 +67,12 @@ public class Tilemap {
                 }
                 if (c.getRed() == 200 && c.getGreen() == 0 && c.getBlue() == 0) {
                     map[row][col].newImage(spikes);
+                }
+                if (c.getRed() == 150 && c.getGreen() == 0 && c.getBlue() == 0) {
+                    map[row][col].newImage(spikesEdge);
+                }
+                if (c.getRed() == 250 && c.getGreen() == 200 && c.getBlue() == 0) {
+                    map[row][col].newImage(coin);
                 }
                 
             }
