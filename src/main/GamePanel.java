@@ -35,6 +35,7 @@ public class GamePanel extends JPanel implements Runnable {
     final int screenWidth = tileSize * maxScreenCol;
     final int screenHeight = tileSize * maxScreenRow;
     BufferedImage background;
+    BufferedImage leadCountBackground;
 
     BufferedImage player;
     BufferedImage playerRight;
@@ -72,6 +73,7 @@ public class GamePanel extends JPanel implements Runnable {
         tiles.createMap("images/actual_level.png");
 
         background = ImageIO.read(getClass().getResourceAsStream("images/pooper3.5.png"));
+        leadCountBackground = ImageIO.read(getClass().getResourceAsStream("images/lead_count_background.png"));
 
         player = ImageIO.read(getClass().getResourceAsStream("images/pencil_mcgee.png"));
         playerRight = ImageIO.read(getClass().getResourceAsStream("images/pencil_mcgee_right.png"));
@@ -257,15 +259,14 @@ public class GamePanel extends JPanel implements Runnable {
                 g2.drawImage(player, (int) p1.getXPos(), (int) p1.getYPos(), scale * 4, scale * 16, null);
             }
 
+            g2.drawImage(leadCountBackground, tileSize, tileSize, tileSize * 3, tileSize * 2, null);
+
+            if (p1.getLeadCount() > 30) g2.setColor(Color.black);
+            else g2.setColor(Color.red);
             Font font = new Font("Ink Free", Font.BOLD, tileSize);
             g.setFont(font);
-            g2.setColor(Color.white);
-            g2.drawString(String.valueOf(p1.getLeadCount()), tileSize * 2, tileSize * 2);
-
-            g2.setColor(Color.black);
-            Font font2 = new Font("Ink Free", Font.PLAIN, tileSize);
-            g.setFont(font2);
-            g2.drawString(String.valueOf(p1.getLeadCount()), tileSize * 2, tileSize * 2);
+            double textOffset = tileSize * 0.6;
+            g2.drawString(String.valueOf(p1.getLeadCount()), ((int) textOffset) + tileSize, ((int) textOffset) + tileSize * 2);
 
             if (keyHandler.enterDown == true) {
                 g2.drawImage(testTile, screenWidth / 2 - tileSize, screenHeight / 2 - tileSize, tileSize * 2, tileSize * 2, null);
