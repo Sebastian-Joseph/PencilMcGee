@@ -41,7 +41,6 @@ public class Music {
             long length = clip.getMicrosecondLength() - 31200000;
 
 
-
         } catch (Exception e) {
         }
     }
@@ -61,9 +60,6 @@ public class Music {
 
     }
 
-    public void looponce() {
-        clip.loop(0);
-    }
 }
 
 

@@ -1,42 +1,43 @@
 package main;
 
+import java.util.ArrayList;
+
 public class Player {
-    private double xPos;
-    private double yPos;
-    private int xInit = 100;
-    private int yInit = 100;
+    public double xPos;
+    public double yPos;
+    public double xSpeed;
+    public double ySpeed;
+    public double dx;
+    public double dy;
 
-    private double xSpeed;
-    private double ySpeed;
-    private double dx;
-    private double dy;
+    public double xIncrement;
+    public double yIncrement;
 
-    private double xIncrement;
-    private double yIncrement;
-
-    private int width;
-    private int height;
+    public int width;
+    public int height;
 
     private int leadCount;
-    private int pointCount;
 
-    Music music = new Music();
-
-    public Player(int w, int h) {
-        xPos = xInit;
-        yPos = yInit;
+    public Player(int x, int y, int w, int h) {
+        xPos = x;
+        yPos = y;
         xSpeed = 6;
         ySpeed = 16;
-        xIncrement = 0.9;
+        xIncrement = 0.8;
         yIncrement = 0.6;
+        int size = w * 2;
+        int scale = size / 8;
+        xIncrement = xIncrement * scale / 4;
+        yIncrement = yIncrement * scale / 4;
+        xSpeed = xSpeed * scale / 4;
+        ySpeed = ySpeed * scale / 4;
         dx = 0;
         dy = 0;
 
         width = w;
         height = h;
 
-        leadCount = 100;
-        pointCount = 0;
+        leadCount = 300;
     }
 
     public double getXPos() {
@@ -59,60 +60,67 @@ public class Player {
         return leadCount;
     }
 
-    public int getPointCount() {
-        return pointCount;
-    }
+    public void collision(Tile t, KeyHandler k, int xMax, int yMax, int offset, boolean topRow) {
+        if (topRow && t.getType() == 1) {
+            if (xPos + width >= t.getX() - xSpeed && xPos <= t.getX() + (offset / 2) && yPos < t.getY() + offset - ySpeed) {
+                xPos = t.getX() - width - xSpeed;
+                dx = -1 * xIncrement;
+            }
+            else if (xPos + width >= t.getX() + (offset / 2) && xPos <= t.getX() + offset + xSpeed && yPos < t.getY() + offset - ySpeed) {
+                xPos = t.getX() + offset + xSpeed;
+                dx = xIncrement;
+            }
+            else if (xPos + width > t.getX() && xPos < t.getX() + offset && yPos + height >= t.getY() + (offset / 2) && yPos <= t.getY() + offset) {
+                yPos = t.getY() + offset;
+                k.upPressed = false;
+                dy = 0;
+            }
+        }
+        else {
+            if (t.getType() % 2 == 1 && xPos + width >= t.getX() - xSpeed && xPos <= t.getX() + (offset / 2) && yPos + height > t.getY() + ySpeed && yPos < t.getY() + offset - ySpeed) {
+                xPos = t.getX() - width - xSpeed;
+                dx = -1 * xIncrement;
+            }
+            else if (t.getType() % 2 == 1 && xPos + width >= t.getX() + (offset / 2) && xPos <= t.getX() + offset + xSpeed && yPos + height > t.getY() + ySpeed && yPos < t.getY() + offset - ySpeed) {
+                xPos = t.getX() + offset + xSpeed;
+                dx = xIncrement;
+            }
+            else if (t.getType() % 2 == 1 && xPos + width > t.getX() && xPos < t.getX() + offset && yPos + height >= t.getY() && yPos <= t.getY() + (offset / 2)) {
+                yPos = t.getY() - height;
+                dy = 0;
+            }
+            else if (t.getType() % 2 == 1 && xPos + width > t.getX() && xPos < t.getX() + offset && yPos + height >= t.getY() + (offset / 2) && yPos <= t.getY() + offset) {
+                yPos = t.getY() + offset;
+                k.upPressed = false;
+                dy = 0;
+            }
+        }
 
-    public void addPointCount(int h) {
-        pointCount += h;
-    }
-    public void reduceLeadCount(int r) {
-        leadCount -= r;
-    }
-
-    public void collision(Tile t, KeyHandler k, int xMax, int yMax, int offset) {
-        if (t.getType() == 1 && xPos + width >= t.getX() - xSpeed && xPos <= t.getX() + (offset / 2) && yPos + height > t.getY() + ySpeed && yPos < t.getY() + offset - ySpeed) {
-            xPos = t.getX() - width - xSpeed;
-            dx = 0;
-        }
-        else if (t.getType() == 1 && xPos + width >= t.getX() + (offset / 2) && xPos <= t.getX() + offset + xSpeed && yPos + height > t.getY() + ySpeed && yPos < t.getY() + offset - ySpeed) {
-            xPos = t.getX() + offset + xSpeed;
-            dx = 0;
-        }
-        else if (t.getType() == 1 && xPos + width > t.getX() && xPos < t.getX() + offset && yPos + height >= t.getY() && yPos <= t.getY() + (offset / 2)) {
-            yPos = t.getY() - height;
-            dy = 0;
-        }
-        else if (t.getType() == 1 && xPos + width > t.getX() && xPos < t.getX() + offset && yPos + height >= t.getY() + (offset / 2) && yPos <= t.getY() + offset) {
-            yPos = t.getY() + offset;
-            k.upPressed = false;
-            dy = 0;
-        }
-        else if (t.getType() == 2)
-
-        if (xPos >= xMax - width) {
-            dx = 0;
-            xPos = xMax - width;
-        }
+        // if (xPos >= xMax - width) {
+        //     dx = 0;
+        //     xPos = xMax - width;
+        // }
         if (xPos <= 0) {
             dx = 0;
             xPos = 0;
         }
 
-        if (yPos >= yMax - height) {
-            dy = 0;
-            yPos = yMax - height;
+        if (yPos >= yMax) {
+            leadCount = 0;
         }
     }
 
-    public void playMusic(int i) {
-        music.setFile(i);
-        music.play();
-
-
+    public void reset(double xInit, double yInit) {
+        xPos = xInit;
+        yPos = yInit;
+        leadCount = 300;
     }
 
-    public void move(KeyHandler k, int xMax, Tilemap tm) {
+    public void reduceLeadCount(int r) {
+        leadCount -= r;
+    }
+
+    public void move(KeyHandler k, int xMax, Tilemap tm, ArrayList<Enemy> al) {
         if (k.leftPressed) {
             dx = (dx > -1 * xSpeed) ? dx - xIncrement : -1 * xSpeed;
         }
@@ -129,7 +137,6 @@ public class Player {
             dy = (dy == 0)
                     ? -1 * ySpeed + yIncrement
                     : (dy < ySpeed) ? dy + yIncrement : ySpeed;
-                    //playMusic(3);
         }
         else {
             dy = (dy == 0)
@@ -137,23 +144,19 @@ public class Player {
                     : (dy < ySpeed) ? dy + yIncrement : ySpeed;
         }
 
-        if (k.rightPressed && xPos >= xMax / 2) {
+        if (xPos >= xMax / 2) {
             for (int i = 0; i < tm.getMap().length; i++) {
                 for (int j = 0; j < tm.getMap()[i].length; j++) {
-                   tm.getMap()[i][j].scroll(xSpeed);
+                    tm.getMap()[i][j].scroll((int) dx);
                 }
             }
+            for (Enemy e : al) {
+                e.scroll((int) dx);
+            }
         }
-        if (xPos >= xMax / 2 && !k.leftPressed && dx >= 0) xPos = xMax / 2;
+        if (xPos >= xMax / 2 && dx >= 0) xPos = xMax / 2;
 
         else xPos += dx;
         yPos += dy;
-    }
-
-    public void reset() {
-        xPos = xInit;
-        yPos = yInit;
-        leadCount = 100;
-        pointCount = 0;
     }
 }

@@ -33,6 +33,10 @@ public class Tilemap {
         System.out.println(LocalDateTime.now());
         BufferedImage tileimage = ImageIO.read(getClass().getResourceAsStream(filename));
         BufferedImage smallpooper = ImageIO.read(getClass().getResourceAsStream("images/small_pooper.png"));
+        BufferedImage spikes = ImageIO.read(getClass().getResourceAsStream("images/spikes.png"));
+        BufferedImage spikesEdge = ImageIO.read(getClass().getResourceAsStream("images/spikes_edge.png"));
+        BufferedImage coin = ImageIO.read(getClass().getResourceAsStream("images/coin.png"));
+
         Columns = tileimage.getWidth();
         Rows = tileimage.getHeight();
         map = new Tile[Rows][Columns];
@@ -49,10 +53,10 @@ public class Tilemap {
                 scaledImage = ato.filter(subimage, scaledImage);
 
                 Color c = new Color(subimage.getRGB(0, 0));
-                if (c.getRed() == 0) {
+                if ((c.getRed() == 0 && c.getGreen() == 0 && c.getBlue() == 0) || (c.getRed() == 200 && c.getGreen() == 0 && c.getBlue() == 0) || (c.getRed() == 150 && c.getGreen() == 0 && c.getBlue() == 0)) {
                     map[row][col] = new Tile(scaledImage, 1, tileSize * col, tileSize * row, tileSize);
                 }
-                else if (c.getRed() == 237 && c.getGreen() == 28 && c.getBlue() == 36) {
+                else if (c.getRed() == 247 && c.getGreen() == 247 && c.getBlue() == 247) {
                     map[row][col] = new Tile(scaledImage, 2, tileSize * col, tileSize * row, tileSize);
                 }
                 else {
@@ -60,6 +64,15 @@ public class Tilemap {
                 }
                 if (c.getRed() == 255 && c.getGreen() == 255 && c.getBlue() == 255) {
                     map[row][col].newImage(smallpooper);
+                }
+                if (c.getRed() == 200 && c.getGreen() == 0 && c.getBlue() == 0) {
+                    map[row][col].newImage(spikes);
+                }
+                if (c.getRed() == 150 && c.getGreen() == 0 && c.getBlue() == 0) {
+                    map[row][col].newImage(spikesEdge);
+                }
+                if (c.getRed() == 250 && c.getGreen() == 200 && c.getBlue() == 0) {
+                    map[row][col].newImage(coin);
                 }
 
             }
@@ -69,16 +82,10 @@ public class Tilemap {
 
     public boolean checkTileToLeft(int row, int col) {
         try {
-            return (map[row][col - 1].getType() == 1);
+            return (map[row][col - 1].getType() % 2 == 1);
         }
         catch (ArrayIndexOutOfBoundsException e) {
             return false;
         }
     }
 }
-
-
-
-/*    if (c.getRed() == 250 && c.getGreen() == 200 && c.getBlue() == 0) {
-                    map[row][col].newImage("images/coin.png");
-                } */

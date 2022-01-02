@@ -4,8 +4,11 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.xml.namespace.QName;
 import java.awt.geom.AffineTransform;
-import java.util.concurrent.TimeUnit;
 import java.awt.image.*;
+
+
+
+import java.util.concurrent.TimeUnit;
 
 public class Tile {
 
@@ -57,16 +60,16 @@ public class Tile {
         x -= scrollAmount;
     }
 
-    public void reset(){
+    public void reset() {
         x = initialx;
         y = initialy;
     }
 
-    public void newImage(BufferedImage newimage) throws IOException{
+    public void newImage(BufferedImage newimage) throws IOException {
         image = newimage;
     }
 
-    public void change() {
+    public boolean change() {
 
 
         final AffineTransform at = AffineTransform.getScaleInstance((double) size/32, (double) size/32);
@@ -81,11 +84,9 @@ public class Tile {
                     stage2 = ImageIO.read(getClass().getResourceAsStream("images/graphite2.png"));
                     stage3 = ImageIO.read(getClass().getResourceAsStream("images/graphite3.png"));
                 }
-                catch (IOException e1) {
-
-                }
+                catch (IOException e1) {}
                 image = ato.filter(stage1, scaledImage);
-                type = 1;
+                type = 3;
 
                 try {
                     TimeUnit.SECONDS.sleep(4);
@@ -111,6 +112,10 @@ public class Tile {
 
 
             }).start();
+
+            return true;
         }
+
+        return false;
     }
 }

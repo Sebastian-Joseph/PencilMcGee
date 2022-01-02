@@ -11,16 +11,19 @@ import java.awt.Graphics2D;
 import java.awt.image.*;
 import java.io.IOException;
 import java.lang.Exception;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
+import java.awt.Font;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.MouseInfo;
-import java.awt.*;
 
 import java.awt.event.MouseEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.KeyListener;
 
 public class GamePanel extends JPanel implements Runnable {
     // Screen Settings
@@ -33,12 +36,19 @@ public class GamePanel extends JPanel implements Runnable {
     final int screenWidth = tileSize * maxScreenCol;
     final int screenHeight = tileSize * maxScreenRow;
     BufferedImage background;
+    BufferedImage leadCountBackground;
+
     BufferedImage player;
+    BufferedImage playerRight;
+    BufferedImage playerLeft;
+
+
     BufferedImage testTile;
 
     private Tilemap tiles = new Tilemap(screenWidth, screenHeight, tileSize);
     private boolean mouseDown = false;
-    private boolean enterDown = false;
+    // private boolean enterDown = false;
+
 
     private int gameState;
     private final int menuState = 0;
@@ -50,10 +60,14 @@ public class GamePanel extends JPanel implements Runnable {
     Menu menu = new Menu();
     KeyHandler keyHandler = new KeyHandler();
     Thread gameThread;
-    Player p1 = new Player(tileSize / 2, tileSize * 2);
 
-    public Rectangle pauseButton = new Rectangle(GamePanel.HEIGHT, GamePanel.HEIGHT, 90, 50);
+    Player p1 = new Player(tileSize * 2, screenHeight - tileSize * 8, tileSize / 2, tileSize * 2);
 
+    ArrayList<Enemy> enemies = new ArrayList<Enemy>();
+
+    Enemy[] enemiesInit1 = new Enemy[] {
+            new Enemy(tileSize * 81, tileSize * 13, tileSize * 81, tileSize * 5, 5, false)
+    };
 
     public GamePanel() throws IOException {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -62,11 +76,20 @@ public class GamePanel extends JPanel implements Runnable {
         this.addKeyListener(keyHandler);
         this.setFocusable(true);
 
-        tiles.createMap("images/amogus.png");
+        tiles.createMap("images/actual_level.png");
 
         background = ImageIO.read(getClass().getResourceAsStream("images/pooper3.5.png"));
+        leadCountBackground = ImageIO.read(getClass().getResourceAsStream("images/lead_count_background.png"));
+
         player = ImageIO.read(getClass().getResourceAsStream("images/pencil_mcgee.png"));
+        playerRight = ImageIO.read(getClass().getResourceAsStream("images/pencil_mcgee_right.png"));
+        playerLeft = ImageIO.read(getClass().getResourceAsStream("images/pencil_mcgee_left.png"));
+
         testTile = ImageIO.read(getClass().getResourceAsStream("images/smol_spunch.jpg"));
+
+        for (Enemy e : enemiesInit1) {
+            enemies.add(e);
+        }
 
         addMouseListener(new MouseListener() {
                              public void mouseClicked(MouseEvent e) {}
@@ -80,6 +103,20 @@ public class GamePanel extends JPanel implements Runnable {
                              public void mouseExited(MouseEvent e) {}
                          }
         );
+
+
+        // addKeyListener(new KeyListener() {
+        //     public void keyTyped(KeyEvent ke) {}
+        //     public void keyPressed(KeyEvent ke) {
+        //         if (ke.getKeyCode() == KeyEvent.VK_ENTER){
+        //             enterDown = !enterDown;
+        //         }
+        //     }
+        //     public void keyReleased(KeyEvent ke) {}
+        // }
+        // );
+
+
     }
 
     public void playMusic(int i) {
@@ -88,16 +125,19 @@ public class GamePanel extends JPanel implements Runnable {
         music.loop();
     }
 
-    public void setupGame()  {
+    public void setupGame() {
         gameState = menuState;
         playMusic(3);
     }
+
 
     public void startGameThread() throws IOException {
         gameThread = new Thread(this);
         gameThread.start();
 
-
+        // for (int i = 0; i < tiles.length; i++) {
+        //     tileImages[i] = tiles[i].getImage();
+        // }
     }
 
 
@@ -130,25 +170,34 @@ public class GamePanel extends JPanel implements Runnable {
 
 
     public void update() {
-        for (int i = 0; i < tiles.getMap().length; i++) {
-            for (int j = 0; j < tiles.getMap()[i].length; j++) {
-                p1.collision(tiles.getMap()[i][j], keyHandler, screenWidth, screenHeight, tileSize);
-            }
-        }
-
-        if(!enterDown) {
-            p1.move(keyHandler, screenWidth, tiles);
-        }
-        if (p1.getLeadCount() <= 0) {
-            p1.reset();
+        if (gameState == playState) {
             for (int i = 0; i < tiles.getMap().length; i++) {
                 for (int j = 0; j < tiles.getMap()[i].length; j++) {
-                   tiles.getMap()[i][j].reset();
+                    p1.collision(tiles.getMap()[i][j], keyHandler, screenWidth, screenHeight, tileSize, i == 0);
                 }
             }
 
+            for (Enemy e : enemies) {
+                if (e.move(tileSize)) {
+                    e = null;
+                }
+            }
+
+            if (p1.getLeadCount() <= 0) {
+                p1.reset(tileSize * 2, screenHeight - tileSize * 8);
+                for (int i = 0; i < tiles.getMap().length; i++) {
+                    for (int j = 0; j < tiles.getMap()[i].length; j++) {
+                        tiles.getMap()[i][j].reset();
+                    }
+                }
+            }
+
+            if (!keyHandler.enterDown) {
+                p1.move(keyHandler, screenWidth, tiles, enemies);
+            }
         }
     }
+
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -163,23 +212,16 @@ public class GamePanel extends JPanel implements Runnable {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            if(mouseDown == true) {
+            if (mouseDown == true) {
                 Point point = MouseInfo.getPointerInfo().getLocation();
                 SwingUtilities.convertPointFromScreen(point, this);
                 if (menu.playButton.contains(point)) {
                     gameState = playState;
                     music.stop();
                     playMusic(0);
-
                 }
             }
-            if (gameState == playState) {
-                Font fent = new Font("arial", Font.BOLD, 20);
-                g.setFont(fent);
-                g.drawString("Pause", pauseButton.x - 20, pauseButton.y - 20);
-                g2.draw(pauseButton);
-            }
-            if(mouseDown == true) {
+            if (mouseDown == true) {
                 Point point = MouseInfo.getPointerInfo().getLocation();
                 SwingUtilities.convertPointFromScreen(point, this);
                 if (menu.quitButton.contains(point)) {
@@ -208,12 +250,8 @@ public class GamePanel extends JPanel implements Runnable {
                                             || (tileBounds.contains(playerCurrentPosition1) && !tiles.checkTileToLeft(i, j) && !tiles.checkTileToLeft(i + 1, j) && !tiles.checkTileToLeft(i + 2, j))
                                             || (tileBounds.contains(playerCurrentPosition2) && !tiles.checkTileToLeft(i, j) && !tiles.checkTileToLeft(i - 1, j) && !tiles.checkTileToLeft(i - 2, j))
                             ) {
-                                tiles.getMap()[i][j].change();
                                 if (tiles.getMap()[i][j].change()) {
                                     p1.reduceLeadCount(1);
-                                }
-                               if (p1.) {
-                                    p1.addPointCount(1);
                                 }
                             }
                         }
@@ -227,18 +265,39 @@ public class GamePanel extends JPanel implements Runnable {
                 }
             }
 
-            g2.drawImage(player, (int) p1.getXPos(), (int) p1.getYPos(), scale * 4, scale * 16, null);
+            g2.setColor(Color.pink);
+            for (Enemy e : enemies) {
+                g2.fillRect((int) e.getX(), (int) e.getY(), tileSize, tileSize);
+            }
 
-            if(enterDown == true){
-                g2.drawImage(testTile, 500, 250, tileSize*2, tileSize*2, null);
-                if(mouseDown == true){
+            if (keyHandler.leftPressed) {
+                g2.drawImage(playerLeft, (int) p1.getXPos(), (int) p1.getYPos(), scale * 4, scale * 16, null);
+            }
+            else if (keyHandler.rightPressed) {
+                g2.drawImage(playerRight, (int) p1.getXPos(), (int) p1.getYPos(), scale * 4, scale * 16, null);
+            }
+            else {
+                g2.drawImage(player, (int) p1.getXPos(), (int) p1.getYPos(), scale * 4, scale * 16, null);
+            }
+
+            g2.drawImage(leadCountBackground, tileSize, tileSize, tileSize * 3, tileSize * 2, null);
+
+            if (p1.getLeadCount() > 30) g2.setColor(Color.black);
+            else g2.setColor(Color.red);
+            Font font = new Font("Ink Free", Font.BOLD, tileSize);
+            g.setFont(font);
+            double textOffset = tileSize * 0.6;
+            g2.drawString(String.valueOf(p1.getLeadCount()), ((int) textOffset) + tileSize, ((int) textOffset) + tileSize * 2);
+
+            if (keyHandler.enterDown == true) {
+                g2.drawImage(testTile, screenWidth / 2 - tileSize, screenHeight / 2 - tileSize, tileSize * 2, tileSize * 2, null);
+                if (mouseDown == true) {
                     Point point = MouseInfo.getPointerInfo().getLocation();
                     SwingUtilities.convertPointFromScreen(point, this);
-                    Rectangle resetBounds = new Rectangle(500, 250, tileSize*2, tileSize*2);
-                    if(resetBounds.contains(point)){
-                        enterDown = false;
-                        System.out.println("pressed");
-                        p1.reset();
+                    Rectangle resetBounds = new Rectangle(screenWidth / 2 - tileSize, screenHeight / 2 - tileSize, tileSize * 2, tileSize * 2);
+                    if (resetBounds.contains(point)) {
+                        keyHandler.enterDown = false;
+                        p1.reset(tileSize * 2, screenHeight - tileSize * 8);
                         for (int i = 0; i < tiles.getMap().length; i++) {
                             for (int j = 0; j < tiles.getMap()[i].length; j++) {
                                 tiles.getMap()[i][j].reset();
@@ -247,12 +306,8 @@ public class GamePanel extends JPanel implements Runnable {
                     }
                 }
             }
-            g2.drawImage(player, (int) p1.getXPos(), (int) p1.getYPos(), null);
-            g2.drawString(String.valueOf(p1.getLeadCount()), 50, 50);
-            g2.drawString(String.valueOf(p1.getPointCount()), 1500, 50);
+
             g2.dispose();
-
-
-            }
         }
     }
+}
