@@ -118,7 +118,7 @@ public class Player {
         leadCount -= r;
     }
 
-    public void move(KeyHandler k, int xMax, Tilemap tm) {
+    public void move(KeyHandler k, int xMax, Tilemap tm, Enemy e) {
         if (k.leftPressed) {
             dx = (dx > -1 * xSpeed) ? dx - xIncrement : -1 * xSpeed;
         }
@@ -148,6 +148,7 @@ public class Player {
                     tm.getMap()[i][j].scroll((int) dx);
                 }
             }
+            e.scroll((int) dx);
         }
         if (xPos >= xMax / 2 && dx >= 0) xPos = xMax / 2;
 

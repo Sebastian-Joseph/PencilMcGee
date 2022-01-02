@@ -62,6 +62,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     Player p1 = new Player(tileSize * 2, screenHeight - tileSize * 8, tileSize / 2, tileSize * 2);
 
+    Enemy testEnemy = new Enemy(tileSize * 80, tileSize * 13, tileSize * 82, tileSize * 6, 4, false);
 
     public GamePanel() throws IOException {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -167,6 +168,10 @@ public class GamePanel extends JPanel implements Runnable {
                 }
             }
 
+            if (testEnemy.move(tileSize)) {
+                testEnemy = null;
+            }
+
             if (p1.getLeadCount() <= 0) {
                 p1.reset(tileSize * 2, screenHeight - tileSize * 8);
                 for (int i = 0; i < tiles.getMap().length; i++) {
@@ -177,7 +182,7 @@ public class GamePanel extends JPanel implements Runnable {
             }
 
             if (!keyHandler.enterDown) {
-                p1.move(keyHandler, screenWidth, tiles);
+                p1.move(keyHandler, screenWidth, tiles, testEnemy);
             }
         }
     }
@@ -248,6 +253,9 @@ public class GamePanel extends JPanel implements Runnable {
                     g2.drawImage(tiles.getMap()[i][j].getImage(), tiles.getMap()[i][j].getX(), tiles.getMap()[i][j].getY(), null);
                 }
             }
+
+            g2.setColor(Color.pink);
+            g2.fillRect((int) testEnemy.getX(), (int) testEnemy.getY(), tileSize, tileSize);
 
             if (keyHandler.leftPressed) {
                 g2.drawImage(playerLeft, (int) p1.getXPos(), (int) p1.getYPos(), scale * 4, scale * 16, null);
