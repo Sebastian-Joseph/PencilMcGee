@@ -1,5 +1,7 @@
 package main;
 
+import java.util.ArrayList;
+
 public class Player {
     public double xPos;
     public double yPos;
@@ -118,7 +120,7 @@ public class Player {
         leadCount -= r;
     }
 
-    public void move(KeyHandler k, int xMax, Tilemap tm, Enemy e) {
+    public void move(KeyHandler k, int xMax, Tilemap tm, ArrayList<Enemy> al) {
         if (k.leftPressed) {
             dx = (dx > -1 * xSpeed) ? dx - xIncrement : -1 * xSpeed;
         }
@@ -148,7 +150,9 @@ public class Player {
                     tm.getMap()[i][j].scroll((int) dx);
                 }
             }
-            e.scroll((int) dx);
+            for (Enemy e : al) {
+                e.scroll((int) dx);
+            }
         }
         if (xPos >= xMax / 2 && dx >= 0) xPos = xMax / 2;
 

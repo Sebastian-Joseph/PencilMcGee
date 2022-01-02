@@ -11,6 +11,7 @@ import java.awt.Graphics2D;
 import java.awt.image.*;
 import java.io.IOException;
 import java.lang.Exception;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
@@ -62,7 +63,11 @@ public class GamePanel extends JPanel implements Runnable {
 
     Player p1 = new Player(tileSize * 2, screenHeight - tileSize * 8, tileSize / 2, tileSize * 2);
 
-    Enemy testEnemy = new Enemy(tileSize * 80, tileSize * 13, tileSize * 82, tileSize * 6, 4, false);
+    ArrayList<Enemy> enemies = new ArrayList<Enemy>();
+
+    Enemy[] enemiesInit1 = new Enemy[] {
+        new Enemy(tileSize * 81, tileSize * 13, tileSize * 81, tileSize * 5, 5, false)
+    };
 
     public GamePanel() throws IOException {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -81,6 +86,10 @@ public class GamePanel extends JPanel implements Runnable {
         playerLeft = ImageIO.read(getClass().getResourceAsStream("images/pencil_mcgee_left.png"));
 
         testTile = ImageIO.read(getClass().getResourceAsStream("images/smol_spunch.jpg"));
+
+        for (Enemy e : enemiesInit1) {
+            enemies.add(e);
+        }
 
         addMouseListener(new MouseListener() { 
             public void mouseClicked(MouseEvent e) {} 
@@ -168,8 +177,10 @@ public class GamePanel extends JPanel implements Runnable {
                 }
             }
 
-            if (testEnemy.move(tileSize)) {
-                testEnemy = null;
+            for (Enemy e : enemies) {
+                if (e.move(tileSize)) {
+                    e = null;
+                }
             }
 
             if (p1.getLeadCount() <= 0) {
@@ -182,7 +193,7 @@ public class GamePanel extends JPanel implements Runnable {
             }
 
             if (!keyHandler.enterDown) {
-                p1.move(keyHandler, screenWidth, tiles, testEnemy);
+                p1.move(keyHandler, screenWidth, tiles, enemies);
             }
         }
     }
@@ -255,7 +266,9 @@ public class GamePanel extends JPanel implements Runnable {
             }
 
             g2.setColor(Color.pink);
-            g2.fillRect((int) testEnemy.getX(), (int) testEnemy.getY(), tileSize, tileSize);
+            for (Enemy e : enemies) {
+                g2.fillRect((int) e.getX(), (int) e.getY(), tileSize, tileSize);
+            }
 
             if (keyHandler.leftPressed) {
                 g2.drawImage(playerLeft, (int) p1.getXPos(), (int) p1.getYPos(), scale * 4, scale * 16, null);
