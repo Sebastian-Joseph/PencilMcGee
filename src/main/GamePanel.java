@@ -43,6 +43,7 @@ public class GamePanel extends JPanel implements Runnable {
     BufferedImage playerRight;
     BufferedImage playerLeft;
 
+    BufferedImage enemy;
 
     BufferedImage testTile;
 
@@ -85,6 +86,8 @@ public class GamePanel extends JPanel implements Runnable {
         player = ImageIO.read(getClass().getResourceAsStream("images/pencil_mcgee.png"));
         playerRight = ImageIO.read(getClass().getResourceAsStream("images/pencil_mcgee_right.png"));
         playerLeft = ImageIO.read(getClass().getResourceAsStream("images/pencil_mcgee_left.png"));
+
+        enemy = ImageIO.read(getClass().getResourceAsStream("images/eraser.png"));
 
         testTile = ImageIO.read(getClass().getResourceAsStream("images/smol_spunch.jpg"));
 
@@ -273,7 +276,7 @@ public class GamePanel extends JPanel implements Runnable {
 
             g2.setColor(Color.pink);
             for (Enemy e : enemies) {
-                g2.fillRect((int) e.getX(), (int) e.getY(), tileSize, tileSize);
+                g2.drawImage(enemy, (int) e.getX(), (int) e.getY(), tileSize, tileSize, null);
             }
 
             g2.setColor(Color.red);
