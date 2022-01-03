@@ -1,22 +1,26 @@
 package main;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 public class Player {
-    public double xPos;
-    public double yPos;
-    public double xSpeed;
-    public double ySpeed;
-    public double dx;
-    public double dy;
 
-    public double xIncrement;
-    public double yIncrement;
+    private double xPos;
+    private double yPos;
+    private double xSpeed;
+    private double ySpeed;
+    private double dx;
+    private double dy;
+
+    private double xIncrement;
+    private double yIncrement;
     
-    public int width;
-    public int height;
+    private int width;
+    private int height;
 
     private int leadCount;
+    private int invincibility;
+
 
     public Player(int x, int y, int w, int h) {
         xPos = x;
@@ -38,6 +42,7 @@ public class Player {
         height = h;
 
         leadCount = 300;
+        invincibility = 0;
     }
 
     public double getXPos() {
@@ -58,6 +63,10 @@ public class Player {
 
     public int getLeadCount() {
         return leadCount;
+    }
+
+    public int getInvincibility() {
+        return invincibility;
     }
 
     public void collision(Tile t, KeyHandler k, int xMax, int yMax, int offset, boolean topRow) {
@@ -108,6 +117,28 @@ public class Player {
         if (yPos >= yMax) {
             leadCount = 0;
         }
+    }
+
+    public void enemyCollision(Enemy e) {
+        if (invincibility == 0 && xPos + width >= e.getX() && xPos <= e.getX() + e.getHeightAndWidth() && yPos + height >= e.getY() && yPos <= e.getY() + e.getHeightAndWidth()) {
+            reduceLeadCount(e.getDamage());
+            invincibility = 1;
+        }
+        else if (invincibility == 1) {
+            iFrames();
+        }
+    }
+
+    private void iFrames() {
+        new Thread(() -> {
+            invincibility = 2;
+            try {
+                TimeUnit.MILLISECONDS.sleep(1500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            invincibility = 0;
+        }).start();
     }
 
     public void reset(double xInit, double yInit) {

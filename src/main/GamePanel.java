@@ -12,6 +12,7 @@ import java.awt.image.*;
 import java.io.IOException;
 import java.lang.Exception;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 
@@ -66,7 +67,7 @@ public class GamePanel extends JPanel implements Runnable {
     ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 
     Enemy[] enemiesInit1 = new Enemy[] {
-        new Enemy(tileSize * 81, tileSize * 13, tileSize * 81, tileSize * 5, 5, false)
+        new Enemy(tileSize * 81, tileSize * 13, tileSize * 81, tileSize * 4, tileSize, 4, 10, false)
     };
 
     public GamePanel() throws IOException {
@@ -178,7 +179,9 @@ public class GamePanel extends JPanel implements Runnable {
             }
 
             for (Enemy e : enemies) {
-                if (e.move(tileSize)) {
+                p1.enemyCollision(e);
+
+                if (e.move()) {
                     e = null;
                 }
             }
@@ -268,6 +271,11 @@ public class GamePanel extends JPanel implements Runnable {
             g2.setColor(Color.pink);
             for (Enemy e : enemies) {
                 g2.fillRect((int) e.getX(), (int) e.getY(), tileSize, tileSize);
+            }
+
+            g2.setColor(Color.red);
+            if (p1.getInvincibility() != 0) {
+                g2.fillRect((int) p1.getXPos() - 4, (int) p1.getYPos() - 4, scale * 4 + 8, scale * 16 + 8);
             }
 
             if (keyHandler.leftPressed) {

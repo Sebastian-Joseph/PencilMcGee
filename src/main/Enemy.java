@@ -8,11 +8,13 @@ public class Enemy {
 
     private double x;
     private double y;
+    private double heightAndWidth;
 
     private double speed;
+    private int damage;
     private boolean disapppearAtEnd;
 
-    public Enemy(double x1, double y1, double x2, double y2, double s, boolean d) {
+    public Enemy(double x1, double y1, double x2, double y2, double tileSize, double s, int d, boolean dae) {
         xStart = x1;
         yStart = y1;
         xEnd = x2;
@@ -20,9 +22,11 @@ public class Enemy {
 
         x = xStart;
         y = yStart;
+        heightAndWidth = tileSize;
 
         speed = s;
-        disapppearAtEnd = d;
+        damage = d;
+        disapppearAtEnd = dae;
     }
 
     public double getX() {
@@ -33,8 +37,16 @@ public class Enemy {
         return y;
     }
 
-    public boolean move(double tileSize) {
-        if (Math.sqrt(((x - xEnd) * (x - xEnd)) + ((y - yEnd) * (y - yEnd))) <= tileSize / 8) {
+    public double getHeightAndWidth() {
+        return heightAndWidth;
+    }
+
+    public int getDamage() {
+        return damage;
+    }
+
+    public boolean move() {
+        if (Math.sqrt(((x - xEnd) * (x - xEnd)) + ((y - yEnd) * (y - yEnd))) <= heightAndWidth / 8) {
             x = xEnd;
             y = yEnd;
             double placeholderX = xEnd;
