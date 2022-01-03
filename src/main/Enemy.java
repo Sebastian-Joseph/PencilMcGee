@@ -5,6 +5,10 @@ public class Enemy {
     private double yStart;
     private double xEnd;
     private double yEnd;
+    private double xStartInit;
+    private double yStartInit;
+    private double xEndInit;
+    private double yEndInit;
 
     private double x;
     private double y;
@@ -22,6 +26,12 @@ public class Enemy {
 
         x = xStart;
         y = yStart;
+
+        xStartInit = xStart;
+        yStartInit = yStart;
+        xEndInit = xEnd;
+        yEndInit = yEnd;
+
         heightAndWidth = tileSize;
 
         speed = s;
@@ -73,5 +83,14 @@ public class Enemy {
         x -= scrollAmount;
         xStart -= scrollAmount;
         xEnd -= scrollAmount;
+    }
+
+    public void reset() {
+        xStart = xStartInit;
+        yStart = yStartInit;
+        xEnd = xEndInit;
+        yEnd = yEndInit;
+        x = xStart;
+        y = yStart;
     }
 }

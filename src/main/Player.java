@@ -145,6 +145,7 @@ public class Player {
         xPos = xInit;
         yPos = yInit;
         leadCount = 300;
+        invincibility = 0;
     }
 
     public void reduceLeadCount(int r) {

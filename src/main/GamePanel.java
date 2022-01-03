@@ -193,6 +193,9 @@ public class GamePanel extends JPanel implements Runnable {
                         tiles.getMap()[i][j].reset();
                     }
                 }
+                for (Enemy e : enemies) {
+                    e.reset();
+                }
             }
 
             if (!keyHandler.enterDown) {
