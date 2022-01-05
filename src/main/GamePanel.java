@@ -67,8 +67,22 @@ public class GamePanel extends JPanel implements Runnable {
 
     ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 
+    private final int level1EnemyDamage = 10;
+
     Enemy[] enemiesInit1 = new Enemy[] {
-        new Enemy(tileSize * 81, tileSize * 13, tileSize * 81, tileSize * 4, tileSize, 4, 10, false)
+        new Enemy(tileSize * 81, tileSize * 13, tileSize * 81, tileSize * 4, tileSize, 4, level1EnemyDamage, false),
+        new Enemy(tileSize * 96, tileSize * 14, tileSize * 102, tileSize * 14, tileSize, 3, level1EnemyDamage, false),
+        new Enemy(tileSize * 202, tileSize * 5, tileSize * 206, tileSize * 17, tileSize * 2, 4, level1EnemyDamage, false),
+        new Enemy(tileSize * 228, tileSize * 18, tileSize * 241, tileSize * 16, tileSize * 2, 5, level1EnemyDamage, false),
+        new Enemy(tileSize * 250, tileSize * 15, tileSize * 257, tileSize * 15, tileSize, 3, level1EnemyDamage, false),
+        new Enemy(tileSize * 270, tileSize * 11, tileSize * 264, tileSize * 11, tileSize, 2, level1EnemyDamage, false),
+        new Enemy(tileSize * 293, tileSize * 3, tileSize * 293, tileSize * 11, tileSize, 3, level1EnemyDamage, false),
+        new Enemy(tileSize * 293, tileSize * 11, tileSize * 302, tileSize * 11, tileSize, 3, level1EnemyDamage, false),
+        new Enemy(tileSize * 327.25, tileSize * 16, tileSize * 327.25, tileSize * 24.5, tileSize * 1.5, 2, level1EnemyDamage, false),
+        new Enemy(tileSize * 687, tileSize * 14, tileSize * 704, tileSize * 9, tileSize * 2, 3, level1EnemyDamage, false),
+        new Enemy(tileSize * 752, tileSize, tileSize * 752, tileSize * 9, tileSize * 2, 4, level1EnemyDamage, false),
+        new Enemy(tileSize * 773, tileSize * 9, tileSize * 773, tileSize, tileSize * 2, 3, level1EnemyDamage, false)
+
     };
 
     public GamePanel() throws IOException {
@@ -276,7 +290,7 @@ public class GamePanel extends JPanel implements Runnable {
 
             g2.setColor(Color.pink);
             for (Enemy e : enemies) {
-                g2.drawImage(enemy, (int) e.getX(), (int) e.getY(), tileSize, tileSize, null);
+                g2.drawImage(enemy, (int) e.getX(), (int) e.getY(), (int) e.getHeightAndWidth(), (int) e.getHeightAndWidth(), null);
             }
 
             g2.setColor(Color.red);

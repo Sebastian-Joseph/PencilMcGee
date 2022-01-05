@@ -21,6 +21,8 @@ public class Player {
     private int leadCount;
     private int invincibility;
 
+    private final int leadCountLevel1 = 400;
+
 
     public Player(int x, int y, int w, int h) {
         xPos = x;
@@ -41,7 +43,7 @@ public class Player {
         width = w;
         height = h;
 
-        leadCount = 300;
+        leadCount = leadCountLevel1;
         invincibility = 0;
     }
 
@@ -144,7 +146,7 @@ public class Player {
     public void reset(double xInit, double yInit) {
         xPos = xInit;
         yPos = yInit;
-        leadCount = 300;
+        leadCount = leadCountLevel1;
         invincibility = 0;
     }
 
