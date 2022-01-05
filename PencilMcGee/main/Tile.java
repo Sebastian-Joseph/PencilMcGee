@@ -25,7 +25,7 @@ public class Tile {
     private BufferedImage stage3;
 
     private BufferedImage white;
-
+    private BufferedImage coin;
     private BufferedImage scaledImage;
 
     public Tile(BufferedImage image, int type, int x, int y, int s) throws IOException {
@@ -74,6 +74,7 @@ public class Tile {
 
         final AffineTransform at = AffineTransform.getScaleInstance((double) size/32, (double) size/32);
         final AffineTransformOp ato = new AffineTransformOp(at, AffineTransformOp.TYPE_BICUBIC);
+
 
 
         if (type == 0) {

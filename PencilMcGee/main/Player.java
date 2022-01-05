@@ -1,6 +1,12 @@
 package main;
 
+import java.awt.*;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.LockSupport;
+
 
 public class Player {
     public double xPos;
@@ -17,6 +23,8 @@ public class Player {
     public int height;
 
     private int leadCount;
+    private int point;
+    private int invincibility;
 
     public Player(int x, int y, int w, int h) {
         xPos = x;
@@ -38,6 +46,9 @@ public class Player {
         height = h;
 
         leadCount = 300;
+        point = 0;
+        invincibility = 0;
+        Timer timer = new Timer();
     }
 
     public double getXPos() {
@@ -60,7 +71,20 @@ public class Player {
         return leadCount;
     }
 
-    public void collision(Tile t, KeyHandler k, int xMax, int yMax, int offset, boolean topRow) {
+    public void reduceLeadCount(int r) {
+        leadCount -= r;
+    }
+
+    public int getPointCount() {
+        return point;
+    }
+
+    public void addPointCount(int a) {
+        point -= a;
+    }
+
+
+    public void collision(Tile t, KeyHandler k, int xMax, int yMax, int offset, boolean topRow)  {
         if (topRow && t.getType() == 1) {
             if (xPos + width >= t.getX() - xSpeed && xPos <= t.getX() + (offset / 2) && yPos < t.getY() + offset - ySpeed) {
                 xPos = t.getX() - width - xSpeed;
@@ -74,32 +98,55 @@ public class Player {
                 yPos = t.getY() + offset;
                 k.upPressed = false;
                 dy = 0;
+
             }
         }
         else {
             if (t.getType() % 2 == 1 && xPos + width >= t.getX() - xSpeed && xPos <= t.getX() + (offset / 2) && yPos + height > t.getY() + ySpeed && yPos < t.getY() + offset - ySpeed) {
                 xPos = t.getX() - width - xSpeed;
                 dx = -1 * xIncrement;
-            }
-            else if (t.getType() % 2 == 1 && xPos + width >= t.getX() + (offset / 2) && xPos <= t.getX() + offset + xSpeed && yPos + height > t.getY() + ySpeed && yPos < t.getY() + offset - ySpeed) {
+            } else if (t.getType() % 2 == 1 && xPos + width >= t.getX() + (offset / 2) && xPos <= t.getX() + offset + xSpeed && yPos + height > t.getY() + ySpeed && yPos < t.getY() + offset - ySpeed) {
                 xPos = t.getX() + offset + xSpeed;
                 dx = xIncrement;
-            }
-            else if (t.getType() % 2 == 1 && xPos + width > t.getX() && xPos < t.getX() + offset && yPos + height >= t.getY() && yPos <= t.getY() + (offset / 2)) {
+
+            } else if (t.getType() % 2 == 1 && xPos + width > t.getX() && xPos < t.getX() + offset && yPos + height >= t.getY() && yPos <= t.getY() + (offset / 2)) {
                 yPos = t.getY() - height;
                 dy = 0;
-            }
-            else if (t.getType() % 2 == 1 && xPos + width > t.getX() && xPos < t.getX() + offset && yPos + height >= t.getY() + (offset / 2) && yPos <= t.getY() + offset) {
+
+            } else if (t.getType() % 2 == 1 && xPos + width > t.getX() && xPos < t.getX() + offset && yPos + height >= t.getY() + (offset / 2) && yPos <= t.getY() + offset) {
                 yPos = t.getY() + offset;
                 k.upPressed = false;
                 dy = 0;
+
+            }
+            //spikes collision
+
+            //head hits spike
+            else if (t.getType() == 6 && xPos + width > t.getX() && xPos < t.getX() + offset && yPos + height >= t.getY() + (offset / 2) && yPos <= t.getY() + offset) {
+                yPos = t.getY() + offset;
+                k.upPressed = false;
+                dy = 0;
+                reduceLeadCount(1);
+            }
+            //standing on spike
+            else if (t.getType() == 6 && invincibility == 0 && xPos + width > t.getX() && xPos < t.getX() + offset && yPos + height >= t.getY() && yPos <= t.getY() + (offset / 2)) {
+                yPos = t.getY() - height;
+                dy = 0;
+                for (int i = 0; i == 0; i = 300) {
+                    if (i % 2 == 1) {
+                        reduceLeadCount(1);
+                    }
+                }
+
+            }
+
+            //coin up
+            else if (t.getType() == 4 && xPos + width > t.getX() && xPos < t.getX() + offset && yPos + height >= t.getY() + (offset / 2) && yPos <= t.getY() + offset) {
+
             }
         }
 
-        // if (xPos >= xMax - width) {
-        //     dx = 0;
-        //     xPos = xMax - width;
-        // }
+
         if (xPos <= 0) {
             dx = 0;
             xPos = 0;
@@ -116,9 +163,7 @@ public class Player {
         leadCount = 300;
     }
 
-    public void reduceLeadCount(int r) {
-        leadCount -= r;
-    }
+
 
     public void move(KeyHandler k, int xMax, Tilemap tm, ArrayList<Enemy> al) {
         if (k.leftPressed) {

@@ -66,12 +66,16 @@ public class Tilemap {
                     map[row][col].newImage(smallpooper);
                 }
                 if (c.getRed() == 200 && c.getGreen() == 0 && c.getBlue() == 0) {
+                    map[row][col] = new Tile(scaledImage, 6, tileSize * col, tileSize * row, tileSize);
                     map[row][col].newImage(spikes);
                 }
                 if (c.getRed() == 150 && c.getGreen() == 0 && c.getBlue() == 0) {
+                    map[row][col] = new Tile(scaledImage, 6, tileSize * col, tileSize * row, tileSize);
                     map[row][col].newImage(spikesEdge);
+
                 }
                 if (c.getRed() == 250 && c.getGreen() == 200 && c.getBlue() == 0) {
+                    map[row][col] = new Tile(scaledImage, 4, tileSize * col, tileSize * row, tileSize);
                     map[row][col].newImage(coin);
                 }
 

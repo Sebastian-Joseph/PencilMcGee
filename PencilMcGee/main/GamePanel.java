@@ -46,6 +46,7 @@ public class GamePanel extends JPanel implements Runnable {
     BufferedImage testTile;
 
     private Tilemap tiles = new Tilemap(screenWidth, screenHeight, tileSize);
+
     private boolean mouseDown = false;
     // private boolean enterDown = false;
 
@@ -105,16 +106,6 @@ public class GamePanel extends JPanel implements Runnable {
         );
 
 
-        // addKeyListener(new KeyListener() {
-        //     public void keyTyped(KeyEvent ke) {}
-        //     public void keyPressed(KeyEvent ke) {
-        //         if (ke.getKeyCode() == KeyEvent.VK_ENTER){
-        //             enterDown = !enterDown;
-        //         }
-        //     }
-        //     public void keyReleased(KeyEvent ke) {}
-        // }
-        // );
 
 
     }
@@ -135,9 +126,7 @@ public class GamePanel extends JPanel implements Runnable {
         gameThread = new Thread(this);
         gameThread.start();
 
-        // for (int i = 0; i < tiles.length; i++) {
-        //     tileImages[i] = tiles[i].getImage();
-        // }
+
     }
 
 
@@ -251,6 +240,9 @@ public class GamePanel extends JPanel implements Runnable {
                                             || (tileBounds.contains(playerCurrentPosition2) && !tiles.checkTileToLeft(i, j) && !tiles.checkTileToLeft(i - 1, j) && !tiles.checkTileToLeft(i - 2, j))
                             ) {
                                 if (tiles.getMap()[i][j].change()) {
+                                    p1.reduceLeadCount(1);
+                                }
+                                if(p1.getXPos() == tiles.getMap()[i][j].getX() && p1.getYPos() == tiles.getMap()[i][j].getY()){
                                     p1.reduceLeadCount(1);
                                 }
                             }
