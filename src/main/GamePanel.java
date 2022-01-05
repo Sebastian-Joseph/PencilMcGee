@@ -196,9 +196,15 @@ public class GamePanel extends JPanel implements Runnable {
             }
 
             for (Enemy e : enemies) {
+                for (int i = 0; i < tiles.getMap().length; i++) {
+                    for (int j = 0; j < tiles.getMap()[i].length; j++) {
+                        e.collidesWithTile(tiles.getMap()[i][j]);
+                    }
+                }
                 p1.enemyCollision(e);
 
                 if (e.move()) {
+                    enemies.remove(e);
                     e = null;
                 }
             }

@@ -93,4 +93,14 @@ public class Enemy {
         x = xStart;
         y = yStart;
     }
+
+    public void collidesWithTile(Tile t) {
+        if (t.getType() == 3 && x + heightAndWidth > t.getX() && x < t.getX() + t.getSize() && y + heightAndWidth > t.getY() && y < t.getY() + t.getSize()) {
+            t.revert();
+            if (disapppearAtEnd) {
+                xEnd = x;
+                yEnd = y;
+            }
+        }
+    }
 }
