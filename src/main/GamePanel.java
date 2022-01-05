@@ -44,6 +44,7 @@ public class GamePanel extends JPanel implements Runnable {
     BufferedImage playerLeft;
 
     BufferedImage enemy;
+    BufferedImage enemy2;
 
     BufferedImage testTile;
 
@@ -82,7 +83,10 @@ public class GamePanel extends JPanel implements Runnable {
         new Enemy(tileSize * 687, tileSize * 14, tileSize * 704, tileSize * 9, tileSize * 2, 3, level1EnemyDamage, false),
         new Enemy(tileSize * 752, tileSize, tileSize * 752, tileSize * 9, tileSize * 2, 4, level1EnemyDamage, false),
         new Enemy(tileSize * 773, tileSize * 9, tileSize * 773, tileSize, tileSize * 2, 3, level1EnemyDamage, false)
+    };
 
+    Cannon[] cannons1 = new Cannon[] {
+        new Cannon(tileSize * 178, tileSize, 60, 2, tileSize, 2, level1EnemyDamage)
     };
 
     public GamePanel() throws IOException {
@@ -102,6 +106,7 @@ public class GamePanel extends JPanel implements Runnable {
         playerLeft = ImageIO.read(getClass().getResourceAsStream("images/pencil_mcgee_left.png"));
 
         enemy = ImageIO.read(getClass().getResourceAsStream("images/eraser.png"));
+        enemy2 = ImageIO.read(getClass().getResourceAsStream("images/eraser2.png"));
 
         testTile = ImageIO.read(getClass().getResourceAsStream("images/smol_spunch.jpg"));
 
@@ -195,17 +200,24 @@ public class GamePanel extends JPanel implements Runnable {
                 }
             }
 
-            for (Enemy e : enemies) {
+            for (Cannon c : cannons1) {
+                // System.out.println(c.getCount());
+                if (c.createSpawn()) {
+                    Enemy temp = new Enemy(c.getSpawn().getX(), c.getSpawn().getY(), c.getSpawn().getXEnd(), c.getSpawn().getYEnd(), tileSize, c.getSpawn().getSpeed(), c.getSpawn().getDamage(), true);
+                    enemies.add(temp);
+                }
+            }
+
+            for (int e = 0; e < enemies.size(); e++) {
                 for (int i = 0; i < tiles.getMap().length; i++) {
                     for (int j = 0; j < tiles.getMap()[i].length; j++) {
-                        e.collidesWithTile(tiles.getMap()[i][j]);
+                        enemies.get(e).collidesWithTile(tiles.getMap()[i][j]);
                     }
                 }
-                p1.enemyCollision(e);
+                p1.enemyCollision(enemies.get(e));
 
-                if (e.move()) {
-                    enemies.remove(e);
-                    e = null;
+                if (enemies.get(e).move()) {
+                    enemies.remove(enemies.get(e));
                 }
             }
 
@@ -222,7 +234,7 @@ public class GamePanel extends JPanel implements Runnable {
             }
 
             if (!keyHandler.enterDown) {
-                p1.move(keyHandler, screenWidth, tiles, enemies);
+                p1.move(keyHandler, screenWidth, tiles, enemies, cannons1);
             }
         }
     }
@@ -295,8 +307,17 @@ public class GamePanel extends JPanel implements Runnable {
             }
 
             g2.setColor(Color.pink);
+            for (Cannon c : cannons1) {
+                g2.fillRect(c.getX(), c.getY(), tileSize, tileSize);
+            }
+
             for (Enemy e : enemies) {
-                g2.drawImage(enemy, (int) e.getX(), (int) e.getY(), (int) e.getHeightAndWidth(), (int) e.getHeightAndWidth(), null);
+                if (e.getDisappearance()) {
+                    g2.drawImage(enemy2, (int) e.getX(), (int) e.getY(), (int) e.getHeightAndWidth(), (int) e.getHeightAndWidth(), null);
+                }
+                else {
+                    g2.drawImage(enemy, (int) e.getX(), (int) e.getY(), (int) e.getHeightAndWidth(), (int) e.getHeightAndWidth(), null);
+                }
             }
 
             g2.setColor(Color.red);

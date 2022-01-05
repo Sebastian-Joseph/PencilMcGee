@@ -16,7 +16,7 @@ public class Enemy {
 
     private double speed;
     private int damage;
-    private boolean disapppearAtEnd;
+    private boolean disappearAtEnd;
 
     public Enemy(double x1, double y1, double x2, double y2, double tileSize, double s, int d, boolean dae) {
         xStart = x1;
@@ -36,7 +36,7 @@ public class Enemy {
 
         speed = s;
         damage = d;
-        disapppearAtEnd = dae;
+        disappearAtEnd = dae;
     }
 
     public double getX() {
@@ -47,12 +47,28 @@ public class Enemy {
         return y;
     }
 
+    public double getXEnd() {
+        return xEnd;
+    }
+
+    public double getYEnd() {
+        return yEnd;
+    }
+
     public double getHeightAndWidth() {
         return heightAndWidth;
     }
 
+    public double getSpeed() {
+        return speed;
+    }
+
     public int getDamage() {
         return damage;
+    }
+
+    public boolean getDisappearance() {
+        return disappearAtEnd;
     }
 
     public boolean move() {
@@ -66,7 +82,7 @@ public class Enemy {
             xStart = placeholderX;
             yStart = placeholderY;
 
-            return disapppearAtEnd;
+            return disappearAtEnd;
         }
         else {
             double xOffset = xEnd - x;
@@ -95,12 +111,14 @@ public class Enemy {
     }
 
     public void collidesWithTile(Tile t) {
+        int temp = 0;
         if (t.getType() == 3 && x + heightAndWidth > t.getX() && x < t.getX() + t.getSize() && y + heightAndWidth > t.getY() && y < t.getY() + t.getSize()) {
             t.revert();
-            if (disapppearAtEnd) {
-                xEnd = x;
-                yEnd = y;
-            }
+            temp = 3;
+        }
+        if (disappearAtEnd && (t.getType() % 2 == 1 || temp == 3) && x + heightAndWidth > t.getX() && x < t.getX() + t.getSize() && y + heightAndWidth > t.getY() && y < t.getY() + t.getSize()) {
+            xEnd = x;
+            yEnd = y;
         }
     }
 }
