@@ -86,7 +86,38 @@ public class GamePanel extends JPanel implements Runnable {
     };
 
     Cannon[] cannons1 = new Cannon[] {
-        new Cannon(tileSize * 178, tileSize, 60, 2, tileSize, 2, level1EnemyDamage)
+        new Cannon(tileSize * 122, tileSize * 19, 150, 2, tileSize, 2, level1EnemyDamage, 45),
+        new Cannon(tileSize * 123, tileSize * 19, 150, 2, tileSize, 2, level1EnemyDamage, 30),
+        new Cannon(tileSize * 124, tileSize * 19, 150, 2, tileSize, 2, level1EnemyDamage, 15),
+        new Cannon(tileSize * 125, tileSize * 19, 150, 2, tileSize, 2, level1EnemyDamage, 0),
+        
+        new Cannon(tileSize * 177, tileSize, 120, 2, tileSize, 3, level1EnemyDamage, 0),
+        new Cannon(tileSize * 183, tileSize, 30, 2, tileSize, 3, level1EnemyDamage, 0),
+
+        new Cannon(tileSize * 417, tileSize * 17, 240, 3, tileSize, 4, level1EnemyDamage, 0),
+
+        new Cannon(tileSize * 488, tileSize * 10, 30, 0, tileSize, 3, level1EnemyDamage, 0),
+        new Cannon(tileSize * 490, tileSize * 12, 30, 1, tileSize, 3, level1EnemyDamage, 0),
+        new Cannon(tileSize * 488, tileSize * 14, 120, 2, tileSize, 4, level1EnemyDamage, 0),
+
+        new Cannon(tileSize * 505, tileSize, 120, 2, tileSize, 6, level1EnemyDamage, 0),
+        new Cannon(tileSize * 507, tileSize, 120, 2, tileSize, 6, level1EnemyDamage, 0),
+        new Cannon(tileSize * 509, tileSize, 120, 2, tileSize, 6, level1EnemyDamage, 0),
+
+        new Cannon(tileSize * 519, tileSize, 120, 2, tileSize, 6, level1EnemyDamage, 0),
+        new Cannon(tileSize * 521, tileSize, 120, 2, tileSize, 6, level1EnemyDamage, 0),
+        new Cannon(tileSize * 523, tileSize, 120, 2, tileSize, 6, level1EnemyDamage, 0),
+
+        new Cannon(tileSize * 564, tileSize * 14, 120, 3, tileSize, 5, level1EnemyDamage, 0),
+        new Cannon(tileSize * 564, tileSize * 15, 120, 3, tileSize, 5, level1EnemyDamage, 0),
+        new Cannon(tileSize * 564, tileSize * 16, 120, 3, tileSize, 5, level1EnemyDamage, 0),
+        
+        new Cannon(tileSize * 585, tileSize * 14, 90, 3, tileSize, 5, level1EnemyDamage, 0),
+        new Cannon(tileSize * 586, tileSize * 13, 120, 0, tileSize, 5, level1EnemyDamage, 0),
+        new Cannon(tileSize * 587, tileSize * 14, 90, 1, tileSize, 5, level1EnemyDamage, 0),
+        new Cannon(tileSize * 586, tileSize * 15, 120, 2, tileSize, 5, level1EnemyDamage, 0)
+
+
     };
 
     public GamePanel() throws IOException {
@@ -201,23 +232,26 @@ public class GamePanel extends JPanel implements Runnable {
             }
 
             for (Cannon c : cannons1) {
-                // System.out.println(c.getCount());
-                if (c.createSpawn()) {
-                    Enemy temp = new Enemy(c.getSpawn().getX(), c.getSpawn().getY(), c.getSpawn().getXEnd(), c.getSpawn().getYEnd(), tileSize, c.getSpawn().getSpeed(), c.getSpawn().getDamage(), true);
-                    enemies.add(temp);
+                if (c.getX() <= screenWidth * 2 && c.getX() >= tileSize * -4) {
+                    if (c.createSpawn()) {
+                        Enemy temp = new Enemy(c.getSpawn().getX(), c.getSpawn().getY(), c.getSpawn().getXEnd(), c.getSpawn().getYEnd(), tileSize, c.getSpawn().getSpeed(), c.getSpawn().getDamage(), true);
+                        enemies.add(temp);
+                    }
                 }
             }
 
             for (int e = 0; e < enemies.size(); e++) {
-                for (int i = 0; i < tiles.getMap().length; i++) {
-                    for (int j = 0; j < tiles.getMap()[i].length; j++) {
-                        enemies.get(e).collidesWithTile(tiles.getMap()[i][j]);
+                if (enemies.get(e).getX() <= screenWidth * 2 && enemies.get(e).getX() >= tileSize * -4) {
+                    for (int i = 0; i < tiles.getMap().length; i++) {
+                        for (int j = 0; j < tiles.getMap()[i].length; j++) {
+                            enemies.get(e).collidesWithTile(tiles.getMap()[i][j]);
+                        }
                     }
-                }
-                p1.enemyCollision(enemies.get(e));
+                    p1.enemyCollision(enemies.get(e));
 
-                if (enemies.get(e).move()) {
-                    enemies.remove(enemies.get(e));
+                    if (enemies.get(e).move()) {
+                        enemies.remove(enemies.get(e));
+                    }
                 }
             }
 
@@ -226,10 +260,18 @@ public class GamePanel extends JPanel implements Runnable {
                 for (int i = 0; i < tiles.getMap().length; i++) {
                     for (int j = 0; j < tiles.getMap()[i].length; j++) {
                         tiles.getMap()[i][j].reset();
+                        if (tiles.getMap()[i][j].getType() == 3) tiles.getMap()[i][j].revert();
                     }
+                }
+                enemies.clear();
+                for (Enemy e : enemiesInit1) {
+                    enemies.add(e);
                 }
                 for (Enemy e : enemies) {
                     e.reset();
+                }
+                for (Cannon c : cannons1) {
+                    c.reset();
                 }
             }
 
@@ -308,15 +350,19 @@ public class GamePanel extends JPanel implements Runnable {
 
             g2.setColor(Color.pink);
             for (Cannon c : cannons1) {
-                g2.fillRect(c.getX(), c.getY(), tileSize, tileSize);
+                if (c.getX() <= screenWidth * 2 && c.getX() >= tileSize * -4) {
+                    g2.fillRect(c.getX(), c.getY(), tileSize, tileSize);
+                }
             }
 
             for (Enemy e : enemies) {
-                if (e.getDisappearance()) {
-                    g2.drawImage(enemy2, (int) e.getX(), (int) e.getY(), (int) e.getHeightAndWidth(), (int) e.getHeightAndWidth(), null);
-                }
-                else {
-                    g2.drawImage(enemy, (int) e.getX(), (int) e.getY(), (int) e.getHeightAndWidth(), (int) e.getHeightAndWidth(), null);
+                if (e.getX() <= screenWidth * 2 && e.getX() >= tileSize * -4) {
+                    if (e.getDisappearance()) {
+                        g2.drawImage(enemy2, (int) e.getX(), (int) e.getY(), (int) e.getHeightAndWidth(), (int) e.getHeightAndWidth(), null);
+                    }
+                    else {
+                        g2.drawImage(enemy, (int) e.getX(), (int) e.getY(), (int) e.getHeightAndWidth(), (int) e.getHeightAndWidth(), null);
+                    }
                 }
             }
 

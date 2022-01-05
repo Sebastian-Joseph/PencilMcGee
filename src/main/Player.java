@@ -21,7 +21,7 @@ public class Player {
     private int leadCount;
     private int invincibility;
 
-    private final int leadCountLevel1 = 400;
+    private final int leadCountLevel1 = 500;
 
 
     public Player(int x, int y, int w, int h) {
