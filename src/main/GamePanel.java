@@ -33,9 +33,9 @@ public class GamePanel extends JPanel implements Runnable {
     final int maxScreenRow = 27;
     final int screenWidth = tileSize * maxScreenCol;
     final int screenHeight = tileSize * maxScreenRow;
+
     BufferedImage background;
     BufferedImage player;
-    BufferedImage testTile;
 
     private Tilemap tiles = new Tilemap(screenWidth, screenHeight, tileSize);
     private boolean mouseDown = false;
@@ -53,7 +53,7 @@ public class GamePanel extends JPanel implements Runnable {
     KeyHandler keyHandler = new KeyHandler();
     Thread gameThread;
 
-    Player p1 = new Player(100, 100, tileSize / 2, tileSize * 2);
+    Player p1 = new Player(tileSize / 2, tileSize * 2);
 
 
     public GamePanel() throws IOException {
@@ -63,11 +63,10 @@ public class GamePanel extends JPanel implements Runnable {
         this.addKeyListener(keyHandler);
         this.setFocusable(true);
 
-        tiles.createMap("images/amogus2.png");
+        tiles.createMap("images/amogus-2.png");
 
         background = ImageIO.read(getClass().getResourceAsStream("images/pooper3.5.png"));
         player = ImageIO.read(getClass().getResourceAsStream("images/pencil_mcgee.png"));
-        testTile = ImageIO.read(getClass().getResourceAsStream("images/smol_spunch.jpg"));
 
         addMouseListener(new MouseListener() { 
             public void mouseClicked(MouseEvent e) {} 
@@ -157,6 +156,15 @@ public class GamePanel extends JPanel implements Runnable {
         if(!enterDown){
             p1.move(keyHandler, screenWidth, tiles);
         }
+
+        if (p1.getLeadCount() <= 0) {
+            p1.reset();
+            for (int i = 0; i < tiles.getMap().length; i++) {
+                for (int j = 0; j < tiles.getMap()[i].length; j++) {
+                    tiles.getMap()[i][j].reset();
+                }
+            }
+        }
     }
 
 
@@ -211,8 +219,9 @@ public class GamePanel extends JPanel implements Runnable {
                                             || (tileBounds.contains(playerCurrentPosition1) && !tiles.checkTileToLeft(i, j) && !tiles.checkTileToLeft(i + 1, j) && !tiles.checkTileToLeft(i + 2, j))
                                             || (tileBounds.contains(playerCurrentPosition2) && !tiles.checkTileToLeft(i, j) && !tiles.checkTileToLeft(i - 1, j) && !tiles.checkTileToLeft(i - 2, j))
                             ) {
-                                tiles.getMap()[i][j].change();
-                            }
+                                if (tiles.getMap()[i][j].change()) {
+                                    p1.reduceLeadCount(1);
+                                }
                         }
                     }
                 }
@@ -223,16 +232,16 @@ public class GamePanel extends JPanel implements Runnable {
                     g2.drawImage(tiles.getMap()[i][j].getImage(), tiles.getMap()[i][j].getX(), tiles.getMap()[i][j].getY(), null);
                 }
             }
-
+        }
             g2.drawImage(player, (int) p1.getXPos(), (int) p1.getYPos(), scale * 4, scale * 16, null);
 
             if(enterDown == true){
                 g2.drawImage(testTile, 500, 250, tileSize*2, tileSize*2, null);
                 if(mouseDown == true){
-                    Point point = MouseInfo.getPointerInfo().getLocation();
-                    SwingUtilities.convertPointFromScreen(point, this);
+                    Point point2 = MouseInfo.getPointerInfo().getLocation();
+                    SwingUtilities.convertPointFromScreen(point2, this);
                     Rectangle resetBounds = new Rectangle(500, 250, tileSize*2, tileSize*2);
-                    if(resetBounds.contains(point)){
+                    if(resetBounds.contains(point2)){
                         enterDown = false;
                         System.out.println("pressed");
                         p1.reset();
@@ -244,6 +253,8 @@ public class GamePanel extends JPanel implements Runnable {
                     }
                 }
             }
+            
+            g2.drawString(String.valueOf(p1.getLeadCount()), 50, 50);
 
             g2.dispose();
         }

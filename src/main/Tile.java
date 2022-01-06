@@ -26,6 +26,8 @@ public class Tile {
 
 	private BufferedImage white;
 
+	private int xInit;
+	private int yInit;
 	private BufferedImage scaledImage;
 
 	public Tile(BufferedImage image, int type, int x, int y, int s) throws IOException {
@@ -38,6 +40,13 @@ public class Tile {
 		size = s;
 		scaledImage = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
 
+		xInit = x;
+		yInit = y;
+
+		white = ImageIO.read(getClass().getResourceAsStream("images/small_pooper.png"));
+		stage1 = ImageIO.read(getClass().getResourceAsStream("images/graphite1.png"));
+		stage2 = ImageIO.read(getClass().getResourceAsStream("images/graphite2.png"));
+		stage3 = ImageIO.read(getClass().getResourceAsStream("images/graphite3.png"));
 	}
 
 	public BufferedImage getImage() {
@@ -60,22 +69,18 @@ public class Tile {
 		x -= scrollAmount;
 	}
 
-	public void reset(){
-		x = initialx;
-		y = initialy;
+	public void reset() {
+		x = xInit;
+		y = yInit;
 	}
 
 	public void newImage(BufferedImage newimage) throws IOException{
 		image = newimage;
 	}
 
-	public void change() {
-		
-
+	public boolean change() {
 		final AffineTransform at = AffineTransform.getScaleInstance((double) size/32, (double) size/32);
         final AffineTransformOp ato = new AffineTransformOp(at, AffineTransformOp.TYPE_BICUBIC);
-		
-
 		if (type == 0) {
 			new Thread(() -> {
 				try {
@@ -114,6 +119,8 @@ public class Tile {
 
 
 			}).start();
+			return true;
 		}
+		return false;
 	}
 }
