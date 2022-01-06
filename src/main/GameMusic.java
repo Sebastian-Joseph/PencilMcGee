@@ -6,12 +6,12 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 import java.net.URL;
 
-public class Music {
+public class GameMusic {
 
     Clip clip;
     URL soundURL[] = new URL[30];
 
-    public Music() {
+    public GameMusic() {
 
         soundURL[0] = getClass().getResource("Music/game_music.wav");
         soundURL[1] = getClass().getResource("Music/jump.wav");

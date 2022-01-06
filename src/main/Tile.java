@@ -65,20 +65,26 @@ public class Tile {
 		return y;
 	}
 
+	public int getSize() {
+		return size;
+	}
+
 	public void scroll(double scrollAmount) {
 		x -= scrollAmount;
 	}
 
 	public void reset() {
-		x = xInit;
-		y = yInit;
+		x = initialx;
+		y = initialy;
 	}
 
-	public void newImage(BufferedImage newimage) throws IOException{
+	public void newImage(BufferedImage newimage) throws IOException {
 		image = newimage;
 	}
 
 	public boolean change() {
+		
+
 		final AffineTransform at = AffineTransform.getScaleInstance((double) size/32, (double) size/32);
         final AffineTransformOp ato = new AffineTransformOp(at, AffineTransformOp.TYPE_BICUBIC);
 		if (type == 0) {
@@ -89,38 +95,49 @@ public class Tile {
 					stage2 = ImageIO.read(getClass().getResourceAsStream("images/graphite2.png"));
 					stage3 = ImageIO.read(getClass().getResourceAsStream("images/graphite3.png"));
 				} 
-				catch (IOException e1) {
-		
-				}
+				catch (IOException e1) {}
 				image = ato.filter(stage1, scaledImage);
-				type = 1;
+				type = 3;
 
 				try {
 					TimeUnit.SECONDS.sleep(4);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				image = ato.filter(stage2, scaledImage);
+				if (type == 3) image = ato.filter(stage2, scaledImage);
 
 				try {
 					TimeUnit.SECONDS.sleep(4);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				image = ato.filter(stage3, scaledImage);
+				if (type == 3) image = ato.filter(stage3, scaledImage);
 
 				try {
 					TimeUnit.SECONDS.sleep(2);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				image = white;
-				type = 0;
+				if (type == 3) {
+					image = white;
+					type = 0;
+				}
 
-
+				
 			}).start();
+
 			return true;
 		}
+		
 		return false;
+	}
+
+	public void revert() {
+		try {
+			white = ImageIO.read(getClass().getResourceAsStream("images/small_pooper.png"));
+		} 
+		catch (IOException e1) {}
+		image = white;
+		type = 0;
 	}
 }

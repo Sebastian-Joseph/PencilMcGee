@@ -1,5 +1,8 @@
 package main;
 
+import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
+
 public class Player {
     private double xPos;
     private double yPos;
@@ -18,13 +21,17 @@ public class Player {
     private int height;
 
     private int leadCount;
+    private int invincibility;
+
+    private final int leadCountLevel1 = 500;
+
 
     public Player(int w, int h) {
         xPos = xInit;
         yPos = yInit;
         xSpeed = 6;
         ySpeed = 16;
-        xIncrement = 0.9;
+        xIncrement = 0.8;
         yIncrement = 0.6;
         int size = w * 2;
         int scale = size / 8;
@@ -38,7 +45,8 @@ public class Player {
         width = w;
         height = h;
 
-        leadCount = 100;
+        leadCount = leadCountLevel1;
+        invincibility = 0;
     }
 
     public double getXPos() {
@@ -61,46 +69,110 @@ public class Player {
         return leadCount;
     }
 
-    public void reduceLeadCount(int r) {
-        leadCount -= r;
+    public int getInvincibility() {
+        return invincibility;
     }
 
-    public void collision(Tile t, KeyHandler k, int xMax, int yMax, int offset) {
-        if (t.getType() == 1 && xPos + width >= t.getX() - xSpeed && xPos <= t.getX() + (offset / 2) && yPos + height > t.getY() + ySpeed && yPos < t.getY() + offset - ySpeed) {
-            xPos = t.getX() - width - xSpeed;
-            dx = 0;
+    public void collision(Tile t, KeyHandler k, int xMax, int yMax, int offset, boolean topRow, int damage) {
+        if (topRow && t.getType() == 1) {
+            if (xPos + width >= t.getX() - xSpeed && xPos <= t.getX() + (offset / 2) && yPos < t.getY() + offset - ySpeed) {
+                xPos = t.getX() - width - xSpeed;
+                dx = -1 * xIncrement;
+            }
+            else if (xPos + width >= t.getX() + (offset / 2) && xPos <= t.getX() + offset + xSpeed && yPos < t.getY() + offset - ySpeed) {
+                xPos = t.getX() + offset + xSpeed;
+                dx = xIncrement;
+            }
+            else if (xPos + width > t.getX() && xPos < t.getX() + offset && yPos + height >= t.getY() + (offset / 2) && yPos <= t.getY() + offset) {
+                yPos = t.getY() + offset;
+                k.upPressed = false;
+                dy = 0;
+            }
         }
-        else if (t.getType() == 1 && xPos + width >= t.getX() + (offset / 2) && xPos <= t.getX() + offset + xSpeed && yPos + height > t.getY() + ySpeed && yPos < t.getY() + offset - ySpeed) {
-            xPos = t.getX() + offset + xSpeed;
-            dx = 0;
-        }
-        else if (t.getType() == 1 && xPos + width > t.getX() && xPos < t.getX() + offset && yPos + height >= t.getY() && yPos <= t.getY() + (offset / 2)) {
-            yPos = t.getY() - height;
-            dy = 0;
-        }
-        else if (t.getType() == 1 && xPos + width > t.getX() && xPos < t.getX() + offset && yPos + height >= t.getY() + (offset / 2) && yPos <= t.getY() + offset) {
-            yPos = t.getY() + offset;
-            k.upPressed = false;
-            dy = 0;
+        else {
+            if (t.getType() % 2 == 1 && xPos + width >= t.getX() - xSpeed && xPos <= t.getX() + (offset / 2) && yPos + height > t.getY() + ySpeed && yPos < t.getY() + offset - ySpeed) {
+                xPos = t.getX() - width - xSpeed;
+                dx = -1 * xIncrement;
+                if (t.getType() == 7 && invincibility == 0) {
+                    reduceLeadCount(damage);
+                    invincibility = 1;
+                }
+            }
+            else if (t.getType() % 2 == 1 && xPos + width >= t.getX() + (offset / 2) && xPos <= t.getX() + offset + xSpeed && yPos + height > t.getY() + ySpeed && yPos < t.getY() + offset - ySpeed) {
+                xPos = t.getX() + offset + xSpeed;
+                dx = xIncrement;
+                if (t.getType() == 11 && invincibility == 0) {
+                    reduceLeadCount(damage);
+                    invincibility = 1;
+                }
+            }
+            else if (t.getType() % 2 == 1 && xPos + width > t.getX() && xPos < t.getX() + offset && yPos + height >= t.getY() && yPos <= t.getY() + (offset / 2)) {
+                yPos = t.getY() - height;
+                dy = 0;
+                if (t.getType() == 5 && invincibility == 0) {
+                    reduceLeadCount(damage);
+                    invincibility = 1;
+                }
+            }
+            else if (t.getType() % 2 == 1 && xPos + width > t.getX() && xPos < t.getX() + offset && yPos + height >= t.getY() + (offset / 2) && yPos <= t.getY() + offset) {
+                yPos = t.getY() + offset;
+                k.upPressed = false;
+                dy = 0;
+                if (t.getType() == 9 && invincibility == 0) {
+                    reduceLeadCount(damage);
+                    invincibility = 1;
+                }
+            }
         }
 
-        if (xPos >= xMax - width) {
-            dx = 0;
-            xPos = xMax - width;
-        }
+        // if (xPos >= xMax - width) {
+        //     dx = 0;
+        //     xPos = xMax - width;
+        // }
         if (xPos <= 0) {
             dx = 0;
             xPos = 0;
         }
 
-        if (yPos >= yMax - height) {
-            dy = 0;
-            yPos = yMax - height;
+        if (yPos >= yMax) {
+            leadCount = 0;
         }
     }
 
+    public void enemyCollision(Enemy e) {
+        if (invincibility == 0 && xPos + width >= e.getX() && xPos <= e.getX() + e.getHeightAndWidth() && yPos + height >= e.getY() && yPos <= e.getY() + e.getHeightAndWidth()) {
+            reduceLeadCount(e.getDamage());
+            invincibility = 1;
+        }
+        else if (invincibility == 1) {
+            iFrames();
+        }
+    }
 
-    public void move(KeyHandler k, int xMax, Tilemap tm) {
+    private void iFrames() {
+        new Thread(() -> {
+            invincibility = 2;
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            invincibility = 0;
+        }).start();
+    }
+
+    public void reset(double xInit, double yInit) {
+        xPos = xInit;
+        yPos = yInit;
+        leadCount = leadCountLevel1;
+        invincibility = 0;
+    }
+
+    public void reduceLeadCount(int r) {
+        leadCount -= r;
+    }
+
+    public void move(KeyHandler k, int xMax, Tilemap tm, ArrayList<Enemy> al, Cannon[] cl) {
         if (k.leftPressed) {
             dx = (dx > -1 * xSpeed) ? dx - xIncrement : -1 * xSpeed;
         }
@@ -124,14 +196,20 @@ public class Player {
             : (dy < ySpeed) ? dy + yIncrement : ySpeed;
         }
 
-        if (k.rightPressed && xPos >= xMax / 2) {
+        if (xPos >= xMax / 2) {
             for (int i = 0; i < tm.getMap().length; i++) {
                 for (int j = 0; j < tm.getMap()[i].length; j++) {
-                    tm.getMap()[i][j].scroll(xSpeed);
+                    tm.getMap()[i][j].scroll((int) dx);
                 }
             }
+            for (Enemy e : al) {
+                e.scroll((int) dx);
+            }
+            for (Cannon c : cl) {
+                c.scroll((int) dx);
+            }
         }
-        if (xPos >= xMax / 2 && !k.leftPressed && dx >= 0) xPos = xMax / 2;
+        if (xPos >= xMax / 2 && dx >= 0) xPos = xMax / 2;
 
         else xPos += dx;
         yPos += dy;
