@@ -227,7 +227,7 @@ public class GamePanel extends JPanel implements Runnable {
         if (gameState == playState) {
             for (int i = 0; i < tiles.getMap().length; i++) {
                 for (int j = 0; j < tiles.getMap()[i].length; j++) {
-                    p1.collision(tiles.getMap()[i][j], keyHandler, screenWidth, screenHeight, tileSize, i == 0);
+                    p1.collision(tiles.getMap()[i][j], keyHandler, screenWidth, screenHeight, tileSize, i == 0, level1EnemyDamage);
                 }
             }
 
@@ -383,7 +383,7 @@ public class GamePanel extends JPanel implements Runnable {
 
             g2.drawImage(leadCountBackground, tileSize, tileSize, tileSize * 3, tileSize * 2, null);
 
-            if (p1.getLeadCount() > 30) g2.setColor(Color.black);
+            if (p1.getInvincibility() == 0) g2.setColor(Color.black);
             else g2.setColor(Color.red);
             Font font = new Font("Ink Free", Font.BOLD, tileSize);
             g.setFont(font);

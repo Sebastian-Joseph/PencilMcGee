@@ -71,7 +71,7 @@ public class Player {
         return invincibility;
     }
 
-    public void collision(Tile t, KeyHandler k, int xMax, int yMax, int offset, boolean topRow) {
+    public void collision(Tile t, KeyHandler k, int xMax, int yMax, int offset, boolean topRow, int damage) {
         if (topRow && t.getType() == 1) {
             if (xPos + width >= t.getX() - xSpeed && xPos <= t.getX() + (offset / 2) && yPos < t.getY() + offset - ySpeed) {
                 xPos = t.getX() - width - xSpeed;
@@ -91,19 +91,35 @@ public class Player {
             if (t.getType() % 2 == 1 && xPos + width >= t.getX() - xSpeed && xPos <= t.getX() + (offset / 2) && yPos + height > t.getY() + ySpeed && yPos < t.getY() + offset - ySpeed) {
                 xPos = t.getX() - width - xSpeed;
                 dx = -1 * xIncrement;
+                if (t.getType() == 7 && invincibility == 0) {
+                    reduceLeadCount(damage);
+                    invincibility = 1;
+                }
             }
             else if (t.getType() % 2 == 1 && xPos + width >= t.getX() + (offset / 2) && xPos <= t.getX() + offset + xSpeed && yPos + height > t.getY() + ySpeed && yPos < t.getY() + offset - ySpeed) {
                 xPos = t.getX() + offset + xSpeed;
                 dx = xIncrement;
+                if (t.getType() == 11 && invincibility == 0) {
+                    reduceLeadCount(damage);
+                    invincibility = 1;
+                }
             }
             else if (t.getType() % 2 == 1 && xPos + width > t.getX() && xPos < t.getX() + offset && yPos + height >= t.getY() && yPos <= t.getY() + (offset / 2)) {
                 yPos = t.getY() - height;
                 dy = 0;
+                if (t.getType() == 5 && invincibility == 0) {
+                    reduceLeadCount(damage);
+                    invincibility = 1;
+                }
             }
             else if (t.getType() % 2 == 1 && xPos + width > t.getX() && xPos < t.getX() + offset && yPos + height >= t.getY() + (offset / 2) && yPos <= t.getY() + offset) {
                 yPos = t.getY() + offset;
                 k.upPressed = false;
                 dy = 0;
+                if (t.getType() == 9 && invincibility == 0) {
+                    reduceLeadCount(damage);
+                    invincibility = 1;
+                }
             }
         }
 
@@ -135,7 +151,7 @@ public class Player {
         new Thread(() -> {
             invincibility = 2;
             try {
-                TimeUnit.MILLISECONDS.sleep(1500);
+                TimeUnit.SECONDS.sleep(1);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
