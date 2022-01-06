@@ -43,10 +43,7 @@ public class Tile {
 		xInit = x;
 		yInit = y;
 
-		white = ImageIO.read(getClass().getResourceAsStream("images/small_pooper.png"));
-		stage1 = ImageIO.read(getClass().getResourceAsStream("images/graphite1.png"));
-		stage2 = ImageIO.read(getClass().getResourceAsStream("images/graphite2.png"));
-		stage3 = ImageIO.read(getClass().getResourceAsStream("images/graphite3.png"));
+		
 	}
 
 	public BufferedImage getImage() {

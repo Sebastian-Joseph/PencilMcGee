@@ -6,8 +6,8 @@ import java.util.concurrent.TimeUnit;
 public class Player {
     private double xPos;
     private double yPos;
-    private int xInit = 100;
-    private int yInit = 100;
+    private int xInit;
+    private int yInit;
 
     private double xSpeed;
     private double ySpeed;
@@ -26,7 +26,7 @@ public class Player {
     private final int leadCountLevel1 = 500;
 
 
-    public Player(int w, int h) {
+    public Player(int w, int h, int xInit, int yInit) {
         xPos = xInit;
         yPos = yInit;
         xSpeed = 6;
@@ -215,9 +215,4 @@ public class Player {
         yPos += dy;
     }
 
-    public void reset() {
-		xPos = xInit;
-		yPos = yInit;
-        leadCount = 100;
-	}
 }

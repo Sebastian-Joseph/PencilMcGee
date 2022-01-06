@@ -29,7 +29,7 @@ import java.awt.event.KeyListener;
 public class GamePanel extends JPanel implements Runnable {
     // Screen Settings
     final int originalTileSize = 8;
-    final int scale = 4;
+    final int scale = 3;
 
     final int tileSize = originalTileSize * scale;
     final int maxScreenCol = 48;
@@ -65,7 +65,7 @@ public class GamePanel extends JPanel implements Runnable {
     KeyHandler keyHandler = new KeyHandler();
     Thread gameThread;
 
-    Player p1 = new Player(tileSize / 2, tileSize * 2);
+    Player p1 = new Player(tileSize / 2, tileSize * 2, tileSize * 2, screenHeight - tileSize * 8);
 
     ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 
@@ -282,7 +282,7 @@ public class GamePanel extends JPanel implements Runnable {
         }
 
         if (p1.getLeadCount() <= 0) {
-            p1.reset();
+            p1.reset(tileSize * 2, screenHeight - tileSize * 8);
             for (int i = 0; i < tiles.getMap().length; i++) {
                 for (int j = 0; j < tiles.getMap()[i].length; j++) {
                     tiles.getMap()[i][j].reset();
@@ -414,6 +414,12 @@ public class GamePanel extends JPanel implements Runnable {
                             for (int j = 0; j < tiles.getMap()[i].length; j++) {
                                 tiles.getMap()[i][j].reset();
                             }
+                        }
+                        for(Enemy e : enemies){
+                            e.reset();
+                        }
+                        for(Cannon c: cannons1){
+                            c.reset();
                         }
                     }
                 }

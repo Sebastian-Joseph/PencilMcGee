@@ -35,19 +35,29 @@ public class Tilemap {
         BufferedImage spikes = ImageIO.read(getClass().getResourceAsStream("images/spikes.png"));
         BufferedImage spikesEdge = ImageIO.read(getClass().getResourceAsStream("images/spikes_edge.png"));
         BufferedImage coin = ImageIO.read(getClass().getResourceAsStream("images/coin.png"));
-
+        
         Columns = tileimage.getWidth();
         Rows = tileimage.getHeight();
         map = new Tile[Rows][Columns];
 
         final AffineTransform at = AffineTransform.getScaleInstance(tileSize, tileSize);
         final AffineTransformOp ato = new AffineTransformOp(at, AffineTransformOp.TYPE_BICUBIC);
+        final AffineTransform at2 = AffineTransform.getScaleInstance((double) tileSize/32, (double) tileSize/32);
+        final AffineTransformOp ato2 = new AffineTransformOp(at2, AffineTransformOp.TYPE_BICUBIC);
 
         BufferedImage subimage;
         for (int col = 0; col < Columns; col++) {
             for (int row = 0; row < Rows; row++) {
+                
                 subimage = tileimage.getSubimage(col, row, 1, 1);
                 BufferedImage scaledImage = new BufferedImage(tileSize, tileSize, BufferedImage.TYPE_INT_ARGB);
+                BufferedImage se = new BufferedImage(tileSize, tileSize, BufferedImage.TYPE_INT_ARGB);
+                BufferedImage s = new BufferedImage(tileSize, tileSize, BufferedImage.TYPE_INT_ARGB);
+                BufferedImage co = new BufferedImage(tileSize, tileSize, BufferedImage.TYPE_INT_ARGB);
+                se = ato2.filter(spikesEdge, se);
+                s = ato2.filter(spikes, s);
+                co = ato2.filter(coin, co);
+
                 
                 scaledImage = ato.filter(subimage, scaledImage);
 
@@ -60,35 +70,35 @@ public class Tilemap {
                 }
                 else if (c.getRed() == 200 && c.getGreen() == 0 && c.getBlue() == 0) {
                     map[row][col] = new Tile(scaledImage, 5, tileSize * col, tileSize * row, tileSize);
-                    map[row][col].newImage(spikes);
+                    map[row][col].newImage(s);
                 }
                 else if (c.getRed() == 150 && c.getGreen() == 0 && c.getBlue() == 0) {
                     map[row][col] = new Tile(scaledImage, 5, tileSize * col, tileSize * row, tileSize);
-                    map[row][col].newImage(spikesEdge);
+                    map[row][col].newImage(se);
                 }
                 else if (c.getRed() == 0 && c.getGreen() == 200 && c.getBlue() == 0) {
                     map[row][col] = new Tile(scaledImage, 7, tileSize * col, tileSize * row, tileSize);
-                    map[row][col].newImage(spikes);
+                    map[row][col].newImage(s);
                 }
                 else if (c.getRed() == 0 && c.getGreen() == 150 && c.getBlue() == 0) {
                     map[row][col] = new Tile(scaledImage, 7, tileSize * col, tileSize * row, tileSize);
-                    map[row][col].newImage(spikesEdge);
+                    map[row][col].newImage(se);
                 }
                 else if (c.getRed() == 0 && c.getGreen() == 0 && c.getBlue() == 200) {
                     map[row][col] = new Tile(scaledImage, 9, tileSize * col, tileSize * row, tileSize);
-                    map[row][col].newImage(spikes);
+                    map[row][col].newImage(s);
                 }
                 else if (c.getRed() == 0 && c.getGreen() == 0 && c.getBlue() == 150) {
                     map[row][col] = new Tile(scaledImage, 9, tileSize * col, tileSize * row, tileSize);
-                    map[row][col].newImage(spikesEdge);
+                    map[row][col].newImage(se);
                 }
                 else if (c.getRed() == 200 && c.getGreen() == 0 && c.getBlue() == 200) {
                     map[row][col] = new Tile(scaledImage, 11, tileSize * col, tileSize * row, tileSize);
-                    map[row][col].newImage(spikes);
+                    map[row][col].newImage(s);
                 }
                 else if (c.getRed() == 150 && c.getGreen() == 0 && c.getBlue() == 150) {
                     map[row][col] = new Tile(scaledImage, 11, tileSize * col, tileSize * row, tileSize);
-                    map[row][col].newImage(spikesEdge);
+                    map[row][col].newImage(se);
                 }
 
                 else {
@@ -98,7 +108,7 @@ public class Tilemap {
                     map[row][col].newImage(smallpooper);
                 }
                 if (c.getRed() == 250 && c.getGreen() == 200 && c.getBlue() == 0) {
-                    map[row][col].newImage(coin);
+                    map[row][col].newImage(co);
                 }
                 
             }
