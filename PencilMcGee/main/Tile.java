@@ -25,7 +25,7 @@ public class Tile {
     private BufferedImage stage3;
 
     private BufferedImage white;
-    private BufferedImage coin;
+
     private BufferedImage scaledImage;
 
     public Tile(BufferedImage image, int type, int x, int y, int s) throws IOException {
@@ -56,6 +56,10 @@ public class Tile {
         return y;
     }
 
+    public int getSize() {
+        return size;
+    }
+
     public void scroll(double scrollAmount) {
         x -= scrollAmount;
     }
@@ -76,7 +80,6 @@ public class Tile {
         final AffineTransformOp ato = new AffineTransformOp(at, AffineTransformOp.TYPE_BICUBIC);
 
 
-
         if (type == 0) {
             new Thread(() -> {
                 try {
@@ -94,22 +97,24 @@ public class Tile {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                image = ato.filter(stage2, scaledImage);
+                if (type == 3) image = ato.filter(stage2, scaledImage);
 
                 try {
                     TimeUnit.SECONDS.sleep(4);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                image = ato.filter(stage3, scaledImage);
+                if (type == 3) image = ato.filter(stage3, scaledImage);
 
                 try {
                     TimeUnit.SECONDS.sleep(2);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                image = white;
-                type = 0;
+                if (type == 3) {
+                    image = white;
+                    type = 0;
+                }
 
 
             }).start();
@@ -118,5 +123,14 @@ public class Tile {
         }
 
         return false;
+    }
+
+    public void revert() {
+        try {
+            white = ImageIO.read(getClass().getResourceAsStream("images/small_pooper.png"));
+        }
+        catch (IOException e1) {}
+        image = white;
+        type = 0;
     }
 }

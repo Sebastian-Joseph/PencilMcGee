@@ -1,30 +1,29 @@
 package main;
 
-import java.awt.*;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.LockSupport;
-
 
 public class Player {
-    public double xPos;
-    public double yPos;
-    public double xSpeed;
-    public double ySpeed;
-    public double dx;
-    public double dy;
 
-    public double xIncrement;
-    public double yIncrement;
+    private double xPos;
+    private double yPos;
+    private double xSpeed;
+    private double ySpeed;
+    private double dx;
+    private double dy;
 
-    public int width;
-    public int height;
+    private double xIncrement;
+    private double yIncrement;
+
+    private int width;
+    private int height;
 
     private int leadCount;
-    private int point;
     private int invincibility;
+    private int pointCount;
+
+    private final int leadCountLevel1 = 500;
+
 
     public Player(int x, int y, int w, int h) {
         xPos = x;
@@ -45,10 +44,8 @@ public class Player {
         width = w;
         height = h;
 
-        leadCount = 300;
-        point = 0;
+        leadCount = leadCountLevel1;
         invincibility = 0;
-        Timer timer = new Timer();
     }
 
     public double getXPos() {
@@ -71,20 +68,16 @@ public class Player {
         return leadCount;
     }
 
-    public void reduceLeadCount(int r) {
-        leadCount -= r;
+    public int getInvincibility() {
+        return invincibility;
     }
 
     public int getPointCount() {
-        return point;
-    }
-
-    public void addPointCount(int a) {
-        point -= a;
+        return pointCount;
     }
 
 
-    public void collision(Tile t, KeyHandler k, int xMax, int yMax, int offset, boolean topRow)  {
+    public void collision(Tile t, KeyHandler k, int xMax, int yMax, int offset, boolean topRow, int damage) {
         if (topRow && t.getType() == 1) {
             if (xPos + width >= t.getX() - xSpeed && xPos <= t.getX() + (offset / 2) && yPos < t.getY() + offset - ySpeed) {
                 xPos = t.getX() - width - xSpeed;
@@ -98,50 +91,50 @@ public class Player {
                 yPos = t.getY() + offset;
                 k.upPressed = false;
                 dy = 0;
-
             }
         }
         else {
             if (t.getType() % 2 == 1 && xPos + width >= t.getX() - xSpeed && xPos <= t.getX() + (offset / 2) && yPos + height > t.getY() + ySpeed && yPos < t.getY() + offset - ySpeed) {
                 xPos = t.getX() - width - xSpeed;
                 dx = -1 * xIncrement;
-            } else if (t.getType() % 2 == 1 && xPos + width >= t.getX() + (offset / 2) && xPos <= t.getX() + offset + xSpeed && yPos + height > t.getY() + ySpeed && yPos < t.getY() + offset - ySpeed) {
+                if (t.getType() == 7 && invincibility == 0) {
+                    reduceLeadCount(damage);
+                    invincibility = 1;
+                }
+            }
+            else if (t.getType() % 2 == 1 && xPos + width >= t.getX() + (offset / 2) && xPos <= t.getX() + offset + xSpeed && yPos + height > t.getY() + ySpeed && yPos < t.getY() + offset - ySpeed) {
                 xPos = t.getX() + offset + xSpeed;
                 dx = xIncrement;
-
-            } else if (t.getType() % 2 == 1 && xPos + width > t.getX() && xPos < t.getX() + offset && yPos + height >= t.getY() && yPos <= t.getY() + (offset / 2)) {
+                if (t.getType() == 11 && invincibility == 0) {
+                    reduceLeadCount(damage);
+                    invincibility = 1;
+                }
+            }
+            else if (t.getType() % 2 == 1 && xPos + width > t.getX() && xPos < t.getX() + offset && yPos + height >= t.getY() && yPos <= t.getY() + (offset / 2)) {
                 yPos = t.getY() - height;
                 dy = 0;
-
-            } else if (t.getType() % 2 == 1 && xPos + width > t.getX() && xPos < t.getX() + offset && yPos + height >= t.getY() + (offset / 2) && yPos <= t.getY() + offset) {
-                yPos = t.getY() + offset;
-                k.upPressed = false;
-                dy = 0;
-
-            }
-            //spikes collision
-
-            //head hits spike
-            else if (t.getType() == 6 && xPos + width > t.getX() && xPos < t.getX() + offset && yPos + height >= t.getY() + (offset / 2) && yPos <= t.getY() + offset) {
-                yPos = t.getY() + offset;
-                k.upPressed = false;
-                dy = 0;
-                reduceLeadCount(1);
-            }
-            //standing on spike
-            else if (t.getType() == 6 && invincibility == 0 && xPos + width > t.getX() && xPos < t.getX() + offset && yPos + height >= t.getY() && yPos <= t.getY() + (offset / 2)) {
-                yPos = t.getY() - height;
-                dy = 0;
-                for (int i = 0; i == 0; i = 300) {
-                    if (i % 2 == 1) {
-                        reduceLeadCount(1);
-                    }
+                if (t.getType() == 5 && invincibility == 0) {
+                    reduceLeadCount(damage);
+                    invincibility = 1;
                 }
 
             }
+            // coin
+            else if (t.getType() == 4 && xPos + width > t.getX() && xPos < t.getX() + offset && yPos + height >= t.getY() && yPos <= t.getY() + (offset / 2)) {
+                t.revert();
+                addPointCount(1);
+                System.out.println(pointCount);
+            }
 
-            //coin up
-            else if (t.getType() == 4 && xPos + width > t.getX() && xPos < t.getX() + offset && yPos + height >= t.getY() + (offset / 2) && yPos <= t.getY() + offset) {
+
+            else if (t.getType() % 2 == 1 && xPos + width > t.getX() && xPos < t.getX() + offset && yPos + height >= t.getY() + (offset / 2) && yPos <= t.getY() + offset) {
+                yPos = t.getY() + offset;
+                k.upPressed = false;
+                dy = 0;
+                if (t.getType() == 9 && invincibility == 0) {
+                    reduceLeadCount(damage);
+                    invincibility = 1;
+                }
 
             }
         }
@@ -157,15 +150,44 @@ public class Player {
         }
     }
 
+    public void enemyCollision(Enemy e) {
+        if (invincibility == 0 && xPos + width >= e.getX() && xPos <= e.getX() + e.getHeightAndWidth() && yPos + height >= e.getY() && yPos <= e.getY() + e.getHeightAndWidth()) {
+            reduceLeadCount(e.getDamage());
+            invincibility = 1;
+        }
+        else if (invincibility == 1) {
+            iFrames();
+        }
+    }
+
+    private void iFrames() {
+        new Thread(() -> {
+            invincibility = 2;
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            invincibility = 0;
+        }).start();
+    }
+
     public void reset(double xInit, double yInit) {
         xPos = xInit;
         yPos = yInit;
-        leadCount = 300;
+        leadCount = leadCountLevel1;
+        invincibility = 0;
     }
 
+    public void reduceLeadCount(int r) {
+        leadCount -= r;
+    }
 
+    public void addPointCount(int p) {
+        pointCount += p;
+    }
 
-    public void move(KeyHandler k, int xMax, Tilemap tm, ArrayList<Enemy> al) {
+    public void move(KeyHandler k, int xMax, Tilemap tm, ArrayList<Enemy> al, Cannon[] cl) {
         if (k.leftPressed) {
             dx = (dx > -1 * xSpeed) ? dx - xIncrement : -1 * xSpeed;
         }
@@ -189,6 +211,10 @@ public class Player {
                     : (dy < ySpeed) ? dy + yIncrement : ySpeed;
         }
 
+        if(k.escPressed) {
+            System.exit(0);
+        }
+
         if (xPos >= xMax / 2) {
             for (int i = 0; i < tm.getMap().length; i++) {
                 for (int j = 0; j < tm.getMap()[i].length; j++) {
@@ -197,6 +223,9 @@ public class Player {
             }
             for (Enemy e : al) {
                 e.scroll((int) dx);
+            }
+            for (Cannon c : cl) {
+                c.scroll((int) dx);
             }
         }
         if (xPos >= xMax / 2 && dx >= 0) xPos = xMax / 2;
