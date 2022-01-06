@@ -3,7 +3,6 @@ import java.awt.image.*;
 import javax.imageio.ImageIO;
 import java.awt.geom.AffineTransform;
 import java.awt.Color;
-import java.awt.Graphics2D;
 import java.io.IOException;
 import java.time.LocalDateTime; 
 import java.time.temporal.ChronoUnit;   
