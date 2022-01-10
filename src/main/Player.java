@@ -170,7 +170,7 @@ public class Player {
         leadCount -= r;
     }
 
-    public void move(KeyHandler k, int xMax, Tilemap tm, ArrayList<Enemy> al, Cannon[] cl) {
+    public void move(KeyHandler k, int xMax, Tilemap tm, ArrayList<Enemy> al, Cannon[] cl, Enemy[] ml) {
         if (k.leftPressed) {
             dx = (dx > -1 * xSpeed) ? dx - xIncrement : -1 * xSpeed;
         }
@@ -205,6 +205,9 @@ public class Player {
             }
             for (Cannon c : cl) {
                 c.scroll((int) dx);
+            }
+            for (Enemy m : ml) {
+                m.scroll((int) dx);
             }
         }
         if (xPos >= xMax / 2 && dx >= 0) xPos = xMax / 2;

@@ -19,6 +19,7 @@ import javax.imageio.ImageIO;
 import java.awt.Font;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Stroke;
 import java.awt.MouseInfo;
 
 import java.awt.event.MouseEvent; 
@@ -58,6 +59,11 @@ public class GamePanel extends JPanel implements Runnable {
     private final int playState = 1;
     private final int pauseState = 2;
 
+    private int levelState;
+
+    private final int level1EnemyDamage = 10;
+    private final int level2EnemyDamage = 15;
+
     int FPS = 60;
     GameMusic music = new GameMusic();
     Menu menu = new Menu();
@@ -67,8 +73,6 @@ public class GamePanel extends JPanel implements Runnable {
     Player p1 = new Player(tileSize * 2, screenHeight - tileSize * 8, tileSize / 2, tileSize * 2);
 
     ArrayList<Enemy> enemies = new ArrayList<Enemy>();
-
-    private final int level1EnemyDamage = 10;
 
     Enemy[] enemiesInit1 = new Enemy[] {
         new Enemy(tileSize * 81, tileSize * 13, tileSize * 81, tileSize * 4, tileSize, 4, level1EnemyDamage, false),
@@ -85,6 +89,13 @@ public class GamePanel extends JPanel implements Runnable {
         new Enemy(tileSize * 773, tileSize * 9, tileSize * 773, tileSize, tileSize * 2, 3, level1EnemyDamage, false)
     };
 
+    Enemy[] movingNoDraws1 = new Enemy[0]; // Empty on purpose
+
+    Enemy[] movingNoDraws2 = new Enemy[] {
+        new MovingNoDraw(tileSize * 26, tileSize * 13, tileSize * 36, tileSize * 13, tileSize * 3, 2, 0, false),
+        new MovingNoDraw(tileSize * 36, tileSize * 6, tileSize * 26, tileSize * 6, tileSize * 3, 2, 0, false)
+    };
+
     Cannon[] cannons1 = new Cannon[] {
         new Cannon(tileSize * 122, tileSize * 19, 150, 2, tileSize, 2, level1EnemyDamage, 45),
         new Cannon(tileSize * 123, tileSize * 19, 150, 2, tileSize, 2, level1EnemyDamage, 30),
@@ -94,23 +105,21 @@ public class GamePanel extends JPanel implements Runnable {
         new Cannon(tileSize * 177, tileSize, 120, 2, tileSize, 3, level1EnemyDamage, 0),
         new Cannon(tileSize * 183, tileSize, 30, 2, tileSize, 3, level1EnemyDamage, 0),
 
-        new Cannon(tileSize * 417, tileSize * 17, 240, 3, tileSize, 4, level1EnemyDamage, 0),
+        new Cannon(tileSize * 417, tileSize * 17, 240, 3, tileSize, 4, level1EnemyDamage, 239),
 
-        new Cannon(tileSize * 488, tileSize * 10, 30, 0, tileSize, 3, level1EnemyDamage, 0),
-        new Cannon(tileSize * 490, tileSize * 12, 30, 1, tileSize, 3, level1EnemyDamage, 0),
+        new Cannon(tileSize * 488, tileSize * 10, 60, 0, tileSize, 7, level1EnemyDamage, 0),
+        new Cannon(tileSize * 490, tileSize * 12, 60, 1, tileSize, 7, level1EnemyDamage, 0),
         new Cannon(tileSize * 488, tileSize * 14, 120, 2, tileSize, 4, level1EnemyDamage, 0),
 
-        new Cannon(tileSize * 505, tileSize, 120, 2, tileSize, 6, level1EnemyDamage, 0),
-        new Cannon(tileSize * 507, tileSize, 120, 2, tileSize, 6, level1EnemyDamage, 0),
-        new Cannon(tileSize * 509, tileSize, 120, 2, tileSize, 6, level1EnemyDamage, 0),
+        new Cannon(tileSize * 505, tileSize, 120, 2, tileSize, 7, level1EnemyDamage, 0),
+        new Cannon(tileSize * 507, tileSize, 120, 2, tileSize, 7, level1EnemyDamage, 0),
+        new Cannon(tileSize * 509, tileSize, 120, 2, tileSize, 7, level1EnemyDamage, 0),
 
-        new Cannon(tileSize * 519, tileSize, 120, 2, tileSize, 6, level1EnemyDamage, 0),
-        new Cannon(tileSize * 521, tileSize, 120, 2, tileSize, 6, level1EnemyDamage, 0),
-        new Cannon(tileSize * 523, tileSize, 120, 2, tileSize, 6, level1EnemyDamage, 0),
+        new Cannon(tileSize * 519, tileSize, 120, 2, tileSize, 7, level1EnemyDamage, 0),
+        new Cannon(tileSize * 521, tileSize, 120, 2, tileSize, 7, level1EnemyDamage, 0),
+        new Cannon(tileSize * 523, tileSize, 120, 2, tileSize, 7, level1EnemyDamage, 0),
 
-        new Cannon(tileSize * 564, tileSize * 14, 120, 3, tileSize, 5, level1EnemyDamage, 0),
         new Cannon(tileSize * 564, tileSize * 15, 120, 3, tileSize, 5, level1EnemyDamage, 0),
-        new Cannon(tileSize * 564, tileSize * 16, 120, 3, tileSize, 5, level1EnemyDamage, 0),
         
         new Cannon(tileSize * 585, tileSize * 14, 90, 3, tileSize, 5, level1EnemyDamage, 0),
         new Cannon(tileSize * 586, tileSize * 13, 120, 0, tileSize, 5, level1EnemyDamage, 0),
@@ -127,7 +136,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.addKeyListener(keyHandler);
         this.setFocusable(true);
 
-        tiles.createMap("images/actual_level.png");
+        tiles.createMap("images/actual_level2.png");
 
         background = ImageIO.read(getClass().getResourceAsStream("images/pooper3.5.png"));
         leadCountBackground = ImageIO.read(getClass().getResourceAsStream("images/lead_count_background.png"));
@@ -181,6 +190,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void setupGame() {
         gameState = menuState;
+        levelState = 2;
         playMusic(3);
     }
 
@@ -231,11 +241,13 @@ public class GamePanel extends JPanel implements Runnable {
                 }
             }
 
-            for (Cannon c : cannons1) {
-                if (c.getX() <= screenWidth * 2 && c.getX() >= tileSize * -4) {
-                    if (c.createSpawn()) {
-                        Enemy temp = new Enemy(c.getSpawn().getX(), c.getSpawn().getY(), c.getSpawn().getXEnd(), c.getSpawn().getYEnd(), tileSize, c.getSpawn().getSpeed(), c.getSpawn().getDamage(), true);
-                        enemies.add(temp);
+            if (levelState == 1) {
+                for (Cannon c : cannons1) {
+                    if (c.getX() <= screenWidth * 2 && c.getX() >= tileSize * -4) {
+                        if (c.createSpawn()) {
+                            Enemy temp = new Enemy(c.getSpawn().getX(), c.getSpawn().getY(), c.getSpawn().getXEnd(), c.getSpawn().getYEnd(), tileSize, c.getSpawn().getSpeed(), c.getSpawn().getDamage(), true);
+                            enemies.add(temp);
+                        }
                     }
                 }
             }
@@ -251,6 +263,25 @@ public class GamePanel extends JPanel implements Runnable {
 
                     if (enemies.get(e).move()) {
                         enemies.remove(enemies.get(e));
+                    }
+                }
+            }
+
+            if (levelState == 2) {
+                for (Enemy m : movingNoDraws2) {
+                    if (m.getX() <= screenWidth * 2 && m.getX() >= tileSize * -4) {
+                        for (int i = 0; i < tiles.getMap().length; i++) {
+                            for (int j = 0; j < tiles.getMap()[i].length; j++) {
+                                ((MovingNoDraw) m).overWriteTile(tiles.getMap()[i][j]);
+                            }
+                        }
+
+                        m.move();
+                    }
+                }
+                for (int i = 0; i < tiles.getMap().length; i++) {
+                    for (int j = 0; j < tiles.getMap()[i].length; j++) {
+                        tiles.getMap()[i][j].tileIsOverMovingNoDraw(movingNoDraws2);
                     }
                 }
             }
@@ -273,10 +304,13 @@ public class GamePanel extends JPanel implements Runnable {
                 for (Cannon c : cannons1) {
                     c.reset();
                 }
+                for (Enemy m : movingNoDraws2) {
+                    m.reset();
+                }
             }
 
             if (!keyHandler.enterDown) {
-                p1.move(keyHandler, screenWidth, tiles, enemies, cannons1);
+                p1.move(keyHandler, screenWidth, tiles, enemies, cannons1, movingNoDraws2);
             }
         }
     }
@@ -345,6 +379,17 @@ public class GamePanel extends JPanel implements Runnable {
             for (int i = 0; i < tiles.getMap().length; i++) {
                 for (int j = 0; j < tiles.getMap()[i].length; j++) {
                     g2.drawImage(tiles.getMap()[i][j].getImage(), tiles.getMap()[i][j].getX(), tiles.getMap()[i][j].getY(), null);
+                }
+            }
+
+            if (levelState == 2) {
+                for (Enemy m : movingNoDraws2) {
+                    if (m.getX() <= screenWidth * 2 && m.getX() >= tileSize * -4) {
+                        g2.setColor(Color.decode("#f7f7f7"));
+                        g2.fillRect((int) m.getX(), (int) m.getY(), (int) m.getHeightAndWidth(), (int) m.getHeightAndWidth());
+                        g2.setColor(Color.black);
+                        g2.drawRect((int) m.getX(), (int) m.getY(), (int) m.getHeightAndWidth(), (int) m.getHeightAndWidth());
+                    }
                 }
             }
 
