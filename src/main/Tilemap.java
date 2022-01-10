@@ -5,7 +5,8 @@ import java.awt.geom.AffineTransform;
 import java.awt.Color;
 import java.io.IOException;
 import java.time.LocalDateTime; 
-import java.time.temporal.ChronoUnit;   
+import java.time.temporal.ChronoUnit; 
+  
 
 
 public class Tilemap {
@@ -44,6 +45,19 @@ public class Tilemap {
         final AffineTransformOp ato = new AffineTransformOp(at, AffineTransformOp.TYPE_BICUBIC);
         final AffineTransform at2 = AffineTransform.getScaleInstance((double) tileSize/32, (double) tileSize/32);
         final AffineTransformOp ato2 = new AffineTransformOp(at2, AffineTransformOp.TYPE_BICUBIC);
+        AffineTransform flip = AffineTransform.getScaleInstance(1, -1);
+        flip.translate(0, -tileSize);
+        flip.concatenate(at2);
+        AffineTransformOp flipping = new AffineTransformOp(flip, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+        AffineTransform rotate = AffineTransform.getRotateInstance(Math.PI/2, tileSize/2, tileSize/2);
+        rotate.concatenate(at2);
+        AffineTransformOp rotation = new AffineTransformOp(rotate, AffineTransformOp.TYPE_BILINEAR);
+        AffineTransform rotateflip = AffineTransform.getRotateInstance(Math.PI/2, tileSize/2, tileSize/2);
+        rotateflip.concatenate(flip);
+        AffineTransformOp rotateflipping = new AffineTransformOp(rotateflip, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+        
+        
+
 
         BufferedImage subimage;
         for (int col = 0; col < Columns; col++) {
@@ -54,9 +68,21 @@ public class Tilemap {
                 BufferedImage se = new BufferedImage(tileSize, tileSize, BufferedImage.TYPE_INT_ARGB);
                 BufferedImage s = new BufferedImage(tileSize, tileSize, BufferedImage.TYPE_INT_ARGB);
                 BufferedImage co = new BufferedImage(tileSize, tileSize, BufferedImage.TYPE_INT_ARGB);
+                BufferedImage rse = new BufferedImage(tileSize, tileSize, BufferedImage.TYPE_INT_ARGB);
+                BufferedImage rs = new BufferedImage(tileSize, tileSize, BufferedImage.TYPE_INT_ARGB);
+                BufferedImage lse = new BufferedImage(tileSize, tileSize, BufferedImage.TYPE_INT_ARGB);
+                BufferedImage ls = new BufferedImage(tileSize, tileSize, BufferedImage.TYPE_INT_ARGB);
+                BufferedImage dse = new BufferedImage(tileSize, tileSize, BufferedImage.TYPE_INT_ARGB);
+                BufferedImage ds = new BufferedImage(tileSize, tileSize, BufferedImage.TYPE_INT_ARGB);
                 se = ato2.filter(spikesEdge, se);
                 s = ato2.filter(spikes, s);
                 co = ato2.filter(coin, co);
+                rse = rotation.filter(spikesEdge, rse); 
+                rs = rotation.filter(spikes, rs);
+                dse = flipping.filter(spikesEdge, dse); 
+                ds = flipping.filter(spikes, ds);
+                lse = rotateflipping.filter(spikesEdge, lse); 
+                ls = rotateflipping.filter(spikes, ls);
 
                 
                 scaledImage = ato.filter(subimage, scaledImage);
@@ -78,27 +104,27 @@ public class Tilemap {
                 }
                 else if (c.getRed() == 0 && c.getGreen() == 200 && c.getBlue() == 0) {
                     map[row][col] = new Tile(scaledImage, 7, tileSize * col, tileSize * row, tileSize);
-                    map[row][col].newImage(s);
+                    map[row][col].newImage(ls);
                 }
                 else if (c.getRed() == 0 && c.getGreen() == 150 && c.getBlue() == 0) {
                     map[row][col] = new Tile(scaledImage, 7, tileSize * col, tileSize * row, tileSize);
-                    map[row][col].newImage(se);
+                    map[row][col].newImage(lse);
                 }
                 else if (c.getRed() == 0 && c.getGreen() == 0 && c.getBlue() == 200) {
                     map[row][col] = new Tile(scaledImage, 9, tileSize * col, tileSize * row, tileSize);
-                    map[row][col].newImage(s);
+                    map[row][col].newImage(ds);
                 }
                 else if (c.getRed() == 0 && c.getGreen() == 0 && c.getBlue() == 150) {
                     map[row][col] = new Tile(scaledImage, 9, tileSize * col, tileSize * row, tileSize);
-                    map[row][col].newImage(se);
+                    map[row][col].newImage(dse);
                 }
                 else if (c.getRed() == 200 && c.getGreen() == 0 && c.getBlue() == 200) {
                     map[row][col] = new Tile(scaledImage, 11, tileSize * col, tileSize * row, tileSize);
-                    map[row][col].newImage(s);
+                    map[row][col].newImage(rs);
                 }
                 else if (c.getRed() == 150 && c.getGreen() == 0 && c.getBlue() == 150) {
                     map[row][col] = new Tile(scaledImage, 11, tileSize * col, tileSize * row, tileSize);
-                    map[row][col].newImage(se);
+                    map[row][col].newImage(rse);
                 }
 
                 else {
