@@ -1,25 +1,17 @@
 package main;
 
-import java.awt.Color;
-import java.awt.Dimension;
+import java.awt.*;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-
 import java.awt.image.*;
+import java.io.File;
 import java.io.IOException;
 import java.lang.Exception;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
-
-import java.awt.Font;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.MouseInfo;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.KeyEvent;
@@ -51,7 +43,8 @@ public class GamePanel extends JPanel implements Runnable {
 
     private Tilemap tiles = new Tilemap(screenWidth, screenHeight, tileSize);
     private boolean mouseDown = false;
-    // private boolean enterDown = false;
+
+
 
 
     private int gameState;
@@ -144,6 +137,7 @@ public class GamePanel extends JPanel implements Runnable {
 
         testTile = ImageIO.read(getClass().getResourceAsStream("images/smol_spunch.jpg"));
 
+
         for (Enemy e : enemiesInit1) {
             enemies.add(e);
         }
@@ -170,6 +164,11 @@ public class GamePanel extends JPanel implements Runnable {
         music.setFile(i);
         music.play();
         music.loop();
+    }
+
+    public void playSE(int i) {
+        music.setFile(i);
+        music.play();
     }
 
     public void setupGame() {
@@ -217,6 +216,7 @@ public class GamePanel extends JPanel implements Runnable {
 
 
     public void update() {
+
         if (gameState == playState) {
             for (int i = 0; i < tiles.getMap().length; i++) {
                 for (int j = 0; j < tiles.getMap()[i].length; j++) {
@@ -266,6 +266,8 @@ public class GamePanel extends JPanel implements Runnable {
                 for (Cannon c : cannons1) {
                     c.reset();
                 }
+
+
             }
 
             if (!keyHandler.enterDown) {
@@ -275,10 +277,12 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
 
+
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
         Graphics2D g2 = (Graphics2D)g;
+
 
         g2.setColor(Color.black);
 
@@ -304,10 +308,22 @@ public class GamePanel extends JPanel implements Runnable {
                     System.exit(0);
                 }
             }
+            if (keyHandler.cPressed) {
+                music.stop();
+            }
         }
 
         else {
-            if (mouseDown == true) {
+            if (keyHandler.cPressed) {
+                music.stop();
+            }
+
+           /* if(keyHandler.upPressed) {
+                playSE(1);
+            } */
+
+
+            if (mouseDown) {
                 Point point = MouseInfo.getPointerInfo().getLocation();
                 SwingUtilities.convertPointFromScreen(point, this);
 
@@ -348,6 +364,7 @@ public class GamePanel extends JPanel implements Runnable {
                 }
             }
 
+
             for (Enemy e : enemies) {
                 if (e.getX() <= screenWidth * 2 && e.getX() >= tileSize * -4) {
                     if (e.getDisappearance()) {
@@ -377,8 +394,10 @@ public class GamePanel extends JPanel implements Runnable {
             g2.drawImage(leadCountBackground, tileSize, tileSize, tileSize * 3, tileSize * 2, null);
             g2.drawImage(coin, tileSize + 1400, tileSize , tileSize, tileSize, null);
 
-            if (p1.getInvincibility() == 0) g2.setColor(Color.black);
-            else g2.setColor(Color.red);
+            if (p1.getInvincibility() == 0) {
+                g2.setColor(Color.black);
+            } else g2.setColor(Color.red);
+
             Font font = new Font("Ink Free", Font.BOLD, tileSize);
             g.setFont(font);
             double textOffset = tileSize * 0.6;
@@ -386,20 +405,8 @@ public class GamePanel extends JPanel implements Runnable {
             g2.drawString(String.valueOf(p1.getPointCount()), tileSize + 1440, tileSize + 25);
 
             if (keyHandler.enterDown) {
-                    gameState = pauseState;
-                if (mouseDown) {
-                    Point point = MouseInfo.getPointerInfo().getLocation();
-                    SwingUtilities.convertPointFromScreen(point, this);
-                    Rectangle resetBounds = new Rectangle(screenWidth / 2 - tileSize, screenHeight / 2 - tileSize, tileSize * 2, tileSize * 2);
-                    if (resetBounds.contains(point)) {
-                        keyHandler.enterDown = false;
-                        p1.reset(tileSize * 2, screenHeight - tileSize * 8);
-                        for (int i = 0; i < tiles.getMap().length; i++) {
-                            for (int j = 0; j < tiles.getMap()[i].length; j++) {
-                                tiles.getMap()[i][j].reset();
-                            }
-                        }
-                    }
+                gameState = pauseState;
+
                 }
             }
 
@@ -409,6 +416,10 @@ public class GamePanel extends JPanel implements Runnable {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+
+
+
+
                 g.drawImage(background, 0, 0, null);
                 Font foont = new Font("Ink Free", Font.BOLD, 50);
                 g.setFont(foont);
@@ -431,6 +442,7 @@ public class GamePanel extends JPanel implements Runnable {
                     SwingUtilities.convertPointFromScreen(point, this);
                     if (continueButton.contains(point)) {
                         gameState = playState;
+
                     }
                 }
 
@@ -454,4 +466,3 @@ public class GamePanel extends JPanel implements Runnable {
             g2.dispose();
         }
     }
-}

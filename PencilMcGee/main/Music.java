@@ -55,8 +55,6 @@ public class Music {
 
     public void stop() {
         clip.stop();
-        clip.flush();
-        clip.close();
 
     }
 

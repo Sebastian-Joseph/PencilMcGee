@@ -24,6 +24,10 @@ public class Player {
 
     private final int leadCountLevel1 = 500;
 
+    Music music = new Music();
+
+
+
 
     public Player(int x, int y, int w, int h) {
         xPos = x;
@@ -46,6 +50,13 @@ public class Player {
 
         leadCount = leadCountLevel1;
         invincibility = 0;
+
+
+    }
+
+    public void playSE(int i) {
+        music.setFile(i);
+        music.play();
     }
 
     public double getXPos() {
@@ -123,7 +134,12 @@ public class Player {
             else if (t.getType() == 4 && xPos + width > t.getX() && xPos < t.getX() + offset && yPos + height >= t.getY() && yPos <= t.getY() + (offset / 2)) {
                 t.revert();
                 addPointCount(1);
-                System.out.println(pointCount);
+                addLeadCount(2);
+
+                playSE(2);
+
+
+
             }
 
 
@@ -131,6 +147,7 @@ public class Player {
                 yPos = t.getY() + offset;
                 k.upPressed = false;
                 dy = 0;
+
                 if (t.getType() == 9 && invincibility == 0) {
                     reduceLeadCount(damage);
                     invincibility = 1;
@@ -181,6 +198,10 @@ public class Player {
 
     public void reduceLeadCount(int r) {
         leadCount -= r;
+    }
+
+    public void addLeadCount(int r) {
+        leadCount += r;
     }
 
     public void addPointCount(int p) {
