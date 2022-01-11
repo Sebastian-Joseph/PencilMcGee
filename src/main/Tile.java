@@ -5,9 +5,7 @@ import javax.imageio.ImageIO;
 import javax.xml.namespace.QName;
 import java.awt.geom.AffineTransform;
 import java.awt.image.*;
-
-
-
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 public class Tile {
@@ -138,6 +136,15 @@ public class Tile {
 	public boolean tileIsOverMovingNoDraw(Enemy[] el) {
 		for (Enemy e : el) {
 			if (e.getX() + ((MovingNoDraw) e).getWidth() > x && e.getX() < x + size && e.getY() + ((MovingNoDraw) e).getHeight() > y && e.getY() < y + size) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean tileIsOverMovingEnemy(ArrayList<Enemy> el) {
+		for (Enemy e : el) {
+			if (e.getX() + e.getHeightAndWidth() > x && e.getX() < x + size && e.getY() + e.getHeightAndWidth() > y && e.getY() < y + size) {
 				return true;
 			}
 		}

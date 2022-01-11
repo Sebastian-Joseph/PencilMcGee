@@ -102,7 +102,8 @@ public class GamePanel extends JPanel implements Runnable {
     };
 
     Enemy[] enemiesInit2 = new Enemy[] {
-        new Enemy(tileSize * 70, tileSize * 12, tileSize * 70, tileSize * 23, tileSize * 3, 2.5, level2EnemyDamage, false)
+        new Enemy(tileSize * 70.5, tileSize * 12, tileSize * 70.5, tileSize * 24, tileSize * 2, 3.5, level2EnemyDamage, false),
+        new Enemy(tileSize * 159, tileSize * 4, tileSize * 159, tileSize * 21, tileSize * 1, 7, level2EnemyDamage, false),
     };
 
     Enemy[] enemiesInit3 = new Enemy[] {
@@ -112,12 +113,23 @@ public class GamePanel extends JPanel implements Runnable {
     Enemy[] movingNoDraws1 = new Enemy[0]; // Empty on purpose
 
     Enemy[] movingNoDraws2 = new Enemy[] {
-        new MovingNoDraw(tileSize * 26, tileSize * 7, tileSize * 36, tileSize * 7, 2.5, tileSize * 3, tileSize * 9),
+        new MovingNoDraw(tileSize * 26, tileSize * 8, tileSize * 36, tileSize * 8, 2, tileSize * 3, tileSize * 8),
+
+        new MovingNoDraw(tileSize * 65, tileSize * 12, tileSize * 65, tileSize * 25, 2, tileSize * 5, tileSize),
+        new MovingNoDraw(tileSize * 73, tileSize * 25, tileSize * 73, tileSize * 12, 2, tileSize * 5, tileSize),
 
         new MovingNoDraw(tileSize * 98, tileSize * 23, tileSize * 98, tileSize * 7, 2, tileSize * 4, tileSize * 4),
         new MovingNoDraw(tileSize * 98, tileSize * 7, tileSize * 98, tileSize * 23, 2, tileSize * 4, tileSize * 4),
 
-        new MovingNoDraw(tileSize * 113, tileSize * 27, tileSize * 113, 0, 3, tileSize * 4, tileSize * 4)
+        new MovingNoDraw(tileSize * 113, tileSize * 27, tileSize * 113, 0, 3, tileSize * 4, tileSize * 4),
+        
+        new MovingNoDraw(tileSize * 155, tileSize * 11, tileSize * 127, tileSize * 11, 4, tileSize * 2, tileSize * 6),
+
+        new MovingNoDraw(tileSize * 165, tileSize * 17, tileSize * 175, tileSize * 17, 2.5, tileSize, tileSize * 4),
+
+        new MovingNoDraw(tileSize * 160, tileSize * 7, tileSize * 186, tileSize * 7, 4, tileSize * 4, tileSize * 4),
+        
+        new MovingNoDraw(tileSize * 192, tileSize * 9, tileSize * 192, tileSize * 19, 4, tileSize * 27, tileSize)
     };
 
     Enemy[] movingNoDraws3 = new Enemy[] {
@@ -299,7 +311,7 @@ public class GamePanel extends JPanel implements Runnable {
                     }
                 }
                 for (Enemy m : movingNoDraws2) {
-                    if (m.getX() <= screenWidth * 2 && m.getX() >= tileSize * -4) {
+                    if (m.getX() <= screenWidth * 2 && m.getX() >= screenWidth * -2) {
                         for (int i = 0; i < tiles.getMap().length; i++) {
                             for (int j = 0; j < tiles.getMap()[i].length; j++) {
                                 m.collidesWithTile(tiles.getMap()[i][j]);
@@ -317,7 +329,7 @@ public class GamePanel extends JPanel implements Runnable {
             }
             else if (levelState == 3) {
                 for (Cannon c : cannons3) {
-                    if (c.getX() <= screenWidth * 2 && c.getX() >= tileSize * -4) {
+                    if (c.getX() <= screenWidth * 2 && c.getX() >= screenWidth * -2) {
                         if (c.createSpawn()) {
                             Enemy temp = new Enemy(c.getSpawn().getX(), c.getSpawn().getY(), c.getSpawn().getXEnd(), c.getSpawn().getYEnd(), tileSize, c.getSpawn().getSpeed(), c.getSpawn().getDamage(), true);
                             enemies.add(temp);
@@ -493,7 +505,7 @@ public class GamePanel extends JPanel implements Runnable {
                                             || (tileBounds.contains(playerCurrentPosition1) && !tiles.checkTileToLeft(i, j) && !tiles.checkTileToLeft(i + 1, j) && !tiles.checkTileToLeft(i + 2, j))
                                             || (tileBounds.contains(playerCurrentPosition2) && !tiles.checkTileToLeft(i, j) && !tiles.checkTileToLeft(i - 1, j) && !tiles.checkTileToLeft(i - 2, j))
                             ) {
-                                if (levelState == 1 || (levelState == 2 && !tiles.getMap()[i][j].tileIsOverMovingNoDraw(movingNoDraws2)) || (levelState == 3 && !tiles.getMap()[i][j].tileIsOverMovingNoDraw(movingNoDraws3))) {
+                                if (!tiles.getMap()[i][j].tileIsOverMovingEnemy(enemies) && (levelState == 1 || (levelState == 2 && !tiles.getMap()[i][j].tileIsOverMovingNoDraw(movingNoDraws2)) || (levelState == 3 && !tiles.getMap()[i][j].tileIsOverMovingNoDraw(movingNoDraws3)))) {
                                     if (tiles.getMap()[i][j].change(levelState)) {
                                         p1.reduceLeadCount(1);
                                     }
@@ -521,7 +533,7 @@ public class GamePanel extends JPanel implements Runnable {
 
             if (levelState == 2) {
                 for (Enemy m : movingNoDraws2) {
-                    if (m.getX() <= screenWidth * 2 && m.getX() >= tileSize * -4) {
+                    if (m.getX() <= screenWidth * 2 && m.getX() >= screenWidth * -2) {
                         g2.setColor(Color.decode("#f7f7f7"));
                         g2.fillRect((int) m.getX(), (int) m.getY(), (int) ((MovingNoDraw) m).getWidth(), (int) ((MovingNoDraw) m).getHeight());
                         g2.setColor(Color.decode("#32b1d1"));
@@ -538,7 +550,7 @@ public class GamePanel extends JPanel implements Runnable {
 
             if (levelState == 3) {
                 for (Enemy m : movingNoDraws3) {
-                    if (m.getX() <= screenWidth * 2 && m.getX() >= tileSize * -4) {
+                    if (m.getX() <= screenWidth * 2 && m.getX() >= screenWidth * -2) {
                         g2.setColor(Color.decode("#f7f7f7"));
                         g2.fillRect((int) m.getX(), (int) m.getY(), (int) ((MovingNoDraw) m).getWidth(), (int) ((MovingNoDraw) m).getHeight());
                         g2.setColor(Color.decode("#32b1d1"));
