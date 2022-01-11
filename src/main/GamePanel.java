@@ -171,7 +171,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.addKeyListener(keyHandler);
         this.setFocusable(true);
 
-        tiles.createMap("images/actual_level.png");
+        tiles.createMap("images/actual_level2.png");
 
         background = ImageIO.read(getClass().getResourceAsStream("images/pooper3.5.png"));
         leadCountBackground = ImageIO.read(getClass().getResourceAsStream("images/lead_count_background.png"));
@@ -185,7 +185,7 @@ public class GamePanel extends JPanel implements Runnable {
 
         testTile = ImageIO.read(getClass().getResourceAsStream("images/smol_spunch.jpg"));
 
-        for (Enemy e : enemiesInit1) {
+        for (Enemy e : enemiesInit2) {
             enemies.add(e);
         }
 
@@ -225,7 +225,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void setupGame() {
         gameState = menuState;
-        levelState = 1;
+        levelState = 2;
         playMusic(3);
     }
 
@@ -295,7 +295,7 @@ public class GamePanel extends JPanel implements Runnable {
                     if (m.getX() <= screenWidth * 2 && m.getX() >= tileSize * -4) {
                         for (int i = 0; i < tiles.getMap().length; i++) {
                             for (int j = 0; j < tiles.getMap()[i].length; j++) {
-                                ((MovingNoDraw) m).overWriteTile(tiles.getMap()[i][j]);
+                                m.collidesWithTile(tiles.getMap()[i][j]);
                             }
                         }
 
@@ -321,7 +321,7 @@ public class GamePanel extends JPanel implements Runnable {
                     if (m.getX() <= screenWidth * 2 && m.getX() >= tileSize * -4) {
                         for (int i = 0; i < tiles.getMap().length; i++) {
                             for (int j = 0; j < tiles.getMap()[i].length; j++) {
-                                ((MovingNoDraw) m).overWriteTile(tiles.getMap()[i][j]);
+                                m.collidesWithTile(tiles.getMap()[i][j]);
                             }
                         }
 
@@ -483,8 +483,10 @@ public class GamePanel extends JPanel implements Runnable {
                                             || (tileBounds.contains(playerCurrentPosition1) && !tiles.checkTileToLeft(i, j) && !tiles.checkTileToLeft(i + 1, j) && !tiles.checkTileToLeft(i + 2, j))
                                             || (tileBounds.contains(playerCurrentPosition2) && !tiles.checkTileToLeft(i, j) && !tiles.checkTileToLeft(i - 1, j) && !tiles.checkTileToLeft(i - 2, j))
                             ) {
-                                if (tiles.getMap()[i][j].change(levelState)) {
-                                    p1.reduceLeadCount(1);
+                                if (levelState == 1 || (levelState == 2 && !tiles.getMap()[i][j].tileIsOverMovingNoDraw(movingNoDraws2)) || (levelState == 3 && !tiles.getMap()[i][j].tileIsOverMovingNoDraw(movingNoDraws3))) {
+                                    if (tiles.getMap()[i][j].change(levelState)) {
+                                        p1.reduceLeadCount(1);
+                                    }
                                 }
                             }
                         }

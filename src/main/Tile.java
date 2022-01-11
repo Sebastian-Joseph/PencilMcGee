@@ -135,18 +135,12 @@ public class Tile {
 		type = 0;
 	}
 
-	public void convertToNoDraw() {
-		type = 6;
-	}
-
-	public void tileIsOverMovingNoDraw(Enemy[] el) {
-		if (type == 6) {
-			for (Enemy e : el) {
-				if (e.getX() + e.getHeightAndWidth() > x && e.getX() < x + size && e.getY() + e.getHeightAndWidth() > y && e.getY() < y + size) {
-					return;
-				}
+	public boolean tileIsOverMovingNoDraw(Enemy[] el) {
+		for (Enemy e : el) {
+			if (e.getX() + e.getHeightAndWidth() > x && e.getX() < x + size && e.getY() + e.getHeightAndWidth() > y && e.getY() < y + size) {
+				return true;
 			}
-			revert();
 		}
+		return false;
 	}
 }
