@@ -13,10 +13,13 @@ public class Music {
 
     public Music() {
 
-        soundURL[0] = getClass().getResource("Music/game_music.wav");
         soundURL[1] = getClass().getResource("Music/jump.wav");
         soundURL[2] = getClass().getResource("Music/coin.wav");
         soundURL[3] = getClass().getResource("Music/main_menu.wav");
+        soundURL[4] = getClass().getResource("Music/lvl1.wav");
+        soundURL[5] = getClass().getResource("Music/lvl2.wav");
+        soundURL[6] = getClass().getResource("Music/lvl3.wav");
+
     }
 
     public void setFile(int i) {

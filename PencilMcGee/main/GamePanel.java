@@ -298,7 +298,7 @@ public class GamePanel extends JPanel implements Runnable {
                 if (menu.playButton.contains(point)) {
                     gameState = playState;
                     music.stop();
-                    playMusic(0);
+                    playMusic(4);
                 }
             }
             if (mouseDown == true) {
@@ -407,62 +407,65 @@ public class GamePanel extends JPanel implements Runnable {
             if (keyHandler.enterDown) {
                 gameState = pauseState;
 
-                }
+            }
+        }
+
+        if (gameState == pauseState) {
+            try {
+                background = ImageIO.read(getClass().getResourceAsStream("images/pooper3.5.png"));
+            } catch (IOException e) {
+                e.printStackTrace();
             }
 
-            if (gameState == pauseState) {
-                try {
-                    background = ImageIO.read(getClass().getResourceAsStream("images/pooper3.5.png"));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
 
 
 
-
-                g.drawImage(background, 0, 0, null);
-                Font foont = new Font("Ink Free", Font.BOLD, 50);
-                g.setFont(foont);
-                g.setColor(Color.black);
-                g.drawString("Paused", GamePanel.WIDTH + 600, 100);
-
-                Rectangle continueButton = new Rectangle(GamePanel.WIDTH + 630, 150, 120, 50);
-                Rectangle exitButton = new Rectangle(GamePanel.WIDTH + 630, 350, 100, 50);
+            g.drawImage(background, 0, 0, null);
+            Font foont = new Font("Ink Free", Font.BOLD, 50);
+            g.setFont(foont);
+            g.setColor(Color.black);
+            g.drawString("Paused", GamePanel.WIDTH + 615, 100);
 
 
-                Font font1 = new Font("Ink Free", Font.BOLD, 30);
-                g.setFont(font1);
-                g.drawString("Continue", GamePanel.WIDTH + 630,180);
-                g2.draw(continueButton);
-                g.drawString("Exit", GamePanel.WIDTH + 650,380);
-                g2.draw(exitButton);
-
-                if (mouseDown) {
-                    Point point = MouseInfo.getPointerInfo().getLocation();
-                    SwingUtilities.convertPointFromScreen(point, this);
-                    if (continueButton.contains(point)) {
-                        gameState = playState;
-
-                    }
-                }
-
-                if(mouseDown) {
-                    Point pint = MouseInfo.getPointerInfo().getLocation();
-                    SwingUtilities.convertPointFromScreen(pint, this);
-                    if (exitButton.contains(pint)) {
-                        System.exit(0);
-                    }
-                }
+            Rectangle continueButton = new Rectangle(GamePanel.WIDTH + 630, 150, 120, 50);
+            g2.draw(continueButton);
+            Font fint = new Font("Ink Free", Font.BOLD, 30);
+            g.setFont(fint);
+            g2.drawString("Continue", continueButton.x + 5/2, continueButton.y + 30);
 
 
+            Rectangle exitButton = new Rectangle(GamePanel.WIDTH + 630, 350, 120, 50);
+            g2.draw(exitButton);
+            g.setFont(fint);
+            g2.drawString("Exit", exitButton.x + 30, exitButton.y + 30);
 
-
-
-                if (keyHandler.enterDown == true) {
+            if (mouseDown) {
+                Point point = MouseInfo.getPointerInfo().getLocation();
+                SwingUtilities.convertPointFromScreen(point, this);
+                if (continueButton.contains(point)) {
                     gameState = playState;
                 }
             }
 
-            g2.dispose();
+            if(mouseDown) {
+                Point point = MouseInfo.getPointerInfo().getLocation();
+                SwingUtilities.convertPointFromScreen(point, this);
+                if (exitButton.contains(point)) {
+                    System.exit(0);
+                }
+            }
+
+
+
+
+
+
+
+            if (keyHandler.enterDown == true) {
+                gameState = playState;
+            }
         }
+
+        g2.dispose();
     }
+}
