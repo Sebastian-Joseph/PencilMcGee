@@ -63,6 +63,18 @@ public class GamePanel extends JPanel implements Runnable {
 
     private final int level1EnemyDamage = 10;
     private final int level2EnemyDamage = 15;
+    private final int level3EnemyDamage = 25;
+
+    private final int level1ClearDistance = 798 * tileSize;
+    private final int level2ClearDistance = 798 * tileSize;
+    private final int level3ClearDistance = 798 * tileSize;
+
+    private final int level1LeadCount = 500;
+    private final int level2LeadCount = 500;
+    private final int level3LeadCount = 500;
+
+    private final int xInit = tileSize * 2;
+    private final int yInit = screenHeight - tileSize * 8;
 
     int FPS = 60;
     GameMusic music = new GameMusic();
@@ -70,7 +82,7 @@ public class GamePanel extends JPanel implements Runnable {
     KeyHandler keyHandler = new KeyHandler();
     Thread gameThread;
 
-    Player p1 = new Player(tileSize * 2, screenHeight - tileSize * 8, tileSize / 2, tileSize * 2);
+    Player p1 = new Player(xInit, yInit, tileSize / 2, tileSize * 2, level1ClearDistance, level1LeadCount);
 
     ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 
@@ -89,11 +101,28 @@ public class GamePanel extends JPanel implements Runnable {
         new Enemy(tileSize * 773, tileSize * 9, tileSize * 773, tileSize, tileSize * 2, 3, level1EnemyDamage, false)
     };
 
+    Enemy[] enemiesInit2 = new Enemy[] {
+
+    };
+
+    Enemy[] enemiesInit3 = new Enemy[] {
+
+    };
+
     Enemy[] movingNoDraws1 = new Enemy[0]; // Empty on purpose
 
     Enemy[] movingNoDraws2 = new Enemy[] {
-        new MovingNoDraw(tileSize * 26, tileSize * 13, tileSize * 36, tileSize * 13, tileSize * 3, 2, 0, false),
-        new MovingNoDraw(tileSize * 36, tileSize * 6, tileSize * 26, tileSize * 6, tileSize * 3, 2, 0, false)
+        new MovingNoDraw(tileSize * 26, tileSize * 13, tileSize * 36, tileSize * 13, tileSize * 3, 2.5, 0, false),
+        new MovingNoDraw(tileSize * 36, tileSize * 5, tileSize * 26, tileSize * 5, tileSize * 3, 2.5, 0, false),
+
+        new MovingNoDraw(tileSize * 98, tileSize * 23, tileSize * 98, tileSize * 7, tileSize * 4, 2, 0, false),
+        new MovingNoDraw(tileSize * 98, tileSize * 7, tileSize * 98, tileSize * 23, tileSize * 4, 2, 0, false),
+
+        new MovingNoDraw(tileSize * 113, tileSize * 27, tileSize * 113, 0, tileSize * 4, 3, 0, false)
+    };
+
+    Enemy[] movingNoDraws3 = new Enemy[] {
+
     };
 
     Cannon[] cannons1 = new Cannon[] {
@@ -125,7 +154,13 @@ public class GamePanel extends JPanel implements Runnable {
         new Cannon(tileSize * 586, tileSize * 13, 120, 0, tileSize, 5, level1EnemyDamage, 0),
         new Cannon(tileSize * 587, tileSize * 14, 90, 1, tileSize, 5, level1EnemyDamage, 0),
         new Cannon(tileSize * 586, tileSize * 15, 120, 2, tileSize, 5, level1EnemyDamage, 0)
+    };
+    
+    Cannon[] cannons2 = new Cannon[] {
 
+    };
+
+    Cannon[] cannons3 = new Cannon[] {
 
     };
 
@@ -136,7 +171,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.addKeyListener(keyHandler);
         this.setFocusable(true);
 
-        tiles.createMap("images/actual_level2.png");
+        tiles.createMap("images/actual_level.png");
 
         background = ImageIO.read(getClass().getResourceAsStream("images/pooper3.5.png"));
         leadCountBackground = ImageIO.read(getClass().getResourceAsStream("images/lead_count_background.png"));
@@ -190,7 +225,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void setupGame() {
         gameState = menuState;
-        levelState = 2;
+        levelState = 1;
         playMusic(3);
     }
 
@@ -198,10 +233,6 @@ public class GamePanel extends JPanel implements Runnable {
     public void startGameThread() throws IOException {
         gameThread = new Thread(this);
         gameThread.start();
-
-        // for (int i = 0; i < tiles.length; i++) {
-        //     tileImages[i] = tiles[i].getImage();
-        // }
     }
 
 
@@ -251,23 +282,15 @@ public class GamePanel extends JPanel implements Runnable {
                     }
                 }
             }
-
-            for (int e = 0; e < enemies.size(); e++) {
-                if (enemies.get(e).getX() <= screenWidth * 2 && enemies.get(e).getX() >= tileSize * -4) {
-                    for (int i = 0; i < tiles.getMap().length; i++) {
-                        for (int j = 0; j < tiles.getMap()[i].length; j++) {
-                            enemies.get(e).collidesWithTile(tiles.getMap()[i][j]);
+            else if (levelState == 2) {
+                for (Cannon c : cannons2) {
+                    if (c.getX() <= screenWidth * 2 && c.getX() >= tileSize * -4) {
+                        if (c.createSpawn()) {
+                            Enemy temp = new Enemy(c.getSpawn().getX(), c.getSpawn().getY(), c.getSpawn().getXEnd(), c.getSpawn().getYEnd(), tileSize, c.getSpawn().getSpeed(), c.getSpawn().getDamage(), true);
+                            enemies.add(temp);
                         }
                     }
-                    p1.enemyCollision(enemies.get(e));
-
-                    if (enemies.get(e).move()) {
-                        enemies.remove(enemies.get(e));
-                    }
                 }
-            }
-
-            if (levelState == 2) {
                 for (Enemy m : movingNoDraws2) {
                     if (m.getX() <= screenWidth * 2 && m.getX() >= tileSize * -4) {
                         for (int i = 0; i < tiles.getMap().length; i++) {
@@ -285,9 +308,50 @@ public class GamePanel extends JPanel implements Runnable {
                     }
                 }
             }
+            else if (levelState == 3) {
+                for (Cannon c : cannons3) {
+                    if (c.getX() <= screenWidth * 2 && c.getX() >= tileSize * -4) {
+                        if (c.createSpawn()) {
+                            Enemy temp = new Enemy(c.getSpawn().getX(), c.getSpawn().getY(), c.getSpawn().getXEnd(), c.getSpawn().getYEnd(), tileSize, c.getSpawn().getSpeed(), c.getSpawn().getDamage(), true);
+                            enemies.add(temp);
+                        }
+                    }
+                }
+                for (Enemy m : movingNoDraws3) {
+                    if (m.getX() <= screenWidth * 2 && m.getX() >= tileSize * -4) {
+                        for (int i = 0; i < tiles.getMap().length; i++) {
+                            for (int j = 0; j < tiles.getMap()[i].length; j++) {
+                                ((MovingNoDraw) m).overWriteTile(tiles.getMap()[i][j]);
+                            }
+                        }
+
+                        m.move();
+                    }
+                }
+                for (int i = 0; i < tiles.getMap().length; i++) {
+                    for (int j = 0; j < tiles.getMap()[i].length; j++) {
+                        tiles.getMap()[i][j].tileIsOverMovingNoDraw(movingNoDraws2);
+                    }
+                }
+            }
+
+            for (int e = 0; e < enemies.size(); e++) {
+                if (enemies.get(e).getX() <= screenWidth * 2 && enemies.get(e).getX() >= tileSize * -4) {
+                    for (int i = 0; i < tiles.getMap().length; i++) {
+                        for (int j = 0; j < tiles.getMap()[i].length; j++) {
+                            enemies.get(e).collidesWithTile(tiles.getMap()[i][j]);
+                        }
+                    }
+                    p1.enemyCollision(enemies.get(e));
+
+                    if (enemies.get(e).move()) {
+                        enemies.remove(enemies.get(e));
+                    }
+                }
+            }
 
             if (p1.getLeadCount() <= 0) {
-                p1.reset(tileSize * 2, screenHeight - tileSize * 8);
+                p1.reset(xInit, yInit);
                 for (int i = 0; i < tiles.getMap().length; i++) {
                     for (int j = 0; j < tiles.getMap()[i].length; j++) {
                         tiles.getMap()[i][j].reset();
@@ -295,26 +359,78 @@ public class GamePanel extends JPanel implements Runnable {
                     }
                 }
                 enemies.clear();
-                for (Enemy e : enemiesInit1) {
-                    enemies.add(e);
+                if (levelState == 1) {
+                    for (Enemy e : enemiesInit1) {
+                        enemies.add(e);
+                    }
+                    for (Cannon c : cannons1) {
+                        c.reset();
+                    }
                 }
+                else if (levelState == 2) {
+                    for (Enemy e : enemiesInit2) {
+                        enemies.add(e);
+                    }
+                    for (Cannon c : cannons2) {
+                        c.reset();
+                    }
+                    for (Enemy m : movingNoDraws2) {
+                        m.reset();
+                    }
+                }
+                else if (levelState == 3) {
+                    for (Enemy e : enemiesInit3) {
+                        enemies.add(e);
+                    }
+                    for (Cannon c : cannons3) {
+                        c.reset();
+                    }
+                    for (Enemy m : movingNoDraws3) {
+                        m.reset();
+                    }
+                }        
                 for (Enemy e : enemies) {
                     e.reset();
-                }
-                for (Cannon c : cannons1) {
-                    c.reset();
-                }
-                for (Enemy m : movingNoDraws2) {
-                    m.reset();
                 }
             }
 
             if (!keyHandler.enterDown) {
-                p1.move(keyHandler, screenWidth, tiles, enemies, cannons1, movingNoDraws2);
+                if (levelState == 1) p1.move(keyHandler, screenWidth, tiles, enemies, cannons1, movingNoDraws1);
+                else if (levelState == 2) p1.move(keyHandler, screenWidth, tiles, enemies, cannons2, movingNoDraws2);
+                else if (levelState == 3) p1.move(keyHandler, screenWidth, tiles, enemies, cannons3, movingNoDraws3);
             }
+
+            if (p1.getXPos() >= p1.getClearDistance()) clearLevel();
         }
     }
 
+    public void clearLevel() {
+        enemies.clear();
+        levelState++;
+        if (levelState == 2) {
+            for (Enemy e : enemiesInit2) {
+                enemies.add(e);
+            }
+            p1.setNewLeadCount(level2LeadCount);
+            p1.setNewClearDistance(level2ClearDistance);
+            try {
+                tiles.createMap("images/actual_level2.png");
+            }
+            catch (Exception e) {}
+        }
+        else if (levelState == 3) {
+            for (Enemy e : enemiesInit3) {
+                enemies.add(e);
+            }
+            p1.setNewLeadCount(level3LeadCount);
+            p1.setNewClearDistance(level3ClearDistance);
+            try {
+                tiles.createMap("images/actual_level2.png"); // Will replace with 3 later
+            }
+            catch (Exception e) {}
+        }
+        p1.reset(xInit, yInit);
+    }
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -348,7 +464,7 @@ public class GamePanel extends JPanel implements Runnable {
         }
 
         else {
-            if (mouseDown == true) {
+            if (mouseDown == true && gameState == playState) {
                 Point point = MouseInfo.getPointerInfo().getLocation();
                 SwingUtilities.convertPointFromScreen(point, this);
 
@@ -367,7 +483,7 @@ public class GamePanel extends JPanel implements Runnable {
                                             || (tileBounds.contains(playerCurrentPosition1) && !tiles.checkTileToLeft(i, j) && !tiles.checkTileToLeft(i + 1, j) && !tiles.checkTileToLeft(i + 2, j))
                                             || (tileBounds.contains(playerCurrentPosition2) && !tiles.checkTileToLeft(i, j) && !tiles.checkTileToLeft(i - 1, j) && !tiles.checkTileToLeft(i - 2, j))
                             ) {
-                                if (tiles.getMap()[i][j].change()) {
+                                if (tiles.getMap()[i][j].change(levelState)) {
                                     p1.reduceLeadCount(1);
                                 }
                             }
@@ -382,21 +498,46 @@ public class GamePanel extends JPanel implements Runnable {
                 }
             }
 
+            if (levelState == 1) {
+                g2.setColor(Color.pink);
+                for (Cannon c : cannons1) {
+                    if (c.getX() <= screenWidth * 2 && c.getX() >= tileSize * -4) {
+                        g2.fillRect(c.getX(), c.getY(), tileSize, tileSize);
+                    }
+                }
+            }
+
             if (levelState == 2) {
                 for (Enemy m : movingNoDraws2) {
                     if (m.getX() <= screenWidth * 2 && m.getX() >= tileSize * -4) {
                         g2.setColor(Color.decode("#f7f7f7"));
                         g2.fillRect((int) m.getX(), (int) m.getY(), (int) m.getHeightAndWidth(), (int) m.getHeightAndWidth());
-                        g2.setColor(Color.black);
+                        g2.setColor(Color.decode("#32b1d1"));
                         g2.drawRect((int) m.getX(), (int) m.getY(), (int) m.getHeightAndWidth(), (int) m.getHeightAndWidth());
+                    }
+                }
+                g2.setColor(Color.pink);
+                for (Cannon c : cannons2) {
+                    if (c.getX() <= screenWidth * 2 && c.getX() >= tileSize * -4) {
+                        g2.fillRect(c.getX(), c.getY(), tileSize, tileSize);
                     }
                 }
             }
 
-            g2.setColor(Color.pink);
-            for (Cannon c : cannons1) {
-                if (c.getX() <= screenWidth * 2 && c.getX() >= tileSize * -4) {
-                    g2.fillRect(c.getX(), c.getY(), tileSize, tileSize);
+            if (levelState == 3) {
+                for (Enemy m : movingNoDraws3) {
+                    if (m.getX() <= screenWidth * 2 && m.getX() >= tileSize * -4) {
+                        g2.setColor(Color.decode("#f7f7f7"));
+                        g2.fillRect((int) m.getX(), (int) m.getY(), (int) m.getHeightAndWidth(), (int) m.getHeightAndWidth());
+                        g2.setColor(Color.decode("#32b1d1"));
+                        g2.drawRect((int) m.getX(), (int) m.getY(), (int) m.getHeightAndWidth(), (int) m.getHeightAndWidth());
+                    }
+                }
+                g2.setColor(Color.pink);
+                for (Cannon c : cannons3) {
+                    if (c.getX() <= screenWidth * 2 && c.getX() >= tileSize * -4) {
+                        g2.fillRect(c.getX(), c.getY(), tileSize, tileSize);
+                    }
                 }
             }
 

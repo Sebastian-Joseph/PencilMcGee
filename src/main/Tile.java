@@ -73,12 +73,13 @@ public class Tile {
 		image = newimage;
 	}
 
-	public boolean change() {
+	public boolean change(int state) {
 		
 
 		final AffineTransform at = AffineTransform.getScaleInstance((double) size/32, (double) size/32);
         final AffineTransformOp ato = new AffineTransformOp(at, AffineTransformOp.TYPE_BICUBIC);
-		
+
+		int time = (4 / state == 0) ? 1000 : (4 / state) * 1000;
 
 		if (type == 0) {
 			new Thread(() -> {
@@ -93,21 +94,21 @@ public class Tile {
 				type = 3;
 
 				try {
-					TimeUnit.SECONDS.sleep(4);
+					TimeUnit.MILLISECONDS.sleep(time);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 				if (type == 3) image = ato.filter(stage2, scaledImage);
 
 				try {
-					TimeUnit.SECONDS.sleep(4);
+					TimeUnit.MILLISECONDS.sleep(time);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 				if (type == 3) image = ato.filter(stage3, scaledImage);
 
 				try {
-					TimeUnit.SECONDS.sleep(2);
+					TimeUnit.MILLISECONDS.sleep(time / 2);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
