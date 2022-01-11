@@ -137,7 +137,7 @@ public class Tile {
 
 	public boolean tileIsOverMovingNoDraw(Enemy[] el) {
 		for (Enemy e : el) {
-			if (e.getX() + e.getHeightAndWidth() > x && e.getX() < x + size && e.getY() + e.getHeightAndWidth() > y && e.getY() < y + size) {
+			if (e.getX() + ((MovingNoDraw) e).getWidth() > x && e.getX() < x + size && e.getY() + ((MovingNoDraw) e).getHeight() > y && e.getY() < y + size) {
 				return true;
 			}
 		}

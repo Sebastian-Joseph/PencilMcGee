@@ -102,7 +102,7 @@ public class GamePanel extends JPanel implements Runnable {
     };
 
     Enemy[] enemiesInit2 = new Enemy[] {
-
+        new Enemy(tileSize * 70, tileSize * 12, tileSize * 70, tileSize * 23, tileSize * 3, 2.5, level2EnemyDamage, false)
     };
 
     Enemy[] enemiesInit3 = new Enemy[] {
@@ -112,13 +112,12 @@ public class GamePanel extends JPanel implements Runnable {
     Enemy[] movingNoDraws1 = new Enemy[0]; // Empty on purpose
 
     Enemy[] movingNoDraws2 = new Enemy[] {
-        new MovingNoDraw(tileSize * 26, tileSize * 13, tileSize * 36, tileSize * 13, tileSize * 3, 2.5, 0, false),
-        new MovingNoDraw(tileSize * 36, tileSize * 5, tileSize * 26, tileSize * 5, tileSize * 3, 2.5, 0, false),
+        new MovingNoDraw(tileSize * 26, tileSize * 7, tileSize * 36, tileSize * 7, 2.5, tileSize * 3, tileSize * 9),
 
-        new MovingNoDraw(tileSize * 98, tileSize * 23, tileSize * 98, tileSize * 7, tileSize * 4, 2, 0, false),
-        new MovingNoDraw(tileSize * 98, tileSize * 7, tileSize * 98, tileSize * 23, tileSize * 4, 2, 0, false),
+        new MovingNoDraw(tileSize * 98, tileSize * 23, tileSize * 98, tileSize * 7, 2, tileSize * 4, tileSize * 4),
+        new MovingNoDraw(tileSize * 98, tileSize * 7, tileSize * 98, tileSize * 23, 2, tileSize * 4, tileSize * 4),
 
-        new MovingNoDraw(tileSize * 113, tileSize * 27, tileSize * 113, 0, tileSize * 4, 3, 0, false)
+        new MovingNoDraw(tileSize * 113, tileSize * 27, tileSize * 113, 0, 3, tileSize * 4, tileSize * 4)
     };
 
     Enemy[] movingNoDraws3 = new Enemy[] {
@@ -268,7 +267,15 @@ public class GamePanel extends JPanel implements Runnable {
         if (gameState == playState) {
             for (int i = 0; i < tiles.getMap().length; i++) {
                 for (int j = 0; j < tiles.getMap()[i].length; j++) {
-                    p1.collision(tiles.getMap()[i][j], keyHandler, screenWidth, screenHeight, tileSize, i == 0, level1EnemyDamage);
+                    if (levelState == 1) {
+                        p1.collision(tiles.getMap()[i][j], keyHandler, screenWidth, screenHeight, tileSize, i == 0, level1EnemyDamage);
+                    }
+                    else if (levelState == 2) {
+                        p1.collision(tiles.getMap()[i][j], keyHandler, screenWidth, screenHeight, tileSize, i == 0, level2EnemyDamage);
+                    }
+                    else if (levelState == 3) {
+                        p1.collision(tiles.getMap()[i][j], keyHandler, screenWidth, screenHeight, tileSize, i == 0, level3EnemyDamage);
+                    }
                 }
             }
 
@@ -347,6 +354,9 @@ public class GamePanel extends JPanel implements Runnable {
                     if (enemies.get(e).move()) {
                         enemies.remove(enemies.get(e));
                     }
+                }
+                else {
+                    p1.enemyCollision(new Enemy(0, 0, 0, 0, 0, 0, 0, false));
                 }
             }
 
@@ -513,9 +523,9 @@ public class GamePanel extends JPanel implements Runnable {
                 for (Enemy m : movingNoDraws2) {
                     if (m.getX() <= screenWidth * 2 && m.getX() >= tileSize * -4) {
                         g2.setColor(Color.decode("#f7f7f7"));
-                        g2.fillRect((int) m.getX(), (int) m.getY(), (int) m.getHeightAndWidth(), (int) m.getHeightAndWidth());
+                        g2.fillRect((int) m.getX(), (int) m.getY(), (int) ((MovingNoDraw) m).getWidth(), (int) ((MovingNoDraw) m).getHeight());
                         g2.setColor(Color.decode("#32b1d1"));
-                        g2.drawRect((int) m.getX(), (int) m.getY(), (int) m.getHeightAndWidth(), (int) m.getHeightAndWidth());
+                        g2.drawRect((int) m.getX(), (int) m.getY(), (int) ((MovingNoDraw) m).getWidth(), (int) ((MovingNoDraw) m).getHeight());
                     }
                 }
                 g2.setColor(Color.pink);
@@ -530,9 +540,9 @@ public class GamePanel extends JPanel implements Runnable {
                 for (Enemy m : movingNoDraws3) {
                     if (m.getX() <= screenWidth * 2 && m.getX() >= tileSize * -4) {
                         g2.setColor(Color.decode("#f7f7f7"));
-                        g2.fillRect((int) m.getX(), (int) m.getY(), (int) m.getHeightAndWidth(), (int) m.getHeightAndWidth());
+                        g2.fillRect((int) m.getX(), (int) m.getY(), (int) ((MovingNoDraw) m).getWidth(), (int) ((MovingNoDraw) m).getHeight());
                         g2.setColor(Color.decode("#32b1d1"));
-                        g2.drawRect((int) m.getX(), (int) m.getY(), (int) m.getHeightAndWidth(), (int) m.getHeightAndWidth());
+                        g2.drawRect((int) m.getX(), (int) m.getY(), (int) ((MovingNoDraw) m).getWidth(), (int) ((MovingNoDraw) m).getHeight());
                     }
                 }
                 g2.setColor(Color.pink);
