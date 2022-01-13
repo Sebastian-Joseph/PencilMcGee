@@ -30,7 +30,7 @@ import java.awt.event.KeyListener;
 public class GamePanel extends JPanel implements Runnable {
     // Screen Settings
     final int originalTileSize = 8;
-    final int scale = 4;
+    public static final int scale = 4;
 
     final int tileSize = originalTileSize * scale;
     final int maxScreenCol = 48;
@@ -62,8 +62,8 @@ public class GamePanel extends JPanel implements Runnable {
     private int levelState;
 
     private final int level1EnemyDamage = 10;
-    private final int level2EnemyDamage = 20;
-    private final int level3EnemyDamage = 30;
+    private final int level2EnemyDamage = 15;
+    private final int level3EnemyDamage = 25;
 
     private final int level1ClearDistance = 798 * tileSize;
     private final int level2ClearDistance = 798 * tileSize;
@@ -104,6 +104,20 @@ public class GamePanel extends JPanel implements Runnable {
     Enemy[] enemiesInit2 = new Enemy[] {
         new Enemy(tileSize * 70.5, tileSize * 12, tileSize * 70.5, tileSize * 24, tileSize * 2, 3.5, level2EnemyDamage, false),
         new Enemy(tileSize * 159, tileSize * 4, tileSize * 159, tileSize * 21, tileSize * 1, 7, level2EnemyDamage, false),
+
+        new Enemy(tileSize * 286, tileSize * 15, tileSize * 296, tileSize * 23, tileSize * 1, 3, level2EnemyDamage, false),
+
+        new Enemy(tileSize * 328, tileSize * 12, tileSize * 333, tileSize * 12, tileSize * 1, 3, level2EnemyDamage, false),
+        new Enemy(tileSize * 333, tileSize * 18, tileSize * 328, tileSize * 18, tileSize * 1, 3, level2EnemyDamage, false),
+
+        new Enemy(tileSize * 340, tileSize * 17, tileSize * 345, tileSize * 17, tileSize * 1, 3, level2EnemyDamage, false),
+        new Enemy(tileSize * 345, tileSize * 6, tileSize * 340, tileSize * 6, tileSize * 1, 3, level2EnemyDamage, false),
+
+        new Enemy(tileSize * 390, tileSize * 6, tileSize * 390, tileSize * 11, tileSize * 2, 2.5, level2EnemyDamage, false),
+        new Enemy(tileSize * 403, tileSize * 6, tileSize * 403, tileSize * 11, tileSize * 2, 3.5, level2EnemyDamage, false),
+        new Enemy(tileSize * 390, tileSize * 18, tileSize * 390, tileSize * 24, tileSize * 2, 3.5, level2EnemyDamage, false),
+        new Enemy(tileSize * 403, tileSize * 24, tileSize * 403, tileSize * 18, tileSize * 2, 2.5, level2EnemyDamage, false),
+        new Enemy(tileSize * 412, tileSize * 5, tileSize * 420, tileSize * 5, tileSize * 1, 4, level2EnemyDamage, false),
     };
 
     Enemy[] enemiesInit3 = new Enemy[] {
@@ -113,23 +127,37 @@ public class GamePanel extends JPanel implements Runnable {
     Enemy[] movingNoDraws1 = new Enemy[0]; // Empty on purpose
 
     Enemy[] movingNoDraws2 = new Enemy[] {
-        new MovingNoDraw(tileSize * 26, tileSize * 8, tileSize * 36, tileSize * 8, 2, tileSize * 3, tileSize * 8),
+        new MovingNoDraw(tileSize * 12, tileSize, tileSize * 20, tileSize, tileSize, 2, tileSize, tileSize * 9),
 
-        new MovingNoDraw(tileSize * 65, tileSize * 12, tileSize * 65, tileSize * 25, 2, tileSize * 5, tileSize),
-        new MovingNoDraw(tileSize * 73, tileSize * 25, tileSize * 73, tileSize * 12, 2, tileSize * 5, tileSize),
+        new MovingNoDraw(tileSize * 26, tileSize * 8, tileSize * 36, tileSize * 8, tileSize, 2, tileSize * 3, tileSize * 8),
 
-        new MovingNoDraw(tileSize * 98, tileSize * 23, tileSize * 98, tileSize * 7, 2, tileSize * 4, tileSize * 4),
-        new MovingNoDraw(tileSize * 98, tileSize * 7, tileSize * 98, tileSize * 23, 2, tileSize * 4, tileSize * 4),
+        new MovingNoDraw(tileSize * 65, tileSize * 12, tileSize * 65, tileSize * 25, tileSize, 2, tileSize * 5, tileSize),
+        new MovingNoDraw(tileSize * 73, tileSize * 25, tileSize * 73, tileSize * 12, tileSize, 2, tileSize * 5, tileSize),
 
-        new MovingNoDraw(tileSize * 113, tileSize * 27, tileSize * 113, 0, 3, tileSize * 4, tileSize * 4),
+        new MovingNoDraw(tileSize * 98, tileSize * 23, tileSize * 98, tileSize * 7, tileSize, 2, tileSize * 4, tileSize * 4),
+        new MovingNoDraw(tileSize * 98, tileSize * 7, tileSize * 98, tileSize * 23, tileSize, 2, tileSize * 4, tileSize * 4),
+
+        new MovingNoDraw(tileSize * 113, tileSize * 27, tileSize * 113, 0, tileSize, 3, tileSize * 4, tileSize * 4),
         
-        new MovingNoDraw(tileSize * 155, tileSize * 11, tileSize * 127, tileSize * 11, 4, tileSize * 2, tileSize * 6),
+        new MovingNoDraw(tileSize * 155, tileSize * 11, tileSize * 127, tileSize * 11, tileSize, 4.5, tileSize * 2, tileSize * 6),
 
-        new MovingNoDraw(tileSize * 165, tileSize * 17, tileSize * 175, tileSize * 17, 2.5, tileSize, tileSize * 4),
+        new MovingNoDraw(tileSize * 165, tileSize * 17, tileSize * 175, tileSize * 17, tileSize, 2.5, tileSize, tileSize * 4),
 
-        new MovingNoDraw(tileSize * 163, tileSize * 7, tileSize * 186, tileSize * 7, 4, tileSize * 4, tileSize * 4),
+        new MovingNoDraw(tileSize * 163, tileSize * 7, tileSize * 186, tileSize * 7, tileSize, 4, tileSize * 4, tileSize * 4),
         
-        new MovingNoDraw(tileSize * 192, tileSize * 9, tileSize * 192, tileSize * 19.5, 3, tileSize * 27, tileSize * 0.5)
+        new MovingNoDraw(tileSize * 192, tileSize * 9, tileSize * 192, tileSize * 19.5, tileSize, 2.5, tileSize * 27, tileSize * 0.5),
+
+        new MovingNoDraw(tileSize * 272, tileSize * 5, tileSize * 290, tileSize * 5, tileSize, 7, tileSize * 3, tileSize * 4),
+        new MovingNoDraw(tileSize * 276, tileSize * 15, tileSize * 304, tileSize * 15, tileSize, 4.5, tileSize, tileSize * 9),
+
+        new MovingNoDraw(tileSize * 309, tileSize * 11, tileSize * 309, tileSize * 21, tileSize, 2, tileSize * 7, tileSize),
+        new MovingNoDraw(tileSize * 309, tileSize * 10, tileSize * 309, 0, tileSize, 4, tileSize * 7, tileSize),
+
+        new MovingNoDraw(tileSize * 335, tileSize * 20, tileSize * 335, tileSize * 26, tileSize, 1, tileSize * 4, tileSize),
+
+        new MovingNoDraw(tileSize * 420, tileSize * 1, tileSize * 374, tileSize * 1, tileSize, 7, tileSize, tileSize * 25),
+        
+        new MovingNoDraw(tileSize * 456, tileSize * 25, tileSize * 465, tileSize * 18, tileSize, 3, tileSize * 2, tileSize * 2),
     };
 
     Enemy[] movingNoDraws3 = new Enemy[] {
@@ -168,7 +196,13 @@ public class GamePanel extends JPanel implements Runnable {
     };
     
     Cannon[] cannons2 = new Cannon[] {
+        new Cannon(tileSize * 242, tileSize * 9, 30, 1, tileSize, 8, level2EnemyDamage, 0),
 
+        new Cannon(tileSize * 238, tileSize * 18, 150, 1, tileSize, 4, level2EnemyDamage, 0),
+        new Cannon(tileSize * 267, tileSize * 20, 150, 3, tileSize, 4, level2EnemyDamage, 0),
+
+        new Cannon(tileSize * 478, tileSize * 3, 165, 3, tileSize, 4, level2EnemyDamage, 0),
+        new Cannon(tileSize * 478, tileSize * 5, 165, 3, tileSize, 4, level2EnemyDamage, 0),
     };
 
     Cannon[] cannons3 = new Cannon[] {
