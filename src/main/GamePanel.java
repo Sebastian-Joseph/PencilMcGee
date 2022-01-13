@@ -62,8 +62,8 @@ public class GamePanel extends JPanel implements Runnable {
     private int levelState;
 
     private final int level1EnemyDamage = 10;
-    private final int level2EnemyDamage = 15;
-    private final int level3EnemyDamage = 25;
+    private final int level2EnemyDamage = 20;
+    private final int level3EnemyDamage = 30;
 
     private final int level1ClearDistance = 798 * tileSize;
     private final int level2ClearDistance = 798 * tileSize;
@@ -127,9 +127,9 @@ public class GamePanel extends JPanel implements Runnable {
 
         new MovingNoDraw(tileSize * 165, tileSize * 17, tileSize * 175, tileSize * 17, 2.5, tileSize, tileSize * 4),
 
-        new MovingNoDraw(tileSize * 160, tileSize * 7, tileSize * 186, tileSize * 7, 4, tileSize * 4, tileSize * 4),
+        new MovingNoDraw(tileSize * 163, tileSize * 7, tileSize * 186, tileSize * 7, 4, tileSize * 4, tileSize * 4),
         
-        new MovingNoDraw(tileSize * 192, tileSize * 9, tileSize * 192, tileSize * 19, 4, tileSize * 27, tileSize)
+        new MovingNoDraw(tileSize * 192, tileSize * 9, tileSize * 192, tileSize * 19.5, 3, tileSize * 27, tileSize * 0.5)
     };
 
     Enemy[] movingNoDraws3 = new Enemy[] {
