@@ -17,6 +17,8 @@ public class Tile {
 	private int initialx;
 	private int initialy;
 	private int size;
+	final AffineTransform at;
+    final AffineTransformOp ato;
 
 	private BufferedImage stage1;
 	private BufferedImage stage2;
@@ -27,6 +29,8 @@ public class Tile {
 	private int xInit;
 	private int yInit;
 	private BufferedImage scaledImage;
+	private BufferedImage coinImage;
+	private boolean coin;
 
 	public Tile(BufferedImage image, int type, int x, int y, int s) throws IOException {
 		this.image = image;
@@ -37,6 +41,13 @@ public class Tile {
 		initialy = y;
 		size = s;
 		scaledImage = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
+		coinImage = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
+		at = AffineTransform.getScaleInstance((double) size/32, (double) size/32);
+		ato = new AffineTransformOp(at, AffineTransformOp.TYPE_BICUBIC);
+
+		if(type == 4){
+			coin = true;
+		}
 
 		xInit = x;
 		yInit = y;
@@ -71,6 +82,17 @@ public class Tile {
 	public void reset() {
 		x = initialx;
 		y = initialy;
+		if(coin){
+			type = 4;
+			try{
+				BufferedImage coin = ImageIO.read(getClass().getResourceAsStream("images/coin.png"));
+				ato.filter(coin, coinImage);
+				newImage(coinImage);
+			}
+			catch(IOException e1){
+
+			}
+		}
 	}
 
 	public void newImage(BufferedImage newimage) throws IOException {
@@ -80,8 +102,7 @@ public class Tile {
 	public boolean change(int state) {
 		
 
-		final AffineTransform at = AffineTransform.getScaleInstance((double) size/32, (double) size/32);
-        final AffineTransformOp ato = new AffineTransformOp(at, AffineTransformOp.TYPE_BICUBIC);
+		
 
 		int t = 4000;
 		if (state == 2) t = 3000;
