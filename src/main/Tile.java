@@ -5,9 +5,7 @@ import javax.imageio.ImageIO;
 import javax.xml.namespace.QName;
 import java.awt.geom.AffineTransform;
 import java.awt.image.*;
-
-
-
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 public class Tile {
@@ -85,7 +83,11 @@ public class Tile {
 		final AffineTransform at = AffineTransform.getScaleInstance((double) size/32, (double) size/32);
         final AffineTransformOp ato = new AffineTransformOp(at, AffineTransformOp.TYPE_BICUBIC);
 
-		int time = (4 / state == 0) ? 1000 : (4 / state) * 1000;
+		int t = 4000;
+		if (state == 2) t = 3000;
+		else if (state == 4) t = 2000;
+
+		final int time = t;
 
 		if (type == 0) {
 			new Thread(() -> {
@@ -143,7 +145,16 @@ public class Tile {
 
 	public boolean tileIsOverMovingNoDraw(Enemy[] el) {
 		for (Enemy e : el) {
-			if (e.getX() + e.getHeightAndWidth() > x && e.getX() < x + size && e.getY() + e.getHeightAndWidth() > y && e.getY() < y + size) {
+			if (e.getX() + ((MovingNoDraw) e).getWidth() > x && e.getX() < x + size && e.getY() + ((MovingNoDraw) e).getHeight() > y && e.getY() < y + size) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean tileIsOverMovingEnemy(ArrayList<Enemy> el) {
+		for (Enemy e : el) {
+			if (e.getDisappearance() == false && e.getX() + e.getHeightAndWidth() > x && e.getX() < x + size && e.getY() + e.getHeightAndWidth() > y && e.getY() < y + size) {
 				return true;
 			}
 		}

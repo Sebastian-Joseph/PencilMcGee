@@ -35,6 +35,9 @@ public class Enemy {
         heightAndWidth = tileSize;
 
         speed = s;
+
+        speed = (speed * GamePanel.scale) / 4;
+
         damage = d;
         disappearAtEnd = dae;
     }
