@@ -126,6 +126,10 @@ public class Tilemap {
                     map[row][col] = new Tile(scaledImage, 11, tileSize * col, tileSize * row, tileSize);
                     map[row][col].newImage(rse);
                 }
+                else if (c.getRed() == 250 && c.getGreen() == 200 && c.getBlue() == 0) {
+                    map[row][col] = new Tile(scaledImage, 4, tileSize * col, tileSize * row, tileSize);
+                    map[row][col].newImage(co);
+                }
 
                 else {
                     map[row][col] = new Tile(scaledImage, 0, tileSize * col, tileSize * row, tileSize);
@@ -133,9 +137,7 @@ public class Tilemap {
                 if (c.getRed() == 255 && c.getGreen() == 255 && c.getBlue() == 255) {
                     map[row][col].newImage(smallpooper);
                 }
-                if (c.getRed() == 250 && c.getGreen() == 200 && c.getBlue() == 0) {
-                    map[row][col].newImage(co);
-                }
+                
                 
             }
         }

@@ -24,6 +24,7 @@ public class Player {
     private int leadCountInit;
 
     private int invincibility;
+    private int pointCount;
 
     private int clearDistance;
     private int clearDistanceInit;
@@ -94,6 +95,10 @@ public class Player {
         clearDistance = clearDistanceInit;
     }
 
+    public int getPointCount(){
+        return pointCount;
+    }
+
     public void collision(Tile t, KeyHandler k, int xMax, int yMax, int offset, boolean topRow, int damage) {
         if (topRow && t.getType() == 1) {
             if (xPos + width >= t.getX() - xSpeed && xPos <= t.getX() + (offset / 2) && yPos < t.getY() + offset - ySpeed) {
@@ -134,6 +139,11 @@ public class Player {
                     reduceLeadCount(damage);
                     invincibility = 1;
                 }
+            }
+            else if (t.getType() == 4 && xPos + width > t.getX() && xPos < t.getX() + offset && yPos + height >= t.getY() && yPos <= t.getY() + (offset / 2)) {
+                t.revert();
+                addPointCount(1);
+                addLeadCount(2);
             }
             else if (t.getType() % 2 == 1 && xPos + width > t.getX() && xPos < t.getX() + offset && yPos + height >= t.getY() + (offset / 2) && yPos <= t.getY() + offset) {
                 yPos = t.getY() + offset;
@@ -188,6 +198,12 @@ public class Player {
 
     public void reduceLeadCount(int r) {
         leadCount -= r;
+    }
+    public void addLeadCount(int r) {
+        leadCount += r;
+    }
+    public void addPointCount(int p) {
+        pointCount += p;
     }
 
     public void move(KeyHandler k, int xMax, Tilemap tm, ArrayList<Enemy> al, Cannon[] cl, Enemy[] ml) {

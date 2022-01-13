@@ -58,7 +58,8 @@ public class GamePanel extends JPanel implements Runnable {
     private int gameState;
     private final int menuState = 0;
     private final int playState = 1;
-    private final int pauseState = 2;
+    private final int instructState = 2;
+    private final int pauseState = 3;
 
     private int levelState;
 
@@ -465,6 +466,7 @@ public class GamePanel extends JPanel implements Runnable {
             for (int i = 0; i < tiles.getMap().length; i++) {
                 for (int j = 0; j < tiles.getMap()[i].length; j++) {
                     tiles.getMap()[i][j].reset();
+                    if (tiles.getMap()[i][j].getType() == 3) tiles.getMap()[i][j].revert();
                 }
             }
         }
@@ -645,31 +647,51 @@ public class GamePanel extends JPanel implements Runnable {
             double textOffset = tileSize * 0.6;
             g2.drawString(String.valueOf(p1.getLeadCount()), ((int) textOffset) + tileSize, ((int) textOffset) + tileSize * 2);
 
-            if (keyHandler.enterDown == true) {
-                g2.drawImage(testTile, screenWidth / 2 - tileSize, screenHeight / 2 - tileSize, tileSize * 2, tileSize * 2, null);
-                if (mouseDown == true) {
-                    Point point = MouseInfo.getPointerInfo().getLocation();
-                    SwingUtilities.convertPointFromScreen(point, this);
-                    Rectangle resetBounds = new Rectangle(screenWidth / 2 - tileSize, screenHeight / 2 - tileSize, tileSize * 2, tileSize * 2);
-                    if (resetBounds.contains(point)) {
-                        keyHandler.enterDown = false;
-                        p1.reset(tileSize * 2, screenHeight - tileSize * 8);
-                        for (int i = 0; i < tiles.getMap().length; i++) {
-                            for (int j = 0; j < tiles.getMap()[i].length; j++) {
-                                tiles.getMap()[i][j].reset();
-                            }
-                        }
-                        for(Enemy e : enemies){
-                            e.reset();
-                        }
-                        for(Cannon c: cannons1){
-                            c.reset();
-                        }
-                    }
-                }
+            if (keyHandler.enterDown) {
+                gameState = pauseState;
             }
             
-            g2.drawString(String.valueOf(p1.getLeadCount()), 50, 50);
+            if (gameState == pauseState) {
+                try {
+                    background = ImageIO.read(getClass().getResourceAsStream("images/pooper3.5.png"));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                g.drawImage(background, 0, 0, null);
+                Font foont = new Font("Ink Free", Font.BOLD, 50);
+                g.setFont(foont);
+                g.setColor(Color.black);
+                g.drawString("Paused", GamePanel.WIDTH + 600, 100);
+
+                Rectangle continueButton = new Rectangle(GamePanel.WIDTH + 630, 150, 120, 50);
+                Rectangle exitButton = new Rectangle(GamePanel.WIDTH + 630, 350, 100, 50);
+
+
+                Font font1 = new Font("Ink Free", Font.BOLD, 30);
+                g.setFont(font1);
+                g.drawString("Continue", GamePanel.WIDTH + 630,180);
+                g2.draw(continueButton);
+                g.drawString("Exit", GamePanel.WIDTH + 650,380);
+                g2.draw(exitButton);
+
+                if (mouseDown) {
+                    Point point = MouseInfo.getPointerInfo().getLocation();
+                    SwingUtilities.convertPointFromScreen(point, this);
+                    if (continueButton.contains(point)) {
+                        gameState = playState;
+                    }
+                    if(exitButton.contains(point)){
+                        System.exit(0);
+                    }
+                }
+
+
+
+
+                if (keyHandler.enterDown == true) {
+                    gameState = playState;
+                }
+            }
 
             g2.dispose();
         }
