@@ -70,7 +70,7 @@ public class GamePanel extends JPanel implements Runnable {
     private final int level3ClearDistance = 798 * tileSize;
 
     private final int level1LeadCount = 500;
-    private final int level2LeadCount = 500;
+    private final int level2LeadCount = 650;
     private final int level3LeadCount = 500;
 
     private final int xInit = tileSize * 2;
@@ -216,7 +216,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.addKeyListener(keyHandler);
         this.setFocusable(true);
 
-        tiles.createMap("images/actual_level2.png");
+        tiles.createMap("images/actual_level.png");
 
         background = ImageIO.read(getClass().getResourceAsStream("images/pooper3.5.png"));
         leadCountBackground = ImageIO.read(getClass().getResourceAsStream("images/lead_count_background.png"));
@@ -230,7 +230,7 @@ public class GamePanel extends JPanel implements Runnable {
 
         testTile = ImageIO.read(getClass().getResourceAsStream("images/smol_spunch.jpg"));
 
-        for (Enemy e : enemiesInit2) {
+        for (Enemy e : enemiesInit1) {
             enemies.add(e);
         }
 
@@ -270,7 +270,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void setupGame() {
         gameState = menuState;
-        levelState = 2;
+        levelState = 1;
         playMusic(3);
     }
 
