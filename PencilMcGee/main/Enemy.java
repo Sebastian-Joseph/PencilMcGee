@@ -1,22 +1,22 @@
 package main;
 
 public class Enemy {
-    private double xStart;
-    private double yStart;
-    private double xEnd;
-    private double yEnd;
-    private double xStartInit;
-    private double yStartInit;
-    private double xEndInit;
-    private double yEndInit;
+    protected double xStart;
+    protected double yStart;
+    protected double xEnd;
+    protected double yEnd;
+    protected double xStartInit;
+    protected double yStartInit;
+    protected double xEndInit;
+    protected double yEndInit;
 
-    private double x;
-    private double y;
-    private double heightAndWidth;
+    protected double x;
+    protected double y;
+    protected double heightAndWidth;
 
-    private double speed;
-    private int damage;
-    private boolean disappearAtEnd;
+    protected double speed;
+    protected int damage;
+    protected boolean disappearAtEnd;
 
     public Enemy(double x1, double y1, double x2, double y2, double tileSize, double s, int d, boolean dae) {
         xStart = x1;

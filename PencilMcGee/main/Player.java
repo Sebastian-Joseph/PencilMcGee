@@ -19,17 +19,21 @@ public class Player {
     private int height;
 
     private int leadCount;
+    private int leadCountInit;
+
     private int invincibility;
+
     private int pointCount;
 
-    private final int leadCountLevel1 = 500;
+    private int clearDistance;
+    private int clearDistanceInit;
 
     Music music = new Music();
 
 
 
 
-    public Player(int x, int y, int w, int h) {
+    public Player(int x, int y, int w, int h, int c, int l) {
         xPos = x;
         yPos = y;
         xSpeed = 6;
@@ -48,7 +52,11 @@ public class Player {
         width = w;
         height = h;
 
-        leadCount = leadCountLevel1;
+        clearDistance = c;
+        clearDistanceInit = c;
+
+        leadCount = l;
+        leadCountInit = l;
         invincibility = 0;
 
 
@@ -81,6 +89,20 @@ public class Player {
 
     public int getInvincibility() {
         return invincibility;
+    }
+
+    public int getClearDistance() {
+        return clearDistance;
+    }
+
+    public void setNewLeadCount(int l) {
+        leadCountInit = l;
+        leadCount = leadCountInit;
+    }
+
+    public void setNewClearDistance(int c) {
+        clearDistanceInit = c;
+        clearDistance = clearDistanceInit;
     }
 
     public int getPointCount() {
@@ -192,8 +214,9 @@ public class Player {
     public void reset(double xInit, double yInit) {
         xPos = xInit;
         yPos = yInit;
-        leadCount = leadCountLevel1;
+        leadCount = leadCountInit;
         invincibility = 0;
+        clearDistance = clearDistanceInit;
     }
 
     public void reduceLeadCount(int r) {
@@ -208,7 +231,7 @@ public class Player {
         pointCount += p;
     }
 
-    public void move(KeyHandler k, int xMax, Tilemap tm, ArrayList<Enemy> al, Cannon[] cl) {
+    public void move(KeyHandler k, int xMax, Tilemap tm, ArrayList<Enemy> al, Cannon[] cl, Enemy[] ml) {
         if (k.leftPressed) {
             dx = (dx > -1 * xSpeed) ? dx - xIncrement : -1 * xSpeed;
         }
@@ -232,10 +255,6 @@ public class Player {
                     : (dy < ySpeed) ? dy + yIncrement : ySpeed;
         }
 
-        if(k.escPressed) {
-            System.exit(0);
-        }
-
         if (xPos >= xMax / 2) {
             for (int i = 0; i < tm.getMap().length; i++) {
                 for (int j = 0; j < tm.getMap()[i].length; j++) {
@@ -248,6 +267,10 @@ public class Player {
             for (Cannon c : cl) {
                 c.scroll((int) dx);
             }
+            for (Enemy m : ml) {
+                m.scroll((int) dx);
+            }
+            clearDistance -= ((int) dx);
         }
         if (xPos >= xMax / 2 && dx >= 0) xPos = xMax / 2;
 
