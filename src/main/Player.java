@@ -21,14 +21,17 @@ public class Player {
     private int height;
 
     private int leadCount;
+    private int leadCountInit;
+
     private int invincibility;
 
-    private final int leadCountLevel1 = 500;
+    private int clearDistance;
+    private int clearDistanceInit;
 
 
-    public Player(int w, int h, int xInit, int yInit) {
-        xPos = xInit;
-        yPos = yInit;
+    public Player(int x, int y, int w, int h, int c, int l) {
+        xPos = x;
+        yPos = y;
         xSpeed = 6;
         ySpeed = 16;
         xIncrement = 0.8;
@@ -45,7 +48,11 @@ public class Player {
         width = w;
         height = h;
 
-        leadCount = leadCountLevel1;
+        clearDistance = c;
+        clearDistanceInit = c;
+
+        leadCount = l;
+        leadCountInit = l;
         invincibility = 0;
     }
 
@@ -71,6 +78,20 @@ public class Player {
 
     public int getInvincibility() {
         return invincibility;
+    }
+
+    public int getClearDistance() {
+        return clearDistance;
+    }
+
+    public void setNewLeadCount(int l) {
+        leadCountInit = l;
+        leadCount = leadCountInit;
+    }
+
+    public void setNewClearDistance(int c) {
+        clearDistanceInit = c;
+        clearDistance = clearDistanceInit;
     }
 
     public void collision(Tile t, KeyHandler k, int xMax, int yMax, int offset, boolean topRow, int damage) {
@@ -125,10 +146,6 @@ public class Player {
             }
         }
 
-        // if (xPos >= xMax - width) {
-        //     dx = 0;
-        //     xPos = xMax - width;
-        // }
         if (xPos <= 0) {
             dx = 0;
             xPos = 0;
@@ -164,15 +181,16 @@ public class Player {
     public void reset(double xInit, double yInit) {
         xPos = xInit;
         yPos = yInit;
-        leadCount = leadCountLevel1;
+        leadCount = leadCountInit;
         invincibility = 0;
+        clearDistance = clearDistanceInit;
     }
 
     public void reduceLeadCount(int r) {
         leadCount -= r;
     }
 
-    public void move(KeyHandler k, int xMax, Tilemap tm, ArrayList<Enemy> al, Cannon[] cl) {
+    public void move(KeyHandler k, int xMax, Tilemap tm, ArrayList<Enemy> al, Cannon[] cl, Enemy[] ml) {
         if (k.leftPressed) {
             dx = (dx > -1 * xSpeed) ? dx - xIncrement : -1 * xSpeed;
         }
@@ -208,6 +226,10 @@ public class Player {
             for (Cannon c : cl) {
                 c.scroll((int) dx);
             }
+            for (Enemy m : ml) {
+                m.scroll((int) dx);
+            }
+            clearDistance -= ((int) dx);
         }
         if (xPos >= xMax / 2 && dx >= 0) xPos = xMax / 2;
 
