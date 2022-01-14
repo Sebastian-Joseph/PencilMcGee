@@ -30,7 +30,7 @@ import java.awt.event.KeyListener;
 public class GamePanel extends JPanel implements Runnable {
     // Screen Settings
     final int originalTileSize = 8;
-    public static final int scale = 3;
+    public static final int scale = 4;
 
     final int tileSize = originalTileSize * scale;
     final int maxScreenCol = 48;
