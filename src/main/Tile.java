@@ -182,5 +182,14 @@ public class Tile {
 		return false;
 	}
 
+	public boolean tileIsOverMovingCannon(Cannon[] cl) {
+		for (Cannon c : cl) {
+			if (c.getX() + size > x && c.getX() < x + size && c.getY() + size > y && c.getY() < y + size) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	
 }

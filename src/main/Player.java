@@ -164,6 +164,12 @@ public class Player {
         if (yPos >= yMax) {
             leadCount = 0;
         }
+        
+        // Testing purposes only
+        // if (yPos + height > yMax) {
+        //     yPos = yMax - height;
+        //     dy = 0;
+        // }
     }
 
     public void enemyCollision(Enemy e) {

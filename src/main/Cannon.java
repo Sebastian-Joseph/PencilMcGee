@@ -51,6 +51,10 @@ public class Cannon {
         return count;
     }
 
+    public int getDirection() {
+        return direction;
+    }
+
     public void reset() {
         x = xInit;
         y = yInit;
