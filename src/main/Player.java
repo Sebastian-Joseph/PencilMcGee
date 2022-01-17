@@ -173,7 +173,7 @@ public class Player {
     }
 
     public void enemyCollision(Enemy e) {
-        if (invincibility == 0 && xPos + width >= e.getX() && xPos <= e.getX() + e.getHeightAndWidth() && yPos + height >= e.getY() && yPos <= e.getY() + e.getHeightAndWidth()) {
+        if (invincibility == 0 && xPos + width > e.getX() && xPos < e.getX() + e.getHeightAndWidth() && yPos + height > e.getY() && yPos < e.getY() + e.getHeightAndWidth()) {
             reduceLeadCount(e.getDamage());
             invincibility = 1;
         }
