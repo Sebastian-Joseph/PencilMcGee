@@ -74,11 +74,11 @@ public class GamePanel extends JPanel implements Runnable {
 
     private final int level1ClearDistance = 798 * tileSize;
     private final int level2ClearDistance = 798 * tileSize;
-    private final int level3ClearDistance = 798 * tileSize;
+    private final int level3ClearDistance = 643 * tileSize;
 
     private final int level1LeadCount = 300;
     private final int level2LeadCount = 500;
-    private final int level3LeadCount = 500;
+    private final int level3LeadCount = 200;
 
     private final int xInit = tileSize * 2;
     private final int yInit = screenHeight - tileSize * 8;
@@ -89,7 +89,7 @@ public class GamePanel extends JPanel implements Runnable {
     KeyHandler keyHandler = new KeyHandler();
     Thread gameThread;
 
-    Player p1 = new Player(xInit, yInit, tileSize / 2, tileSize * 2, level1ClearDistance, level1LeadCount);
+    Player p1 = new Player(xInit, yInit, tileSize / 2, tileSize * 2, level3ClearDistance, level3LeadCount);
 
     ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 
@@ -130,7 +130,7 @@ public class GamePanel extends JPanel implements Runnable {
     };
 
     Enemy[] enemiesInit3 = new Enemy[] {
-
+        new Enemy(tileSize * 123, tileSize * 5, tileSize * 123, tileSize * 17, tileSize, 7, level3EnemyDamage, false)
     };
 
     Enemy[] movingNoDraws1 = new Enemy[0]; // Empty on purpose
@@ -188,10 +188,42 @@ public class GamePanel extends JPanel implements Runnable {
         new MovingNoDraw(tileSize * 658, tileSize * 0, tileSize * 658, tileSize * 26, tileSize, 5, tileSize * 75, tileSize),
         new MovingNoDraw(tileSize * 738, tileSize * 0, tileSize * 738, tileSize * 26, tileSize, 7, tileSize * 22, tileSize),
         new MovingNoDraw(tileSize * 765, tileSize * 0, tileSize * 765, tileSize * 26, tileSize, 6, tileSize * 26, tileSize),
-        new MovingNoDraw(tileSize * 765, tileSize * 0, tileSize * 790, tileSize * 0, tileSize, 6, tileSize, tileSize * 27)
+        new MovingNoDraw(tileSize * 765, tileSize * 0, tileSize * 790, tileSize * 0, tileSize, 6, tileSize, tileSize * 27),
     };
 
     Enemy[] movingNoDraws3 = new Enemy[] {
+        new MovingNoDraw(tileSize * 22, tileSize * 4, tileSize * 32, tileSize * 4, tileSize, 4.5, tileSize, tileSize * 23),
+
+        new MovingNoDraw(tileSize * 87, tileSize * 0, tileSize * 87, tileSize * 26, tileSize, 4, tileSize * 60, tileSize),
+
+        new MovingNoDraw(tileSize * 87, tileSize * 5, tileSize * 106, tileSize * 5, tileSize, 5, tileSize * 3, tileSize * 5),
+
+        new MovingNoDraw(tileSize * 104, tileSize * 13, tileSize * 118, tileSize * 13, tileSize, 6, tileSize * 3, tileSize * 5),
+        new MovingNoDraw(tileSize * 138, tileSize * 15, tileSize * 144, tileSize * 15, tileSize, 2, tileSize * 1, tileSize * 9),
+
+        new MovingNoDraw(tileSize * 152, tileSize * 9, tileSize * 176, tileSize * 9, tileSize, 5, tileSize * 2, tileSize * 3),
+        new MovingNoDraw(tileSize * 176, tileSize * 9, tileSize * 152, tileSize * 9, tileSize, 3, tileSize * 2, tileSize * 3),
+
+        new MovingNoDraw(tileSize * 152, tileSize * 0, tileSize * 152, tileSize * 25, tileSize, 5, tileSize * 44, tileSize),
+
+        new MovingNoDraw(tileSize * 183, tileSize * 15, tileSize * 196, tileSize * 15, tileSize, 5.5, tileSize * 4, tileSize * 4),
+
+        new MovingNoDraw(tileSize * 202, tileSize * 10, tileSize * 202, tileSize * 14, tileSize, 1, tileSize * 3, tileSize),
+        new MovingNoDraw(tileSize * 208, tileSize * 11, tileSize * 208, tileSize * 7, tileSize, 1, tileSize * 3, tileSize),
+        new MovingNoDraw(tileSize * 212, tileSize * 14, tileSize * 212, tileSize * 18, tileSize, 1, tileSize * 3, tileSize),
+        new MovingNoDraw(tileSize * 218, tileSize * 8, tileSize * 218, tileSize * 12, tileSize, 1, tileSize * 3, tileSize),
+        new MovingNoDraw(tileSize * 219, tileSize * 22, tileSize * 219, tileSize * 18, tileSize, 1, tileSize * 3, tileSize),
+        new MovingNoDraw(tileSize * 226, tileSize * 12, tileSize * 226, tileSize * 16, tileSize, 1, tileSize * 3, tileSize),
+        new MovingNoDraw(tileSize * 226, tileSize * 12, tileSize * 226, tileSize * 16, tileSize, 1, tileSize * 3, tileSize),
+        new MovingNoDraw(tileSize * 225, tileSize * 8, tileSize * 226, tileSize * 4, tileSize, 1, tileSize * 3, tileSize),
+        new MovingNoDraw(tileSize * 228, tileSize * 19, tileSize * 226, tileSize * 36, tileSize, 1, tileSize * 3, tileSize),
+        new MovingNoDraw(tileSize * 233, tileSize * 8, tileSize * 233, tileSize * 12, tileSize, 1, tileSize * 3, tileSize),
+        new MovingNoDraw(tileSize * 238, tileSize * 3, tileSize * 238, tileSize * 7, tileSize, 1, tileSize * 3, tileSize),
+        new MovingNoDraw(tileSize * 238, tileSize * 15, tileSize * 238, tileSize * 19, tileSize, 1, tileSize * 3, tileSize),
+        new MovingNoDraw(tileSize * 236, tileSize * 20, tileSize * 238, tileSize * 24, tileSize, 1, tileSize * 3, tileSize),
+        new MovingNoDraw(tileSize * 236, tileSize * 20, tileSize * 238, tileSize * 24, tileSize, 1, tileSize * 3, tileSize),
+
+        new MovingNoDraw(tileSize * 243, tileSize * 6, tileSize * 247, tileSize * 6, tileSize, 1, tileSize, tileSize * 14),
 
     };
 
@@ -237,7 +269,21 @@ public class GamePanel extends JPanel implements Runnable {
     };
 
     Cannon[] cannons3 = new Cannon[] {
+        new Cannon(tileSize * 61, tileSize * 5, 240, 3, tileSize, 4, level2EnemyDamage, 0),
+        new Cannon(tileSize * 61, tileSize * 6, 240, 3, tileSize, 4, level2EnemyDamage, 0),
+        new Cannon(tileSize * 61, tileSize * 7, 240, 3, tileSize, 4, level2EnemyDamage, 0),
+        new Cannon(tileSize * 61, tileSize * 9, 240, 3, tileSize, 4, level2EnemyDamage, 120),
+        new Cannon(tileSize * 61, tileSize * 10, 240, 3, tileSize, 4, level2EnemyDamage, 120),
+        new Cannon(tileSize * 61, tileSize * 11, 240, 3, tileSize, 4, level2EnemyDamage, 120),
 
+        new Cannon(tileSize * 83, tileSize * 24, 180, 3, tileSize, 5, level2EnemyDamage, 0),
+        new Cannon(tileSize * 83, tileSize * 23, 180, 3, tileSize, 5, level2EnemyDamage, 0),
+        new Cannon(tileSize * 83, tileSize * 22, 180, 3, tileSize, 5, level2EnemyDamage, 0),
+        new Cannon(tileSize * 83, tileSize * 21, 180, 3, tileSize, 5, level2EnemyDamage, 0),
+        new Cannon(tileSize * 83, tileSize * 20, 180, 3, tileSize, 5, level2EnemyDamage, 0),
+        new Cannon(tileSize * 83, tileSize * 19, 180, 3, tileSize, 5, level2EnemyDamage, 0),
+        new Cannon(tileSize * 83, tileSize * 18, 180, 3, tileSize, 5, level2EnemyDamage, 0),
+        new Cannon(tileSize * 83, tileSize * 17, 180, 3, tileSize, 5, level2EnemyDamage, 0),
     };
 
     public GamePanel() throws IOException {
@@ -247,7 +293,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.addKeyListener(keyHandler);
         this.setFocusable(true);
 
-        tiles.createMap("images/actual_level.png");
+        tiles.createMap("images/actual_level3.png");
 
         background = ImageIO.read(getClass().getResourceAsStream("images/pooper3.5.png"));
         leadCountBackground = ImageIO.read(getClass().getResourceAsStream("images/lead_count_background.png"));
@@ -266,7 +312,7 @@ public class GamePanel extends JPanel implements Runnable {
 
         testTile = ImageIO.read(getClass().getResourceAsStream("images/smol_spunch.jpg"));
 
-        for (Enemy e : enemiesInit1) {
+        for (Enemy e : enemiesInit3) {
             enemies.add(e);
         }
 
@@ -306,7 +352,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void setupGame() {
         gameState = menuState;
-        levelState = 1;
+        levelState = 3;
         playMusic(3);
     }
 
@@ -399,7 +445,7 @@ public class GamePanel extends JPanel implements Runnable {
             }
             else if (levelState == 3) {
                 for (Cannon c : cannons3) {
-                    if (c.getX() <= screenWidth * 2 && c.getX() >= screenWidth * -2) {
+                    if (c.getX() <= screenWidth * 2 && c.getX() >= tileSize * -4) {
                         if (c.createSpawn()) {
                             Enemy temp = new Enemy(c.getSpawn().getX(), c.getSpawn().getY(), c.getSpawn().getXEnd(), c.getSpawn().getYEnd(), tileSize, c.getSpawn().getSpeed(), c.getSpawn().getDamage(), true);
                             enemies.add(temp);
@@ -407,7 +453,7 @@ public class GamePanel extends JPanel implements Runnable {
                     }
                 }
                 for (Enemy m : movingNoDraws3) {
-                    if (m.getX() <= screenWidth * 2 && m.getX() >= tileSize * -4) {
+                    if (m.getX() <= screenWidth * 2 && m.getX() >= screenWidth * -2) {
                         for (int i = 0; i < tiles.getMap().length; i++) {
                             for (int j = 0; j < tiles.getMap()[i].length; j++) {
                                 m.collidesWithTile(tiles.getMap()[i][j]);
@@ -438,7 +484,7 @@ public class GamePanel extends JPanel implements Runnable {
                     }
                 }
                 else {
-                    p1.enemyCollision(new Enemy(0, 0, 0, 0, 0, 0, 0, false));
+                    p1.enemyCollision(new Enemy(0, screenHeight * 2, 0, 0, 0, 0, 0, false));
                 }
             }
 
@@ -527,7 +573,7 @@ public class GamePanel extends JPanel implements Runnable {
             p1.setNewLeadCount(level3LeadCount);
             p1.setNewClearDistance(level3ClearDistance);
             try {
-                tiles.createMap("images/actual_level2.png"); // Will replace with 3 later
+                tiles.createMap("images/actual_level3.png");
             }
             catch (Exception e) {}
         }

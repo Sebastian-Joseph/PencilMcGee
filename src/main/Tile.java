@@ -101,12 +101,9 @@ public class Tile {
 
 	public boolean change(int state) {
 		
-
-		
-
 		int t = 4000;
 		if (state == 2) t = 3000;
-		else if (state == 4) t = 2000;
+		else if (state == 3) t = 2000;
 
 		final int time = t;
 
