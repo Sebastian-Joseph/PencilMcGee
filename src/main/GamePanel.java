@@ -407,7 +407,6 @@ public class GamePanel extends JPanel implements Runnable {
         playMusic(3);
     }
 
-
     public void startGameThread() throws IOException {
         gameThread = new Thread(this);
         gameThread.start();
@@ -593,6 +592,8 @@ public class GamePanel extends JPanel implements Runnable {
                 oldScoreToDisplay = p1.getScore();
                 p1.tallyScore(tileSize, true, levelState);
                 newScoreToDisplay = p1.getScore();
+                music.stop();
+                playMusic(3);
                 gameState = clearState;
             }
         }
@@ -621,6 +622,8 @@ public class GamePanel extends JPanel implements Runnable {
                 tiles.createMap("images/actual_level2.png");
             }
             catch (Exception e) {}
+            music.stop();
+            playMusic(4);
         }
         else if (levelState == 3) {
             for (Enemy e : enemiesInit3) {
@@ -632,6 +635,8 @@ public class GamePanel extends JPanel implements Runnable {
                 tiles.createMap("images/actual_level3.png");
             }
             catch (Exception e) {}
+            music.stop();
+            playMusic(5);
         }
         else if (levelState == 4) {
             // Insert ending screen stuff here
