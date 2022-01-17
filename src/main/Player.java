@@ -24,7 +24,9 @@ public class Player {
     private int leadCountInit;
 
     private int invincibility;
-    private int pointCount;
+
+    private int coinCount;
+    private int score;
 
     private int clearDistance;
     private int clearDistanceInit;
@@ -55,6 +57,8 @@ public class Player {
         leadCount = l;
         leadCountInit = l;
         invincibility = 0;
+
+        score = 0;
     }
 
     public double getXPos() {
@@ -85,6 +89,10 @@ public class Player {
         return clearDistance;
     }
 
+    public int getClearDistanceInit() {
+        return clearDistanceInit;
+    }
+
     public void setNewLeadCount(int l) {
         leadCountInit = l;
         leadCount = leadCountInit;
@@ -95,8 +103,12 @@ public class Player {
         clearDistance = clearDistanceInit;
     }
 
-    public int getPointCount(){
-        return pointCount;
+    public int getCoinCount() {
+        return coinCount;
+    }
+
+    public int getScore() {
+        return score;
     }
 
     public void collision(Tile t, KeyHandler k, int xMax, int yMax, int offset, boolean topRow, int damage) {
@@ -142,7 +154,7 @@ public class Player {
             }
             else if (t.getType() == 4 && xPos + width > t.getX() && xPos < t.getX() + offset && yPos + height >= t.getY() && yPos <= t.getY() + (offset / 2)) {
                 t.revert();
-                addPointCount(1);
+                addCoinCount(1);
                 addLeadCount(2);
             }
             else if (t.getType() % 2 == 1 && xPos + width > t.getX() && xPos < t.getX() + offset && yPos + height >= t.getY() + (offset / 2) && yPos <= t.getY() + offset) {
@@ -198,6 +210,7 @@ public class Player {
         xPos = xInit;
         yPos = yInit;
         leadCount = leadCountInit;
+        coinCount = 0;
         invincibility = 0;
         clearDistance = clearDistanceInit;
     }
@@ -208,8 +221,24 @@ public class Player {
     public void addLeadCount(int r) {
         leadCount += r;
     }
-    public void addPointCount(int p) {
-        pointCount += p;
+    public void addCoinCount(int p) {
+        coinCount += p;
+    }
+
+    public void tallyScore(int tileSize, boolean levelCleared, int level) {
+        int coinsScore = getCoinCount() * 10;
+        int leadScore = getLeadCount() * 3;
+        int distanceScore;
+        int clearBonus = 0;
+        if (levelCleared) {
+            distanceScore = (clearDistanceInit / tileSize) + 2;
+            clearBonus = 500 * level;
+        }
+        else {
+            distanceScore = (clearDistanceInit / tileSize) - (clearDistance / tileSize) - ((int) xPos);
+        }
+
+        score += coinsScore + leadScore + distanceScore + clearBonus;
     }
 
     public void move(KeyHandler k, int xMax, Tilemap tm, ArrayList<Enemy> al, Cannon[] cl, Enemy[] ml) {

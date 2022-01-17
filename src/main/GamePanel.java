@@ -53,10 +53,17 @@ public class GamePanel extends JPanel implements Runnable {
     BufferedImage cannon2;
     BufferedImage cannon3;
 
+    BufferedImage instructScreen;
+    BufferedImage scoreScreen;
+
     BufferedImage testTile;
 
     private Tilemap tiles = new Tilemap(screenWidth, screenHeight, tileSize);
     private boolean mouseDown = false;
+
+    private boolean showLoading = false;
+    private int oldScoreToDisplay;
+    private int newScoreToDisplay;
     // private boolean enterDown = false;
 
 
@@ -65,6 +72,7 @@ public class GamePanel extends JPanel implements Runnable {
     private final int playState = 1;
     private final int instructState = 2;
     private final int pauseState = 3;
+    private final int clearState = 4;
 
     private int levelState;
 
@@ -350,6 +358,9 @@ public class GamePanel extends JPanel implements Runnable {
         cannon2 = ImageIO.read(getClass().getResourceAsStream("images/cannon2.png"));
         cannon3 = ImageIO.read(getClass().getResourceAsStream("images/cannon3.png"));
 
+        instructScreen = ImageIO.read(getClass().getResourceAsStream("images/instruct.png"));
+        scoreScreen = ImageIO.read(getClass().getResourceAsStream("images/score.png"));
+
         testTile = ImageIO.read(getClass().getResourceAsStream("images/smol_spunch.jpg"));
 
         for (Enemy e : enemiesInit1) {
@@ -578,7 +589,12 @@ public class GamePanel extends JPanel implements Runnable {
                 else if (levelState == 3) p1.move(keyHandler, screenWidth, tiles, enemies, cannons3, movingNoDraws3);
             }
 
-            if (p1.getXPos() >= p1.getClearDistance()) clearLevel();
+            if (p1.getXPos() >= p1.getClearDistance()) {
+                oldScoreToDisplay = p1.getScore();
+                p1.tallyScore(tileSize, true, levelState);
+                newScoreToDisplay = p1.getScore();
+                gameState = clearState;
+            }
         }
 
         if (p1.getLeadCount() <= 0) {
@@ -621,6 +637,8 @@ public class GamePanel extends JPanel implements Runnable {
             // Insert ending screen stuff here
         }
         p1.reset(xInit, yInit);
+        showLoading = false;
+        gameState = playState;
     }
 
     public void paintComponent(Graphics g) {
@@ -648,8 +666,83 @@ public class GamePanel extends JPanel implements Runnable {
             if (mouseDown == true) {
                 Point point = MouseInfo.getPointerInfo().getLocation();
                 SwingUtilities.convertPointFromScreen(point, this);
+                if (menu.instructButton.contains(point)) {
+                    gameState = instructState;
+                }
+            }
+            if (mouseDown == true) {
+                Point point = MouseInfo.getPointerInfo().getLocation();
+                SwingUtilities.convertPointFromScreen(point, this);
                 if (menu.quitButton.contains(point)) {
                     System.exit(0);
+                }
+            }
+        }
+
+        else if (gameState == instructState) {
+            g2.drawImage(instructScreen, 0, 0, screenWidth, screenHeight, null);
+            Rectangle returnButton = new Rectangle(tileSize * 31, tileSize * 21, tileSize * 7, tileSize * 2);
+
+            double textOffset3 = tileSize * 1.3;
+            Font instructFont = new Font("Ink Free", Font.BOLD, tileSize);
+            g.setFont(instructFont);
+
+            g.setColor(Color.black);
+            g.drawString("Return", ((int) textOffset3) + tileSize * 31, ((int) textOffset3) + tileSize * 21);
+            g2.draw(returnButton);
+
+            g.drawString("Press W to jump.", tileSize * 12, tileSize * 7);
+            g.drawString("Hold A to move left.", tileSize * 12, tileSize * 12);
+            g.drawString("Hold D to move right.", tileSize * 12, tileSize * 17);
+            g.drawString("Click and hold to draw.", tileSize * 12, tileSize * 22);
+
+            if (mouseDown) {
+                Point point = MouseInfo.getPointerInfo().getLocation();
+                SwingUtilities.convertPointFromScreen(point, this);
+                if (returnButton.contains(point)) {
+                    gameState = menuState;
+                }
+            }
+        }
+
+        else if (gameState == clearState) {
+            g2.drawImage(scoreScreen, 0, 0, screenWidth, screenHeight, null);
+            Rectangle nextLevelButton = new Rectangle(tileSize * 31, tileSize * 21, tileSize * 7, tileSize * 2);
+
+            double textOffset4 = tileSize * 1.3;
+            Font scoreFont = new Font("Ink Free", Font.BOLD, tileSize);
+            g.setFont(scoreFont);
+
+            g.setColor(Color.black);
+            if (!showLoading) g.drawString("Next Level", ((int) textOffset4) + tileSize * 31, ((int) textOffset4) + tileSize * 21);
+            else clearLevel();
+            g2.draw(nextLevelButton);
+
+            g.drawString("SCORE", tileSize * 12, tileSize * 6);
+
+            Font scoreFont2 = new Font("Ink Free", Font.BOLD, (tileSize / 4) * 3);
+            g.setFont(scoreFont2);
+
+            g.drawString("CURRENT SCORE = " + oldScoreToDisplay, tileSize * 10, tileSize * 8);
+
+            g.drawString("Coins Collected: " + p1.getCoinCount() + " x10 = " + (p1.getCoinCount() * 10), tileSize * 10, tileSize * 12);
+            g.drawString("Lead Count: " + p1.getLeadCount() + " x3 = " + (p1.getLeadCount() * 3), tileSize * 10, tileSize * 14);
+            g.drawString("Distance Traveled = " + ((p1.getClearDistanceInit() / tileSize) + 2), tileSize * 10, tileSize * 16);
+            g.drawString("Level Clear Bonus = " + (500 * levelState), tileSize * 10, tileSize * 18);
+
+            g.drawString("NEW SCORE = " + newScoreToDisplay, tileSize * 10, tileSize * 22);
+
+            if (mouseDown && !showLoading) {
+                Point point = MouseInfo.getPointerInfo().getLocation();
+                SwingUtilities.convertPointFromScreen(point, this);
+                if (nextLevelButton.contains(point)) {
+                    showLoading = true;
+                    g2.setColor(Color.white);
+                    g2.fillRect(tileSize * 31, tileSize * 21, tileSize * 7, tileSize * 2);
+
+                    g2.setColor(Color.black);
+                    g2.draw(nextLevelButton);
+                    g.drawString("Loading...", ((int) textOffset4) + tileSize * 31, ((int) textOffset4) + tileSize * 21);
                 }
             }
         }
@@ -762,7 +855,7 @@ public class GamePanel extends JPanel implements Runnable {
 
             g2.setColor(Color.red);
             if (p1.getInvincibility() != 0) {
-                g2.fillRect((int) p1.getXPos() - 4, (int) p1.getYPos() - 4, scale * 4 + 8, scale * 16 + 8);
+                g2.drawRect((int) p1.getXPos() - scale, (int) p1.getYPos() - scale, scale * 6, scale * 18);
             }
 
             if (keyHandler.leftPressed) {
@@ -789,43 +882,49 @@ public class GamePanel extends JPanel implements Runnable {
             }
             
             if (gameState == pauseState) {
-                try {
-                    background = ImageIO.read(getClass().getResourceAsStream("images/pooper3.5.png"));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                g.drawImage(background, 0, 0, null);
-                Font foont = new Font("Ink Free", Font.BOLD, 50);
+                double pauseFontSize = tileSize * 1.5;
+
+                Font foont = new Font("Ink Free", Font.BOLD, ((int) pauseFontSize));
                 g.setFont(foont);
                 g.setColor(Color.black);
-                g.drawString("Paused", GamePanel.WIDTH + 600, 100);
 
-                Rectangle continueButton = new Rectangle(GamePanel.WIDTH + 630, 150, 120, 50);
-                Rectangle exitButton = new Rectangle(GamePanel.WIDTH + 630, 350, 100, 50);
+                g2.drawImage(leadCountBackground, tileSize * 20, tileSize, tileSize * 9, tileSize * 6, null);
+                double textOffset2 = tileSize * 1.3;
+                g.drawString("Paused", ((int) textOffset2) + tileSize * 21, ((int) textOffset2 * 3) + tileSize);
 
+                Rectangle continueButton = new Rectangle(tileSize * 21, tileSize * 10, tileSize * 7, tileSize * 2);
+                Rectangle exitButton = new Rectangle(tileSize * 21, tileSize * 16, tileSize * 7, tileSize * 2);
 
-                Font font1 = new Font("Ink Free", Font.BOLD, 30);
+                Font font1 = new Font("Ink Free", Font.BOLD, tileSize);
                 g.setFont(font1);
-                g.drawString("Continue", GamePanel.WIDTH + 630,180);
+            
+                g.setColor(Color.white);
+                g2.fillRect(tileSize * 21, tileSize * 10, tileSize * 7, tileSize * 2);
+
+                g.setColor(Color.black);
+                g.drawString("Continue", ((int) textOffset2) + tileSize * 21, ((int) textOffset2) + tileSize * 10);
                 g2.draw(continueButton);
-                g.drawString("Exit", GamePanel.WIDTH + 650,380);
+                
+
+                g.setColor(Color.white);
+                g2.fillRect(tileSize * 21, tileSize * 16, tileSize * 7, tileSize * 2);
+
+                g.setColor(Color.black);
+                g.drawString("Exit", ((int) textOffset2) + tileSize * 21, ((int) textOffset2) + tileSize * 16);
                 g2.draw(exitButton);
 
                 if (mouseDown) {
                     Point point = MouseInfo.getPointerInfo().getLocation();
                     SwingUtilities.convertPointFromScreen(point, this);
                     if (continueButton.contains(point)) {
-                        gameState = playState;
+                        keyHandler.enterDown = false;
                     }
-                    if(exitButton.contains(point)){
+                    if (exitButton.contains(point)) {
                         System.exit(0);
                     }
                 }
 
-
-
-
-                if (keyHandler.enterDown == true) {
+                if (!keyHandler.enterDown) {
                     gameState = playState;
                 }
             }
