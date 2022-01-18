@@ -73,6 +73,7 @@ public class GamePanel extends JPanel implements Runnable {
     private final int instructState = 2;
     private final int pauseState = 3;
     private final int clearState = 4;
+    private final int gameDoneState = 5;
 
     private int levelState;
 
@@ -85,7 +86,7 @@ public class GamePanel extends JPanel implements Runnable {
     private final int level3ClearDistance = 643 * tileSize;
 
     private final int level1LeadCount = 300;
-    private final int level2LeadCount = 500;
+    private final int level2LeadCount = 400;
     private final int level3LeadCount = 200;
 
     private final int xInit = tileSize * 2;
@@ -639,11 +640,14 @@ public class GamePanel extends JPanel implements Runnable {
             playMusic(5);
         }
         else if (levelState == 4) {
-            // Insert ending screen stuff here
+            gameState = gameDoneState;
         }
-        p1.reset(xInit, yInit);
         showLoading = false;
-        gameState = playState;
+
+        if (levelState != 4) {
+            p1.reset(xInit, yInit);
+            gameState = playState;
+        }
     }
 
     public void paintComponent(Graphics g) {
@@ -719,7 +723,7 @@ public class GamePanel extends JPanel implements Runnable {
             g.setFont(scoreFont);
 
             g.setColor(Color.black);
-            if (!showLoading) g.drawString("Next Level", ((int) textOffset4) + tileSize * 31, ((int) textOffset4) + tileSize * 21);
+            if (!showLoading) g.drawString("Next", ((int) textOffset4) + tileSize * 31, ((int) textOffset4) + tileSize * 21);
             else clearLevel();
             g2.draw(nextLevelButton);
 
@@ -748,6 +752,34 @@ public class GamePanel extends JPanel implements Runnable {
                     g2.setColor(Color.black);
                     g2.draw(nextLevelButton);
                     g.drawString("Loading...", ((int) textOffset4) + tileSize * 31, ((int) textOffset4) + tileSize * 21);
+                }
+            }
+        }
+
+        else if (gameState == gameDoneState) {
+
+            try {
+                background = ImageIO.read(getClass().getResourceAsStream("images/gamedone.png"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            double textOffset5 = tileSize * 1.3;
+
+            g.drawImage(background, 0, 0, null);
+            Font f0nt = new Font("Ink Free", Font.BOLD, tileSize);
+            g.setFont(f0nt);
+            g.setColor(Color.white);
+            g.drawString("Exit", ((int) textOffset5) + tileSize * 36, ((int) textOffset5) + tileSize * 14);
+
+            Rectangle exit = new Rectangle(tileSize * 36, tileSize * 14, tileSize * 5, tileSize * 2);
+            g2.draw(exit);
+
+            if (mouseDown == true) {
+                Point point = MouseInfo.getPointerInfo().getLocation();
+                SwingUtilities.convertPointFromScreen(point, this);
+                if (exit.contains(point)) {
+                    System.exit(0);
                 }
             }
         }

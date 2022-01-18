@@ -241,6 +241,10 @@ public class Player {
         score += coinsScore + leadScore + distanceScore + clearBonus;
     }
 
+    public void resetScore() {
+        score = 0;
+    }
+
     public void move(KeyHandler k, int xMax, Tilemap tm, ArrayList<Enemy> al, Cannon[] cl, Enemy[] ml) {
         if (k.leftPressed) {
             dx = (dx > -1 * xSpeed) ? dx - xIncrement : -1 * xSpeed;
