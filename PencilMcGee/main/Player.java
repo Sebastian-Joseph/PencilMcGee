@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 public class Player {
-
     private double xPos;
     private double yPos;
+    private int xInit;
+    private int yInit;
+
     private double xSpeed;
     private double ySpeed;
     private double dx;
@@ -22,15 +24,10 @@ public class Player {
     private int leadCountInit;
 
     private int invincibility;
-
     private int pointCount;
 
     private int clearDistance;
     private int clearDistanceInit;
-
-    Music music = new Music();
-
-
 
 
     public Player(int x, int y, int w, int h, int c, int l) {
@@ -58,13 +55,6 @@ public class Player {
         leadCount = l;
         leadCountInit = l;
         invincibility = 0;
-
-
-    }
-
-    public void playSE(int i) {
-        music.setFile(i);
-        music.play();
     }
 
     public double getXPos() {
@@ -105,10 +95,9 @@ public class Player {
         clearDistance = clearDistanceInit;
     }
 
-    public int getPointCount() {
+    public int getPointCount(){
         return pointCount;
     }
-
 
     public void collision(Tile t, KeyHandler k, int xMax, int yMax, int offset, boolean topRow, int damage) {
         if (topRow && t.getType() == 1) {
@@ -150,34 +139,22 @@ public class Player {
                     reduceLeadCount(damage);
                     invincibility = 1;
                 }
-
             }
-            // coin
             else if (t.getType() == 4 && xPos + width > t.getX() && xPos < t.getX() + offset && yPos + height >= t.getY() && yPos <= t.getY() + (offset / 2)) {
                 t.revert();
                 addPointCount(1);
                 addLeadCount(2);
-
-                playSE(2);
-
-
-
             }
-
-
             else if (t.getType() % 2 == 1 && xPos + width > t.getX() && xPos < t.getX() + offset && yPos + height >= t.getY() + (offset / 2) && yPos <= t.getY() + offset) {
                 yPos = t.getY() + offset;
                 k.upPressed = false;
                 dy = 0;
-
                 if (t.getType() == 9 && invincibility == 0) {
                     reduceLeadCount(damage);
                     invincibility = 1;
                 }
-
             }
         }
-
 
         if (xPos <= 0) {
             dx = 0;
@@ -187,10 +164,16 @@ public class Player {
         if (yPos >= yMax) {
             leadCount = 0;
         }
+
+        // Testing purposes only
+        // if (yPos + height > yMax) {
+        //     yPos = yMax - height;
+        //     dy = 0;
+        // }
     }
 
     public void enemyCollision(Enemy e) {
-        if (invincibility == 0 && xPos + width >= e.getX() && xPos <= e.getX() + e.getHeightAndWidth() && yPos + height >= e.getY() && yPos <= e.getY() + e.getHeightAndWidth()) {
+        if (invincibility == 0 && xPos + width > e.getX() && xPos < e.getX() + e.getHeightAndWidth() && yPos + height > e.getY() && yPos < e.getY() + e.getHeightAndWidth()) {
             reduceLeadCount(e.getDamage());
             invincibility = 1;
         }
@@ -222,11 +205,9 @@ public class Player {
     public void reduceLeadCount(int r) {
         leadCount -= r;
     }
-
     public void addLeadCount(int r) {
         leadCount += r;
     }
-
     public void addPointCount(int p) {
         pointCount += p;
     }
@@ -277,4 +258,5 @@ public class Player {
         else xPos += dx;
         yPos += dy;
     }
+
 }

@@ -5,8 +5,8 @@ public class MovingNoDraw extends Enemy {
     private double width;
     private double height;
 
-    public MovingNoDraw(double x1, double y1, double x2, double y2, double s, double w, double h) {
-        super(x1, y1, x2, y2, 0, s, 0, false);
+    public MovingNoDraw(double x1, double y1, double x2, double y2, double tileSize, double s, double w, double h) {
+        super(x1, y1, x2, y2, tileSize, s, 0, false);
 
         width = w;
         height = h;
