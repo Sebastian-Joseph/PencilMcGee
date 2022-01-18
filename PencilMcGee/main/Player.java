@@ -155,7 +155,7 @@ public class Player {
             else if (t.getType() == 4 && xPos + width > t.getX() && xPos < t.getX() + offset && yPos + height >= t.getY() && yPos <= t.getY() + (offset / 2)) {
                 t.revert();
                 addCoinCount(1);
-                addLeadCount(200);
+                addLeadCount(2);
             }
             else if (t.getType() % 2 == 1 && xPos + width > t.getX() && xPos < t.getX() + offset && yPos + height >= t.getY() + (offset / 2) && yPos <= t.getY() + offset) {
                 yPos = t.getY() + offset;

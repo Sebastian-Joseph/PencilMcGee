@@ -40,6 +40,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     BufferedImage background;
     BufferedImage leadCountBackground;
+    BufferedImage coin;
 
     BufferedImage player;
     BufferedImage playerRight;
@@ -85,9 +86,9 @@ public class GamePanel extends JPanel implements Runnable {
     private final int level2ClearDistance = 798 * tileSize;
     private final int level3ClearDistance = 643 * tileSize;
 
-    private final int level1LeadCount = 300;
-    private final int level2LeadCount = 400;
-    private final int level3LeadCount = 200;
+    private final int level1LeadCount = 500;
+    private final int level2LeadCount = 600;
+    private final int level3LeadCount = 500;
 
     private final int xInit = tileSize * 2;
     private final int yInit = screenHeight - tileSize * 8;
@@ -346,6 +347,7 @@ public class GamePanel extends JPanel implements Runnable {
 
         background = ImageIO.read(getClass().getResourceAsStream("images/pooper3.5.png"));
         leadCountBackground = ImageIO.read(getClass().getResourceAsStream("images/lead_count_background.png"));
+        coin = ImageIO.read(getClass().getResourceAsStream("images/conn.png"));
 
         player = ImageIO.read(getClass().getResourceAsStream("images/pencil_mcgee.png"));
         playerRight = ImageIO.read(getClass().getResourceAsStream("images/pencil_mcgee_right.png"));
@@ -910,6 +912,8 @@ public class GamePanel extends JPanel implements Runnable {
             }
 
             g2.drawImage(leadCountBackground, tileSize, tileSize, tileSize * 3, tileSize * 2, null);
+            g2.drawImage(coin, tileSize + 1400, tileSize , tileSize, tileSize, null);
+
 
             if (p1.getInvincibility() == 0) g2.setColor(Color.black);
             else g2.setColor(Color.red);
@@ -917,6 +921,8 @@ public class GamePanel extends JPanel implements Runnable {
             g.setFont(font);
             double textOffset = tileSize * 0.6;
             g2.drawString(String.valueOf(p1.getLeadCount()), ((int) textOffset) + tileSize, ((int) textOffset) + tileSize * 2);
+            g2.drawString(String.valueOf(p1.getCoinCount()), tileSize + 1440, tileSize + 25);
+
 
             if (keyHandler.enterDown) {
                 gameState = pauseState;
