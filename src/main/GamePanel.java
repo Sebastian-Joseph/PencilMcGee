@@ -599,6 +599,10 @@ public class GamePanel extends JPanel implements Runnable {
             }
         }
 
+        if (keyHandler.escDown) {
+            System.exit(0);
+        }
+
         if (p1.getLeadCount() <= 0) {
             p1.reset(tileSize * 2, screenHeight - tileSize * 8);
             for (int i = 0; i < tiles.getMap().length; i++) {

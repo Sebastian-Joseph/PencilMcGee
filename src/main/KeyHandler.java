@@ -7,6 +7,7 @@ public class KeyHandler implements KeyListener {
 
     public boolean upPressed, downPressed, leftPressed, rightPressed;
     public boolean enterDown = false;
+    public boolean escDown = false;
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -32,6 +33,10 @@ public class KeyHandler implements KeyListener {
 
         if (code == KeyEvent.VK_ENTER){
             enterDown = !enterDown;
+        }
+        
+        if (code == KeyEvent.VK_ESCAPE){
+            escDown = true;
         }
     }
 
