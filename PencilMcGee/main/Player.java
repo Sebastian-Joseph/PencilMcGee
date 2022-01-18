@@ -30,6 +30,7 @@ public class Player {
 
     private int clearDistance;
     private int clearDistanceInit;
+    Music music = new Music();
 
 
     public Player(int x, int y, int w, int h, int c, int l) {
@@ -111,6 +112,11 @@ public class Player {
         return score;
     }
 
+    public void playSE(int i) {
+        music.setFile(i);
+        music.play();
+    }
+
     public void collision(Tile t, KeyHandler k, int xMax, int yMax, int offset, boolean topRow, int damage) {
         if (topRow && t.getType() == 1) {
             if (xPos + width >= t.getX() - xSpeed && xPos <= t.getX() + (offset / 2) && yPos < t.getY() + offset - ySpeed) {
@@ -156,6 +162,7 @@ public class Player {
                 t.revert();
                 addCoinCount(1);
                 addLeadCount(2);
+                playSE(2);
             }
             else if (t.getType() % 2 == 1 && xPos + width > t.getX() && xPos < t.getX() + offset && yPos + height >= t.getY() + (offset / 2) && yPos <= t.getY() + offset) {
                 yPos = t.getY() + offset;
