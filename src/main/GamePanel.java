@@ -854,6 +854,8 @@ public class GamePanel extends JPanel implements Runnable {
                                         )
                                 ) {
                                     if (tiles.getMap()[i][j].change(levelState)) {
+                                        System.out.println(i);
+                                        System.out.println(j);
                                         p1.reduceLeadCount(1);
                                     }
                                 }
