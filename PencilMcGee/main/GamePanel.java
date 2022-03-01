@@ -95,7 +95,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     int FPS = 60;
     Music music = new Music();
-    Menu menu = new Menu();
+    Menu menu = new Menu(screenWidth, screenHeight, tileSize);
     KeyHandler keyHandler = new KeyHandler();
     Thread gameThread;
 

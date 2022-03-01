@@ -8,30 +8,41 @@ import java.awt.event.ActionEvent;
 
 public class Menu {
 
-    public Rectangle playButton = new Rectangle(GamePanel.WIDTH + 750, 420, 100, 50);
-    public Rectangle instructButton = new Rectangle(GamePanel.WIDTH + 700, 570, 200, 50);
-    public Rectangle quitButton = new Rectangle(GamePanel.WIDTH + 750, 700, 100, 50);
+    private int width;
+    private int height;
+    private int tileSize;
 
+    public Rectangle playButton;
+    public Rectangle instructButton;
+    public Rectangle quitButton;
+
+    public Menu(int w, int h, int t) {
+        width = w;
+        height = h;
+        tileSize = t;
+
+        playButton = new Rectangle((width / 2) - tileSize, 13 * tileSize + tileSize / 2, 3 * tileSize, (tileSize * 5) / 3);
+        instructButton = new Rectangle((width / 2) - tileSize * 3, 17 * tileSize + tileSize / 2, 7 * tileSize, (tileSize * 5) / 3);
+        quitButton = new Rectangle((width / 2) - tileSize, 21 * tileSize + tileSize / 2, 3 * tileSize, (tileSize * 5) / 3);
+    }
 
     public void render(Graphics g) throws IOException {
 
         Graphics2D g2d = (Graphics2D) g;
         BufferedImage background;
         background = ImageIO.read(getClass().getResourceAsStream("images/notebook.png"));
-        g.drawImage(background, 0, 0, null);
-        Font font = new Font("Ink Free", Font.BOLD, 50);
+        g.drawImage(background, 0, 0, width, height, null);
+        Font font = new Font("Ink Free", Font.BOLD, tileSize * 2);
         g.setFont(font);
         g.setColor(Color.white);
-       // g.drawString("Pencil McGee", GamePanel.WIDTH + 600, 100);
 
-
-        Font font1 = new Font("Ink Free", Font.BOLD, 30);
+        Font font1 = new Font("Ink Free", Font.BOLD, tileSize);
         g.setFont(font1);
-        g.drawString("Play", playButton.x + 17, playButton.y + 29);
+        g.drawString("Play", playButton.x + (tileSize * 2) / 3, playButton.y + tileSize);
         g2d.draw(playButton);
-        g.drawString("Exit", quitButton.x + 17, quitButton.y + 29);
+        g.drawString("Exit", quitButton.x + (tileSize * 2) / 3, quitButton.y + tileSize);
         g2d.draw(quitButton);
-        g.drawString("Instructions", instructButton.x + 17, instructButton.y + 29);
+        g.drawString("Instructions", instructButton.x + (tileSize / 2), instructButton.y + tileSize);
         g2d.draw(instructButton);
 
     }
