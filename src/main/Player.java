@@ -31,6 +31,8 @@ public class Player {
     private int clearDistance;
     private int clearDistanceInit;
 
+    private GameMusic sfx = new GameMusic();
+
 
     public Player(int x, int y, int w, int h, int c, int l) {
         xPos = x;
@@ -111,6 +113,11 @@ public class Player {
         return score;
     }
 
+    public void playSfx(int i) {
+        sfx.setFile(i);
+        sfx.play();
+    }
+
     public void collision(Tile t, KeyHandler k, int xMax, int yMax, int offset, boolean topRow, int damage) {
         if (topRow && t.getType() == 1) {
             if (xPos + width >= t.getX() - xSpeed && xPos <= t.getX() + (offset / 2) && yPos < t.getY() + offset - ySpeed) {
@@ -156,6 +163,7 @@ public class Player {
                 t.revert();
                 addCoinCount(1);
                 addLeadCount(2);
+                playSfx(2);
             }
             else if (t.getType() % 2 == 1 && xPos + width > t.getX() && xPos < t.getX() + offset && yPos + height >= t.getY() + (offset / 2) && yPos <= t.getY() + offset) {
                 yPos = t.getY() + offset;
@@ -262,6 +270,8 @@ public class Player {
             dy = (dy == 0)
             ? -1 * ySpeed + yIncrement
             : (dy < ySpeed) ? dy + yIncrement : ySpeed;
+
+            if (dy == -1 * ySpeed + yIncrement) playSfx(1);
         }
         else {
             dy = (dy == 0)

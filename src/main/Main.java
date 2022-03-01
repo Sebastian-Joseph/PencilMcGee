@@ -15,10 +15,10 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         int input = 0;
         while (input <= 0 || input >= 5) {
-            System.out.println("Set a window size (1, 2, 3, or 4)");
+            System.out.println("Set a window size (1 or 2)");
             try {
                 input = scanner.nextInt();
-                if (input <= 0 || input >= 5) {
+                if (input <= 0 || input >= 3) {
                     System.out.println("Not a valid number.");
                     System.out.println();
                 }
@@ -31,7 +31,7 @@ public class Main {
             }
         }
 
-        windowScale = input;
+        windowScale = input + 2;
         System.out.println();
         scanner.close();
         ////////////////////////////////
