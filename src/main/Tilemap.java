@@ -58,7 +58,7 @@ public class Tilemap {
         
         
 
-
+        
         BufferedImage subimage;
         for (int col = 0; col < Columns; col++) {
             for (int row = 0; row < Rows; row++) {

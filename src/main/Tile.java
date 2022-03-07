@@ -108,6 +108,7 @@ public class Tile {
 		final int time = t;
 
 		if (type == 0) {
+			type = 3;
 			new Thread(() -> {
 				try {
 					white = ImageIO.read(getClass().getResourceAsStream("images/small_pooper.png"));
@@ -117,7 +118,7 @@ public class Tile {
 				} 
 				catch (IOException e1) {}
 				image = ato.filter(stage1, scaledImage);
-				type = 3;
+				
 
 				try {
 					TimeUnit.MILLISECONDS.sleep(time);

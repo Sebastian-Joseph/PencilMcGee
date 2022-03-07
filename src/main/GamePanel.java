@@ -8,6 +8,7 @@ import javax.swing.SwingUtilities;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
+
 import java.awt.image.*;
 import java.io.IOException;
 import java.lang.Exception;
@@ -26,6 +27,10 @@ import java.awt.event.MouseEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseListener; 
 import java.awt.event.KeyListener;
+
+import java.io.FileWriter;
+import java.io.File;
+import java.util.Scanner;
 
 public class GamePanel extends JPanel implements Runnable {
     // Screen Settings
@@ -81,9 +86,9 @@ public class GamePanel extends JPanel implements Runnable {
     private final int level2EnemyDamage = 15;
     private final int level3EnemyDamage = 20;
 
-    private final int level1ClearDistance = 798 * tileSize;
-    private final int level2ClearDistance = 798 * tileSize;
-    private final int level3ClearDistance = 643 * tileSize;
+    private final int level1ClearDistance = 30 * tileSize;
+    private final int level2ClearDistance = 30 * tileSize;
+    private final int level3ClearDistance = 30 * tileSize;
 
     private final int level1LeadCount = 300;
     private final int level2LeadCount = 400;
@@ -91,6 +96,9 @@ public class GamePanel extends JPanel implements Runnable {
 
     private final int xInit = tileSize * 2;
     private final int yInit = screenHeight - tileSize * 8;
+
+    private boolean leaderboardWritten = false;
+    private String name = "ply";
 
     int FPS = 60;
     GameMusic music = new GameMusic();
@@ -603,15 +611,7 @@ public class GamePanel extends JPanel implements Runnable {
             System.exit(0);
         }
 
-        if (p1.getLeadCount() <= 0) {
-            p1.reset(tileSize * 2, screenHeight - tileSize * 8);
-            for (int i = 0; i < tiles.getMap().length; i++) {
-                for (int j = 0; j < tiles.getMap()[i].length; j++) {
-                    tiles.getMap()[i][j].reset();
-                    if (tiles.getMap()[i][j].getType() == 3) tiles.getMap()[i][j].revert();
-                }
-            }
-        }
+
     }
 
     public void clearLevel() {
@@ -767,6 +767,44 @@ public class GamePanel extends JPanel implements Runnable {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            if(!leaderboardWritten){
+                String firstlines = "";
+                String lastlines = "";
+                String scoreline = name + ": " + String.valueOf(p1.getScore());
+                try {
+                    File leaderboard = new File("src/main/Leaderboard/leaderboard.txt");
+                    Scanner myReader = new Scanner(leaderboard);
+                    while (myReader.hasNextLine()) {
+                      String data = myReader.nextLine();
+                      if(data != ""){
+                        String[] components = data.split(": ", 2);
+                        int score = Integer.parseInt(components[1]);
+                        if(score >= p1.getScore()){
+                            firstlines = firstlines + "\n" + data;
+                        }
+                        else{
+                            lastlines = lastlines + "\n" + data;
+                        }
+                      }
+                    }
+                    myReader.close();
+                  } catch (IOException e) {
+                    System.out.println("An error occurred.");
+                    e.printStackTrace();
+                }
+
+                try {
+                    FileWriter myWriter = new FileWriter("src/main/Leaderboard/leaderboard.txt");
+                    myWriter.write(firstlines + "\n" + scoreline + "\n" + lastlines);
+                    myWriter.close();
+                    System.out.println("Successfully wrote to the file.");
+                    leaderboardWritten = true;
+                } catch (IOException e) {
+                    System.out.println("An error occurred.");
+                    e.printStackTrace();
+                }
+            }
+          
 
             double textOffset5 = tileSize * 1.3;
 
@@ -775,7 +813,7 @@ public class GamePanel extends JPanel implements Runnable {
             g.setFont(f0nt);
             g.setColor(Color.white);
             g.drawString("Exit", ((int) textOffset5) + tileSize * 36, ((int) textOffset5) + tileSize * 14);
-
+            
             Rectangle exit = new Rectangle(tileSize * 36, tileSize * 14, tileSize * 5, tileSize * 2);
             g2.draw(exit);
 
@@ -816,6 +854,8 @@ public class GamePanel extends JPanel implements Runnable {
                                         )
                                 ) {
                                     if (tiles.getMap()[i][j].change(levelState)) {
+                                        System.out.println(i);
+                                        System.out.println(j);
                                         p1.reduceLeadCount(1);
                                     }
                                 }
@@ -910,6 +950,7 @@ public class GamePanel extends JPanel implements Runnable {
             }
 
             g2.drawImage(leadCountBackground, tileSize, tileSize, tileSize * 3, tileSize * 2, null);
+            g2.drawImage(leadCountBackground, tileSize, tileSize*3, tileSize * 3, tileSize * 2, null);
 
             if (p1.getInvincibility() == 0) g2.setColor(Color.black);
             else g2.setColor(Color.red);
@@ -917,7 +958,7 @@ public class GamePanel extends JPanel implements Runnable {
             g.setFont(font);
             double textOffset = tileSize * 0.6;
             g2.drawString(String.valueOf(p1.getLeadCount()), ((int) textOffset) + tileSize, ((int) textOffset) + tileSize * 2);
-
+            g2.drawString(String.valueOf(p1.getCoinCount()), ((int) textOffset) + tileSize, ((int) textOffset) + tileSize * 4);
             if (keyHandler.enterDown) {
                 gameState = pauseState;
             }
@@ -935,6 +976,7 @@ public class GamePanel extends JPanel implements Runnable {
 
                 Rectangle continueButton = new Rectangle(tileSize * 21, tileSize * 10, tileSize * 7, tileSize * 2);
                 Rectangle exitButton = new Rectangle(tileSize * 21, tileSize * 16, tileSize * 7, tileSize * 2);
+                Rectangle resetButton = new Rectangle(tileSize * 21, tileSize * 22, tileSize * 7, tileSize * 2);
 
                 Font font1 = new Font("Ink Free", Font.BOLD, tileSize);
                 g.setFont(font1);
@@ -954,6 +996,13 @@ public class GamePanel extends JPanel implements Runnable {
                 g.drawString("Exit", ((int) textOffset2) + tileSize * 21, ((int) textOffset2) + tileSize * 16);
                 g2.draw(exitButton);
 
+                g.setColor(Color.white);
+                g2.fillRect(tileSize * 21, tileSize * 22, tileSize * 7, tileSize * 2);
+
+                g.setColor(Color.black);
+                g.drawString("Reset", ((int) textOffset2) + tileSize * 21, ((int) textOffset2) + tileSize * 22);
+                g2.draw(resetButton);
+
                 if (mouseDown) {
                     Point point = MouseInfo.getPointerInfo().getLocation();
                     SwingUtilities.convertPointFromScreen(point, this);
@@ -962,6 +1011,50 @@ public class GamePanel extends JPanel implements Runnable {
                     }
                     if (exitButton.contains(point)) {
                         System.exit(0);
+                    }
+                    if (resetButton.contains(point)){
+                        p1.reset(tileSize * 2, screenHeight - tileSize * 8);
+                        for (int i = 0; i < tiles.getMap().length; i++) {
+                            for (int j = 0; j < tiles.getMap()[i].length; j++) {
+                                tiles.getMap()[i][j].reset();
+                                if (tiles.getMap()[i][j].getType() == 3) tiles.getMap()[i][j].revert();
+                            }
+                        }
+                        enemies.clear();
+                        if (levelState == 1) {
+                            for (Enemy e : enemiesInit1) {
+                                enemies.add(e);
+                            }
+                            for (Cannon c : cannons1) {
+                                c.reset();
+                            }
+                        }
+                        else if (levelState == 2) {
+                            for (Enemy e : enemiesInit2) {
+                                enemies.add(e);
+                            }
+                            for (Cannon c : cannons2) {
+                                c.reset();
+                            }
+                            for (Enemy m : movingNoDraws2) {
+                                m.reset();
+                            }
+                        }
+                        else if (levelState == 3) {
+                            for (Enemy e : enemiesInit3) {
+                                enemies.add(e);
+                            }
+                            for (Cannon c : cannons3) {
+                                c.reset();
+                            }
+                            for (Enemy m : movingNoDraws3) {
+                                m.reset();
+                            }
+                        }        
+                        for (Enemy e : enemies) {
+                            e.reset();
+                        }
+                        keyHandler.enterDown = false;
                     }
                 }
 
