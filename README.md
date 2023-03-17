@@ -7,7 +7,10 @@ In Pencil McGee, players take on the role of the titular character, a young arti
 The game's hand-drawn graphics and vibrant color scheme create a charming and inviting world for players to explore. Each level presents a new challenge, with obstacles ranging from moving platforms to spikes and enemy creatures. But with Pencil McGee's magic pencil, players can always find a creative solution.
 
 ## File Structure
+
 PencilMcGee/main - leads to the Pencil McGee source files
+
 Images/ - shows the different art used for Pencil McGee
+
 Music/ - Copyright free music used in the game
  
